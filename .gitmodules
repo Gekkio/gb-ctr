@@ -1,0 +1,3 @@
+[submodule "third-party/pdflatex-makefile"]
+	path = third-party/pdflatex-makefile
+	url = https://github.com/ransford/pdflatex-makefile.git

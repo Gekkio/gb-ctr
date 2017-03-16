@@ -1,0 +1,100 @@
+\newcount\draft\draft=1
+
+\ifnum \draft=1
+  \documentclass[a4paper, draft, oneside]{memoir}
+\else
+  \documentclass[a4paper, oneside]{memoir}
+\fi
+
+\usepackage[final]{graphicx}
+\usepackage[utf8x]{inputenc}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{tabu}
+\usepackage{pdflscape}
+\usepackage{mathpazo}
+\usepackage{enumitem}
+\usepackage{charter}
+\usepackage{ccicons}
+\usepackage[ttdefault=true]{AnonymousPro}
+\usepackage[svgnames,table]{xcolor}
+\usepackage{tikz}
+\usepackage{tikz-timing}
+\usepackage{wrapfig}
+\usepackage{minted}
+\usepackage{subcaption}
+\usepackage{scrextend}
+\usepackage[most]{tcolorbox}
+\usepackage{fontawesome}
+\usepackage{hyperref}
+\usepackage[all]{hypcap}
+
+\usemintedstyle{autumn}
+
+\graphicspath{{images/}}
+
+\include{revision}
+
+\title{Game Boy: Complete Technical Reference}
+\author{gekkio\\ \url{https://gekkio.fi}}
+\renewcommand{\maketitlehookd}{
+  \begin{center}
+    Revision \Revision
+
+    \vfill
+
+    \href{http://creativecommons.org/licenses/by-sa/4.0/}{\Huge \ccbysa}
+
+    This work is licensed under a \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons Attribution-ShareAlike 4.0 International License}.
+  \end{center}
+}
+
+\hypersetup{final,unicode=true,pdfborder={0 0 0},bookmarksnumbered=true,pdfpagemode=UseOutlines,pdfauthor=gekkio,pdftitle=\thetitle}
+
+\setlrmarginsandblock{2cm}{2cm}{*}
+\setulmarginsandblock{2cm}{2cm}{*}
+\checkandfixthelayout
+
+\newtcolorbox{speculation}
+{colframe=SteelBlue,colback=Azure,after upper={\hfill\colorbox{SteelBlue}{\color{white}speculation}}}
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+
+\begin{titlingpage}
+  \calccentering{\unitlength}
+  \setlength{\droptitle}{80pt}
+  \begin{adjustwidth*}{\unitlength}{-\unitlength}
+    \maketitle
+  \end{adjustwidth*}
+\end{titlingpage}
+
+\hypersetup{pageanchor=true}
+
+\tableofcontents
+
+\chapter*{Introduction}
+
+\chapter*{How to read this document}
+
+\begin{speculation}
+  This is something that hasn't been verified, but would make a lot of sense.
+\end{speculation}
+
+\part{Game Boy circuit boards and chips}
+
+\part{Game Boy CPU and the Sharp LR35902 instruction set}
+
+\part{Game Boy CPU peripherals}
+
+\part{Game Boy game cartridges}
+
+\part*{Appendices}
+\addcontentsline{toc}{part}{Appendices}
+\phantomsection
+
+\begin{appendices}
+\end{appendices}
+
+\end{document}

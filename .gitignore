@@ -1,0 +1,11 @@
+*~
+*.bak
+*.log
+*.swp
+
+/_minted-gbctr
+/revision.tex
+/*.pdf
+*.aux
+*.out
+*.toc
