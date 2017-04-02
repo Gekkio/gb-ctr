@@ -5,6 +5,7 @@ language: c
 addons:
   apt:
     packages:
+      - latex-xcolor
       - texlive-base
       - texlive-fonts-extra
       - texlive-fonts-recommended
