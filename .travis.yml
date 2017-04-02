@@ -5,8 +5,8 @@ language: c
 addons:
   apt:
     packages:
-      - fonts-lmodern
       - latex-xcolor
+      - lmodern
       - pgf
       - python-pygments
       - texlive-base
