@@ -13,6 +13,7 @@ addons:
       - texlive-latex-base
       - texlive-latex-extra
       - texlive-latex-recommended
+      - texlive-pictures
 
 install:
   - make
