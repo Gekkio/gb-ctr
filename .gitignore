@@ -4,6 +4,7 @@
 *.swp
 
 /_minted-gbctr
+/config.tex
 /revision.tex
 /*.pdf
 *.aux
