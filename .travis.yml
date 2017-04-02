@@ -16,6 +16,7 @@ addons:
       - texlive-latex-extra
       - texlive-latex-recommended
       - texlive-pictures
+      - texlive-xetex
 
 before_install:
   - mkdir -p $HOME/bin
