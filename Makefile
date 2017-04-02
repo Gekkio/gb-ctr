@@ -9,6 +9,8 @@ REVISION := "$(shell git symbolic-ref --short HEAD)-$(shell git rev-list --count
 DRAFT := 1
 endif
 
+REVDEPS += config.tex
+
 include third-party/pdflatex-makefile/Makefile.include
 
 config.tex:
