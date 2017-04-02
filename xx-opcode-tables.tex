@@ -1,0 +1,94 @@
+\chapter{Instruction set tables}
+
+These tables include all the opcodes in the Sharp LR35902 instruction set. The
+style and layout of these tables was inspired by the opcode tables available at
+pastraiser.com \cite{pastraiser}.
+
+\begin{landscape}
+
+\newcommand{\oplb}{\cellcolor{SkyBlue}}
+\newcommand{\oplw}{\cellcolor{PaleGreen}}
+\newcommand{\opab}{\cellcolor{Gold}}
+\newcommand{\opaw}{\cellcolor{Pink}}
+\newcommand{\opbi}{\cellcolor{Turquoise}}
+\newcommand{\opcf}{\cellcolor{SandyBrown}}
+\newcommand{\opmi}{\cellcolor{PaleVioletRed}}
+\newcommand{\opun}{\cellcolor{Silver}}
+
+\begin{table}
+  \begin{center}
+    \fontsize{6.5pt}{13pt}
+    \ttfamily\bfseries
+    \everyrow{\hline}
+    \fcolorbox{Black}{SkyBlue}{8-bit loads and stores}
+    \fcolorbox{Black}{PaleGreen}{16-bit loads and stores}
+    \fcolorbox{Black}{Gold}{8-bit arithmetic}
+    \fcolorbox{Black}{Pink}{16-bit arithmetic}
+    \fcolorbox{Black}{Turquoise}{Rotates, shifts, and bit operations}
+    \fcolorbox{Black}{SandyBrown}{Control flow}
+    \fcolorbox{Black}{PaleVioletRed}{Miscellaneous}
+    \fcolorbox{Black}{Silver}{Undefined}
+    \caption{Sharp LR35902 instruction set}
+    \begin{tabu} to \linewidth {|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+         & x0              & x1              & x2               & x3              & x4               & x5              & x6              & x7              & x8               & x9              & xA               & xB           & xC              & xD            & xE               & xF             \\
+      0x & \opmi NOP       & \oplw LD BC,nn  & \oplb LD (BC),A  & \opaw INC BC    & \opab INC B      & \opab DEC B     & \oplb LD B,n    & \opbi RLCA      & \oplw LD (nn),SP & \opaw ADD HL,BC & \oplb LD A,(BC)  & \opaw DEC BC & \opab INC C     & \opab DEC C   & \oplb LD C,n     & \opbi RRCA     \\
+      1x & \opmi STOP      & \oplw LD DE,nn  & \oplb LD (DE),A  & \opaw INC DE    & \opab INC D      & \opab DEC D     & \oplb LD D,n    & \opbi RLA       & \opcf JR r       & \opaw ADD HL,DE & \oplb LD A,(DE)  & \opaw DEC DE & \opab INC E     & \opab DEC E   & \oplb LD E,n     & \opbi RRA      \\
+      2x & \opcf JR NZ,r   & \oplw LD HL,nn  & \oplb LD (HL+),A & \opaw INC HL    & \opab INC H      & \opab DEC H     & \oplb LD H,n    & \opab DAA       & \opcf JR Z,r     & \opaw ADD HL,HL & \oplb LD A,(HL+) & \opaw DEC HL & \opab INC L     & \opab DEC L   & \oplb LD L,n     & \opab CPL      \\
+      3x & \opcf JR NC,r   & \oplw LD SP,nn  & \oplb LD (HL-),A & \opaw INC SP    & \opab INC (HL)   & \opab DEC (HL)  & \oplb LD (HL),n & \opab SCF       & \opcf JR C,r     & \opaw ADD HL,SP & \oplb LD A,(HL-) & \opaw DEC SP & \opab INC A     & \opab DEC A   & \oplb LD A,n     & \opab CCF      \\
+      4x & \oplb LD B,B    & \oplb LD B,C    & \oplb LD B,D     & \oplb LD B,E    & \oplb LD B,H     & \oplb LD B,L    & \oplb LD B,(HL) & \oplb LD B,A    & \oplb LD C,B     & \oplb LD C,C    & \oplb LD C,D     & \oplb LD C,E & \oplb LD C,H    & \oplb LD C,L  & \oplb LD C,(HL)  & \oplb LD C,A   \\
+      5x & \oplb LD D,B    & \oplb LD D,C    & \oplb LD D,D     & \oplb LD D,E    & \oplb LD D,H     & \oplb LD D,L    & \oplb LD D,(HL) & \oplb LD D,A    & \oplb LD E,B     & \oplb LD E,C    & \oplb LD E,D     & \oplb LD E,E & \oplb LD E,H    & \oplb LD E,L  & \oplb LD E,(HL)  & \oplb LD E,A   \\
+      6x & \oplb LD H,B    & \oplb LD H,C    & \oplb LD H,D     & \oplb LD H,E    & \oplb LD H,H     & \oplb LD H,L    & \oplb LD H,(HL) & \oplb LD H,A    & \oplb LD L,B     & \oplb LD L,C    & \oplb LD L,D     & \oplb LD L,E & \oplb LD L,H    & \oplb LD L,L  & \oplb LD L,(HL)  & \oplb LD L,A   \\
+      7x & \oplb LD (HL),B & \oplb LD (HL),C & \oplb LD (HL),D  & \oplb LD (HL),E & \oplb LD (HL),H  & \oplb LD (HL),L & \opmi HALT      & \oplb LD (HL),A & \oplb LD A,B     & \oplb LD A,C    & \oplb LD A,D     & \oplb LD A,E & \oplb LD A,H    & \oplb LD A,L  & \oplb LD A,(HL)  & \oplb LD A,A   \\
+      8x & \opab ADD B     & \opab ADD C     & \opab ADD D      & \opab ADD E     & \opab ADD H      & \opab ADD L     & \opab ADD (HL)  & \opab ADD A     & \opab ADC B      & \opab ADC C     & \opab ADC D      & \opab ADC E  & \opab ADC H     & \opab ADC L   & \opab ADC (HL)   & \opab ADC A    \\
+      9x & \opab SUB B     & \opab SUB C     & \opab SUB D      & \opab SUB E     & \opab SUB H      & \opab SUB L     & \opab SUB (HL)  & \opab SUB A     & \opab SBC B      & \opab SBC C     & \opab SBC D      & \opab SBC E  & \opab SBC H     & \opab SBC L   & \opab SBC (HL)   & \opab SBC A    \\
+      Ax & \opab AND B     & \opab AND C     & \opab AND D      & \opab AND E     & \opab AND H      & \opab AND L     & \opab AND (HL)  & \opab AND A     & \opab XOR B      & \opab XOR C     & \opab XOR D      & \opab XOR E  & \opab XOR H     & \opab XOR L   & \opab XOR (HL)   & \opab XOR A    \\
+      Bx & \opab OR B      & \opab OR C      & \opab OR D       & \opab OR E      & \opab OR H       & \opab OR L      & \opab OR (HL)   & \opab OR A      & \opab CP B       & \opab CP C      & \opab CP D       & \opab CP E   & \opab CP H      & \opab CP L    & \opab CP (HL)    & \opab CP A     \\
+      Cx & \opcf RET NZ    & \oplw POP BC    & \opcf JP NZ,nn   & \opcf JP nn     & \opcf CALL NZ,nn & \oplw PUSH BC   & \opab ADD n     & \opcf RST \$00  & \opcf RET Z      & \opcf RET       & \opcf JP Z,nn    & \opbi CB op  & \opcf CALL Z,nn & \opcf CALL nn & \opab ADC n      & \opcf RST \$08 \\
+      Dx & \opcf RET NC    & \oplw POP DE    & \opcf JP NC,nn   & \opun           & \opcf CALL NC,nn & \oplw PUSH DE   & \opab SUB n     & \opcf RST \$10  & \opcf RET C      & \opcf RETI      & \opcf JP C,nn    & \opun        & \opcf CALL C,nn & \opun         & \opab SBC n      & \opcf RST \$18 \\
+      Ex & \oplb LDH (n),A & \oplw POP HL    & \oplb LD (C),A   & \opun           & \opun            & \oplw PUSH HL   & \opab AND n     & \opcf RST \$20  & \opaw ADD SP,e   & \opcf JP HL     & \oplb LD (nn),A  & \opun        & \opun           & \opun         & \opab XOR n      & \opcf RST \$28 \\
+      Fx & \oplb LDH A,(n) & \oplw POP AF    & \oplb LD A,(C)   & \opmi DI        & \opun            & \oplw PUSH AF   & \opab OR n      & \opcf RST \$30  & \oplw LD HL,SP+e & \oplw LD SP,HL  & \oplb LD A,(nn)  & \opmi EI     & \opun           & \opun         & \opab CP n       & \opcf RST \$38 \\
+    \end{tabu}
+    \normalsize
+    \normalfont\mdseries
+    \begin{description}[style=sameline]
+      \item[n]
+        unsigned 8-bit immediate data
+      \item[nn]
+        unsigned 16-bit immediate data
+      \item[e]
+        signed 8-bit immediate data
+      \item[r]
+        signed 8-bit immediate data, relative to PC
+    \end{description}
+  \end{center}
+\end{table}
+
+\begin{table}
+  \begin{center}
+    \fontsize{7.5pt}{13pt}
+    \ttfamily\bfseries
+    \everyrow{\hline}
+    \caption{Sharp LR35902 CB-prefixed instructions}
+    \begin{tabu} to \linewidth {|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+         & x0            & x1            & x2            & x3            & x4            & x5            & x6               & x7            & x8            & x9            & xA            & xB            & xC            & xD            & xE               & xF            \\
+      0x & \opbi RLC B   & \opbi RLC C   & \opbi RLC D   & \opbi RLC E   & \opbi RLC H   & \opbi RLC L   & \opbi RLC (HL)   & \opbi RLC A   & \opbi RRC B   & \opbi RRC C   & \opbi RRC D   & \opbi RRC E   & \opbi RRC H   & \opbi RRC L   & \opbi RRC (HL)   & \opbi RRC A   \\
+      1x & \opbi RL B    & \opbi RL C    & \opbi RL D    & \opbi RL E    & \opbi RL H    & \opbi RL L    & \opbi RL (HL)    & \opbi RL A    & \opbi RR B    & \opbi RR C    & \opbi RR D    & \opbi RR E    & \opbi RR H    & \opbi RR L    & \opbi RR (HL)    & \opbi RR A    \\
+      2x & \opbi SLA B   & \opbi SLA C   & \opbi SLA D   & \opbi SLA E   & \opbi SLA H   & \opbi SLA L   & \opbi SLA (HL)   & \opbi SLA A   & \opbi SRA B   & \opbi SRA C   & \opbi SRA D   & \opbi SRA E   & \opbi SRA H   & \opbi SRA L   & \opbi SRA (HL)   & \opbi SRA A   \\
+      3x & \opbi SWAP B  & \opbi SWAP C  & \opbi SWAP D  & \opbi SWAP E  & \opbi SWAP H  & \opbi SWAP L  & \opbi SWAP (HL)  & \opbi SWAP A  & \opbi SRL B   & \opbi SRL C   & \opbi SRL D   & \opbi SRL E   & \opbi SRL H   & \opbi SRL L   & \opbi SRL (HL)   & \opbi SRL A   \\
+      4x & \opbi BIT 0,B & \opbi BIT 0,C & \opbi BIT 0,D & \opbi BIT 0,E & \opbi BIT 0,H & \opbi BIT 0,L & \opbi BIT 0,(HL) & \opbi BIT 0,A & \opbi BIT 1,B & \opbi BIT 1,C & \opbi BIT 1,D & \opbi BIT 1,E & \opbi BIT 1,H & \opbi BIT 1,L & \opbi BIT 1,(HL) & \opbi BIT 1,A \\
+      5x & \opbi BIT 2,B & \opbi BIT 2,C & \opbi BIT 2,D & \opbi BIT 2,E & \opbi BIT 2,H & \opbi BIT 2,L & \opbi BIT 2,(HL) & \opbi BIT 2,A & \opbi BIT 3,B & \opbi BIT 3,C & \opbi BIT 3,D & \opbi BIT 3,E & \opbi BIT 3,H & \opbi BIT 3,L & \opbi BIT 3,(HL) & \opbi BIT 3,A \\
+      6x & \opbi BIT 4,B & \opbi BIT 4,C & \opbi BIT 4,D & \opbi BIT 4,E & \opbi BIT 4,H & \opbi BIT 4,L & \opbi BIT 4,(HL) & \opbi BIT 4,A & \opbi BIT 5,B & \opbi BIT 5,C & \opbi BIT 5,D & \opbi BIT 5,E & \opbi BIT 5,H & \opbi BIT 5,L & \opbi BIT 5,(HL) & \opbi BIT 5,A \\
+      7x & \opbi BIT 6,B & \opbi BIT 6,C & \opbi BIT 6,D & \opbi BIT 6,E & \opbi BIT 6,H & \opbi BIT 6,L & \opbi BIT 6,(HL) & \opbi BIT 6,A & \opbi BIT 7,B & \opbi BIT 7,C & \opbi BIT 7,D & \opbi BIT 7,E & \opbi BIT 7,H & \opbi BIT 7,L & \opbi BIT 7,(HL) & \opbi BIT 7,A \\
+      8x & \opbi RES 0,B & \opbi RES 0,C & \opbi RES 0,D & \opbi RES 0,E & \opbi RES 0,H & \opbi RES 0,L & \opbi RES 0,(HL) & \opbi RES 0,A & \opbi RES 1,B & \opbi RES 1,C & \opbi RES 1,D & \opbi RES 1,E & \opbi RES 1,H & \opbi RES 1,L & \opbi RES 1,(HL) & \opbi RES 1,A \\
+      9x & \opbi RES 2,B & \opbi RES 2,C & \opbi RES 2,D & \opbi RES 2,E & \opbi RES 2,H & \opbi RES 2,L & \opbi RES 2,(HL) & \opbi RES 2,A & \opbi RES 3,B & \opbi RES 3,C & \opbi RES 3,D & \opbi RES 3,E & \opbi RES 3,H & \opbi RES 3,L & \opbi RES 3,(HL) & \opbi RES 3,A \\
+      Ax & \opbi RES 4,B & \opbi RES 4,C & \opbi RES 4,D & \opbi RES 4,E & \opbi RES 4,H & \opbi RES 4,L & \opbi RES 4,(HL) & \opbi RES 4,A & \opbi RES 5,B & \opbi RES 5,C & \opbi RES 5,D & \opbi RES 5,E & \opbi RES 5,H & \opbi RES 5,L & \opbi RES 5,(HL) & \opbi RES 5,A \\
+      Bx & \opbi RES 6,B & \opbi RES 6,C & \opbi RES 6,D & \opbi RES 6,E & \opbi RES 6,H & \opbi RES 6,L & \opbi RES 6,(HL) & \opbi RES 6,A & \opbi RES 7,B & \opbi RES 7,C & \opbi RES 7,D & \opbi RES 7,E & \opbi RES 7,H & \opbi RES 7,L & \opbi RES 7,(HL) & \opbi RES 7,A \\
+      Cx & \opbi SET 0,B & \opbi SET 0,C & \opbi SET 0,D & \opbi SET 0,E & \opbi SET 0,H & \opbi SET 0,L & \opbi SET 0,(HL) & \opbi SET 0,A & \opbi SET 1,B & \opbi SET 1,C & \opbi SET 1,D & \opbi SET 1,E & \opbi SET 1,H & \opbi SET 1,L & \opbi SET 1,(HL) & \opbi SET 1,A \\
+      Dx & \opbi SET 2,B & \opbi SET 2,C & \opbi SET 2,D & \opbi SET 2,E & \opbi SET 2,H & \opbi SET 2,L & \opbi SET 2,(HL) & \opbi SET 2,A & \opbi SET 3,B & \opbi SET 3,C & \opbi SET 3,D & \opbi SET 3,E & \opbi SET 3,H & \opbi SET 3,L & \opbi SET 3,(HL) & \opbi SET 3,A \\
+      Ex & \opbi SET 4,B & \opbi SET 4,C & \opbi SET 4,D & \opbi SET 4,E & \opbi SET 4,H & \opbi SET 4,L & \opbi SET 4,(HL) & \opbi SET 4,A & \opbi SET 5,B & \opbi SET 5,C & \opbi SET 5,D & \opbi SET 5,E & \opbi SET 5,H & \opbi SET 5,L & \opbi SET 5,(HL) & \opbi SET 5,A \\
+      Fx & \opbi SET 6,B & \opbi SET 6,C & \opbi SET 6,D & \opbi SET 6,E & \opbi SET 6,H & \opbi SET 6,L & \opbi SET 6,(HL) & \opbi SET 6,A & \opbi SET 7,B & \opbi SET 7,C & \opbi SET 7,D & \opbi SET 7,E & \opbi SET 7,H & \opbi SET 7,L & \opbi SET 7,(HL) & \opbi SET 7,A \\
+    \end{tabu}
+  \end{center}
+\end{table}
+
+\end{landscape}

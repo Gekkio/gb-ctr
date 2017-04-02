@@ -8,5 +8,7 @@
 /revision.tex
 /*.pdf
 *.aux
+*.bbl
+*.blg
 *.out
 *.toc
