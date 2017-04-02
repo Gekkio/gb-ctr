@@ -46,6 +46,10 @@
   \begin{center}
     Revision \Revision
 
+    \ifdraftdoc
+      DRAFT!
+    \fi
+
     \vfill
 
     \href{http://creativecommons.org/licenses/by-sa/4.0/}{\Huge \ccbysa}
@@ -53,6 +57,13 @@
     This work is licensed under a \href{http://creativecommons.org/licenses/by-sa/4.0/}{Creative Commons Attribution-ShareAlike 4.0 International License}.
   \end{center}
 }
+
+\ifdraftdoc
+  \makeevenfoot{plain}{}{\thepage}{\textit{DRAFT! \Revision}}
+  \makeoddfoot{plain}{\textit{DRAFT! \Revision}}{\thepage}{}
+  \makeevenfoot{headings}{}{}{\textit{DRAFT! \Revision}}
+  \makeoddfoot{headings}{\textit{DRAFT! \Revision}}{}{}
+\fi
 
 \hypersetup{final,unicode=true,pdfborder={0 0 0},bookmarksnumbered=true,pdfpagemode=UseOutlines,pdfauthor=gekkio,pdftitle=\thetitle}
 
