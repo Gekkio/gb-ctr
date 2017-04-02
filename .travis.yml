@@ -5,6 +5,7 @@ language: c
 addons:
   apt:
     packages:
+      - fonts-lmodern
       - latex-xcolor
       - pgf
       - python-pygments
