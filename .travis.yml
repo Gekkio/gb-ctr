@@ -1,0 +1,20 @@
+sudo: false
+dist: trusty
+language: c
+
+addons:
+  apt:
+    packages:
+      - texlive-base
+      - texlive-fonts-extra
+      - texlive-fonts-recommended
+      - texlive-lang-english
+      - texlive-latex-base
+      - texlive-latex-extra
+      - texlive-latex-recommended
+
+install:
+  - make
+
+script:
+  - true
