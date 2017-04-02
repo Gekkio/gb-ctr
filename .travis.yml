@@ -6,6 +6,7 @@ addons:
   apt:
     packages:
       - latex-xcolor
+      - pgf
       - texlive-base
       - texlive-fonts-extra
       - texlive-fonts-recommended
