@@ -21,7 +21,9 @@
 \usepackage{tikz}
 \usepackage{tikz-timing}
 \usepackage{wrapfig}
+\usepackage{float}
 \usepackage{minted}
+\usepackage{enumitem}
 \usepackage[most]{tcolorbox}
 \usepackage{fontawesome}
 \usepackage{hyperref}
@@ -73,7 +75,14 @@
 \checkandfixthelayout
 
 \newtcolorbox{speculation}
-{colframe=SteelBlue,colback=Azure,after upper={\hfill\colorbox{SteelBlue}{\color{white}speculation}}}
+{colframe=SteelBlue,colback=Azure,title=\faPuzzlePiece,fonttitle=\small}
+
+\newtcolorbox{caveat}
+{colframe=Crimson,colback=MistyRose,title=\faExclamation,fonttitle=\small}
+
+\floatstyle{plaintop}
+\newfloat{register}{h}{lor}[chapter]
+\floatname{register}{Register}
 
 \begin{document}
 
@@ -99,11 +108,53 @@
   This is something that hasn't been verified, but would make a lot of sense.
 \end{speculation}
 
+\begin{caveat}
+  This explains some caveat about this documentation that you should know.
+\end{caveat}
+
 \part{Game Boy CPU and the Sharp LR35902 instruction set}
 
 \part{Game Boy CPU peripherals}
 
 \part{Game Boy game cartridges}
+
+\include{xx-mbc1}
+
+\chapter{MBC2}
+
+TODO.
+
+\chapter{MBC3}
+
+TODO.
+
+\chapter{MBC5}
+
+TODO.
+
+\chapter{MBC6}
+
+TODO.
+
+\chapter{MBC7}
+
+TODO.
+
+\chapter{HuC-1}
+
+TODO.
+
+\chapter{HuC-3}
+
+TODO.
+
+\chapter{MMM01}
+
+TODO.
+
+\chapter{TAMA5}
+
+TODO.
 
 \part*{Appendices}
 \addcontentsline{toc}{part}{Appendices}
