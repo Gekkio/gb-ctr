@@ -112,6 +112,56 @@
   This explains some caveat about this documentation that you should know.
 \end{caveat}
 
+\begin{register}[H]
+  \caption{\texttt{\$1234} - This is a hardware register definition}
+  {
+    \ttfamily
+    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
+      \everyrow{\hline}
+      \hline
+      R/W-0    & R/W-1      & U-1     & R/W-0      & R/W-0       & R/W-0         & R/W-0       & R/W-0      \\
+      \multicolumn2{|c|}{VALUE<1:0>} & \cellcolor{LightGray} - & & & & & \\
+      \rowfont{\rmfamily\small}
+      bit 7    & 6          & 5         & 4          & 3           & 2             & 1           & bit 0      \\
+      \hline
+    \end{tabu}
+  }
+
+  \textbf{Top row legend:}
+  \begin{description}[leftmargin=5em, style=nextline]
+    \item[R]
+      Bit can be read.
+    \item[W]
+      Bit can be written. If the bit cannot be read, reading returns a constant
+      value defined in the bit list of the register in question.
+    \item[U]
+      Unimplemented bit. Writing has no effect, and reading returns a constant
+      value defined in the bit list of the register in question.
+    \item[-n]
+      Value after reset: \texttt{0}, \texttt{1}, x.
+    \item[\texttt{1}]
+      Bit is set.
+    \item[\texttt{0}]
+      Bit is cleared.
+    \item[x]
+      Bit is unknown (e.g. depends on external things such as user input).
+  \end{description}
+
+  \textbf{Middle row legend:} \\
+  {
+    \ttfamily
+    \begin{tabu} to 0.5\textwidth {|X[l]|X[c]|}
+      \everyrow{\hline}
+      \hline
+      VALUE & \rmfamily A single-bit value \\
+      VALUE<1:0> & \rmfamily Bits 1 and 0 of VALUE \\
+      VALUE<7:4> & \rmfamily Bits 7, 6, 5, 4 of VALUE \\
+      \cellcolor{LightGray} - & \rmfamily Unimplemented bit \\
+      \hline
+    \end{tabu}
+  }
+\end{register}
+
 \part{Game Boy CPU and the Sharp LR35902 instruction set}
 
 \part{Game Boy CPU peripherals}
