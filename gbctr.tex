@@ -120,7 +120,7 @@
       \everyrow{\hline}
       \hline
       R/W-0                          & R/W-1                   & U-1                             & R-0  & R-1                      & R-x & W-1 & U-0   \\
-      \multicolumn2{|c|}{VALUE<1:0>} & \cellcolor{LightGray} - & \multicolumn3{|c|}{BIGVAL<7:5>} & FLAG & \cellcolor{LightGray} - \\
+      \multicolumn2{|c|}{VALUE<1:0>} & \cellcolor{LightGray} - & \multicolumn3{c|}{BIGVAL<7:5>} & FLAG & \cellcolor{LightGray} - \\
       \rowfont{\rmfamily\small}
       bit 7                          & 6                       & 5                               & 4    & 3                        & 2   & 1   & bit 0 \\
       \hline
@@ -138,7 +138,7 @@
       Unimplemented bit. Writing has no effect, and reading returns a constant
       value defined in the bit list of the register in question.
     \item[-n]
-      Value after system reset: \texttt{0}, \texttt{1}, x.
+      Value after system reset: \texttt{0}, \texttt{1}, or x.
     \item[\texttt{1}]
       Bit is set.
     \item[\texttt{0}]
