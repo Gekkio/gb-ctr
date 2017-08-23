@@ -195,7 +195,7 @@ ignored because those bits are simply not connected to the ROM.
 
 \subsubsection{ROM banking example 1}
 
-Let's assume we have previously written \texttt{\$18} to the BANK1 register and
+Let's assume we have previously written \texttt{\$12} to the BANK1 register and
 \texttt{\$01} to the BANK2 register. The effective bank number during ROM reads
 depends on which address range we read and on the value of the MODE register:
 
@@ -213,7 +213,7 @@ depends on which address range we read and on the value of the MODE register:
   \item[Effective ROM bank number (reading \texttt{\$4000-\$7FFF})]
   {
     \ttfamily
-    \colorbox{red!30}{01}\colorbox{blue!30}{10010} (68 = \$44)
+    \colorbox{red!30}{01}\colorbox{blue!30}{10010} (50 = \$32)
   }
   \item[Effective ROM bank number (reading \texttt{\$0000-\$3FFF}, MODE = 0)]
   {
@@ -223,16 +223,16 @@ depends on which address range we read and on the value of the MODE register:
   \item[Effective ROM bank number (reading \texttt{\$0000-\$3FFF}, MODE = 1)]
   {
     \ttfamily
-    \colorbox{red!30}{01}\colorbox{gray!10}{00000} (64 = \$40)
+    \colorbox{red!30}{01}\colorbox{gray!10}{00000} (32 = \$40)
   }
 \end{description}
 
 \subsubsection{ROM banking example 2}
 
-Let's assume we have previously requested ROM bank number \texttt{68}, MBC1
-mode is \texttt{0}, and we are now reading a byte from \texttt{\$72A7}. The
-actual physical ROM address that will be read is going to be \texttt{\$1132A7}
-and is constructed in the following way:
+Let's assume we have previously requested ROM bank number 68, MBC1 mode is
+\texttt{0}, and we are now reading a byte from \texttt{\$72A7}. The actual
+physical ROM address that will be read is going to be \texttt{\$1132A7} and is
+constructed in the following way:
 
 \begin{description}[leftmargin=15em,style=nextline]
   \item[Value of the BANK1 register]
@@ -296,7 +296,7 @@ is used as the bank number.
 
 \subsubsection{RAM banking example 1}
 
-Let's assume we have previously written \texttt{10} to the BANK2 register, MODE
+Let's assume we have previously written \texttt{\$02} to the BANK2 register, MODE
 is \texttt{1}, RAM\_EN is \texttt{1010} and we are now reading a byte from
 \texttt{\$B123}. The actual physical RAM address that will be read is going to
 be \texttt{\$5123} and is constructed in the following way:
@@ -360,10 +360,11 @@ register value.
 
 \subsubsection{ROM banking example 1}
 
-Let's assume we have previously requested "game number" \texttt{11} and ROM
-bank number \texttt{29}, MBC1 mode is \texttt{1}, and we are now reading a byte
-from \texttt{\$6C15}. The actual physical ROM address that will be read is
-going to be \texttt{\$F6C15} and is constructed in the following way:
+Let's assume we have previously requested "game number" 3 (binary \texttt{11})
+and ROM bank number 29 (hex \texttt{\$1D}), MBC1 mode is \texttt{1}, and we are
+now reading a byte from \texttt{\$6C15}. The actual physical ROM address that
+will be read is going to be \texttt{\$F6C15} and is constructed in the
+following way:
 
 \begin{description}[leftmargin=15em,style=nextline]
   \item[Value of the BANK1 register]
