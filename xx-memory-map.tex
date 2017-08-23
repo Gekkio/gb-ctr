@@ -16,7 +16,7 @@
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \$FF00~P1 & \unmappedbit & \unmappedbit & P15 {\scriptsize buttons} & P14 {\scriptsize d-pad} & P13 {\scriptsize \faArrowCircleDown~start} & P12 {\scriptsize \faArrowCircleUp~select} & P11 {\scriptsize \faArrowCircleLeft~B} & P10 {\scriptsize \faArrowCircleRight~A} \\
       \$FF01~SB & \multicolumn{8}{c|}{SB<7:0>} \\
-      \$FF02~SC & SC\_EN & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \gbcbit SC\_FAST & SC\_CLK \\
+      \$FF02~SC & SIO\_EN & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \gbcbit SIO\_FAST & SIO\_CLK \\
       \$FF03 & \unmappedbyte \\
       \$FF04~DIV & \multicolumn{8}{c|}{DIVH<7:0>} \\
       \$FF05~TIMA & \multicolumn{8}{c|}{TIMA<7:0>} \\
@@ -106,8 +106,8 @@
     \begin{tabu} to \linewidth {|X[l]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
       \rowfont{\small}
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
-      \$FF40~LCDC & LCDC\_EN & LCDC\_WMAP & LCDC\_WEN & LCDC\_TILE & LCDC\_BGMAP & LCDC\_OBJSIZE & LCDC\_OBJEN & LCDC\_BGEN \\
-      \$FF41~STAT & \cellcolor{LightGray} & STAT\_INTLYC & STAT\_INTM2 & STAT\_INTM1 & STAT\_INTM0 & STAT\_LYC & \multicolumn{2}{c|}{STAT\_MODE<1:0>} \\
+      \$FF40~LCDC & LCD\_EN & WIN\_MAP & WIN\_EN & TILE\_SEL & BG\_MAP & OBJ\_SIZE & OBJ\_EN & BG\_EN \\
+      \$FF41~STAT & \cellcolor{LightGray} & INTR\_LYC & INTR\_M2 & INTR\_M1 & INTR\_M0 & LYC\_STAT & \multicolumn{2}{c|}{LCD\_MODE<1:0>} \\
       \$FF42~SCY & & & & & & & & \\
       \$FF43~SCX & & & & & & & & \\
       \$FF44~LY & & & & & & & & \\
