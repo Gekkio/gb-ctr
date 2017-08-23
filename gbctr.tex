@@ -119,10 +119,10 @@
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
       \everyrow{\hline}
       \hline
-      R/W-0    & R/W-1      & U-1     & R/W-0      & R/W-0       & R/W-0         & R/W-0       & R/W-0      \\
-      \multicolumn2{|c|}{VALUE<1:0>} & \cellcolor{LightGray} - & & & & & \\
+      R/W-0                          & R/W-1                   & U-1                             & R-0  & R-1                      & R-x & W-1 & U-0   \\
+      \multicolumn2{|c|}{VALUE<1:0>} & \cellcolor{LightGray} - & \multicolumn3{|c|}{BIGVAL<7:5>} & FLAG & \cellcolor{LightGray} - \\
       \rowfont{\rmfamily\small}
-      bit 7    & 6          & 5         & 4          & 3           & 2             & 1           & bit 0      \\
+      bit 7                          & 6                       & 5                               & 4    & 3                        & 2   & 1   & bit 0 \\
       \hline
     \end{tabu}
   }
@@ -138,7 +138,7 @@
       Unimplemented bit. Writing has no effect, and reading returns a constant
       value defined in the bit list of the register in question.
     \item[-n]
-      Value after reset: \texttt{0}, \texttt{1}, x.
+      Value after system reset: \texttt{0}, \texttt{1}, x.
     \item[\texttt{1}]
       Bit is set.
     \item[\texttt{0}]
@@ -153,13 +153,23 @@
     \begin{tabu} to 0.5\textwidth {|X[l]|X[c]|}
       \everyrow{\hline}
       \hline
-      VALUE & \rmfamily A single-bit value \\
       VALUE<1:0> & \rmfamily Bits 1 and 0 of VALUE \\
-      VALUE<7:4> & \rmfamily Bits 7, 6, 5, 4 of VALUE \\
       \cellcolor{LightGray} - & \rmfamily Unimplemented bit \\
+      BIGVAL<7:5> & \rmfamily Bits 7, 6, 5 of BIGVAL \\
+      FLAG & \rmfamily Single-bit value FLAG \\
       \hline
     \end{tabu}
   }
+
+  \vspace{3mm}
+  \textbf{In this example:}
+  \begin{itemize}
+    \item{After system reset, VALUE is \texttt{01}, BIGVAL is either \texttt{010} or \texttt{011}, FLAG is \texttt{1}.}
+    \item{Bits 5 and 0 are unimplemented. Bit 5 always returns \texttt{1}, and bit 0 always returns \texttt{0}.}
+    \item{Both bits of VALUE can be read and written. When this register is written, bit 7 of the written value goes to bit 1 of VALUE.}
+    \item{FLAG can only be written to, so reads return a value that is defined elsewhere.}
+    \item{BIGVAL cannot be written to. Only bits 5-7 of BIGVAL are defined here, so look elsewhere for the low bits 0-4.}
+  \end{itemize}
 \end{register}
 
 \part{Game Boy CPU and the Sharp LR35902 instruction set}
