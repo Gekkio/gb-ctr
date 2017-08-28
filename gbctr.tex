@@ -84,6 +84,11 @@
 \newfloat{register}{h}{lor}[chapter]
 \floatname{register}{Register}
 
+\newcommand{\bit}[1]{\texttt{#1}}
+\newcommand{\bin}[1]{\texttt{0b#1}}
+\newcommand{\hex}[1]{\texttt{0x#1}}
+\newcommand{\hexrange}[2]{\texttt{0x#1-0x#2}}
+
 \begin{document}
 
 \hypersetup{pageanchor=false}
@@ -112,8 +117,29 @@
   This explains some caveat about this documentation that you should know.
 \end{caveat}
 
+\section{Formatting of numbers}
+
+When a single bit is discussed in isolation, the value looks like this: \bit{0}, \bit{1}.
+
+Binary numbers are prefixed with \bin{} like this: \bin{0101101}, \bin{11011}, \bin{00000000}. Values are prefixed with zeroes when necessary, so the total number of digits always matches the number of digits in the value.
+
+Hexadecimal numbers are prefixed with \hex{} like this: \hex{1234}, \hex{DEADBEEF}, \hex{FF04}. Values are prefixed with zeroes when necessary, so the total number of characters always matches the number of nibbles in the value.
+
+Examples:
+
+\vspace{0.5cm}
+
+\begin{tabular}{l l l l}
+              & 4-bit      & 8-bit          & 16-bit     \\
+  \hline
+  Binary      & \bin{0101} & \bin{10100101} & \bin{0000101010100101} \\
+  Hexadecimal & \hex{5}    & \hex{A5}       & \hex{0AA5} \\
+\end{tabular}
+
+\section{Register definitions}
+
 \begin{register}[H]
-  \caption{\texttt{\$1234} - This is a hardware register definition}
+  \caption{\hex{1234} - This is a hardware register definition}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -138,10 +164,10 @@
       Unimplemented bit. Writing has no effect, and reading returns a constant
       value defined in the bit list of the register in question.
     \item[-n]
-      Value after system reset: \texttt{0}, \texttt{1}, or x.
-    \item[\texttt{1}]
+      Value after system reset: \bit{0}, \bit{1}, or x.
+    \item[\bit{1}]
       Bit is set.
-    \item[\texttt{0}]
+    \item[\bit{0}]
       Bit is cleared.
     \item[x]
       Bit is unknown (e.g. depends on external things such as user input).
@@ -164,8 +190,8 @@
   \vspace{3mm}
   \textbf{In this example:}
   \begin{itemize}
-    \item{After system reset, VALUE is \texttt{01}, BIGVAL is either \texttt{010} or \texttt{011}, FLAG is \texttt{1}.}
-    \item{Bits 5 and 0 are unimplemented. Bit 5 always returns \texttt{1}, and bit 0 always returns \texttt{0}.}
+    \item{After system reset, VALUE is \bin{01}, BIGVAL is either \bin{010} or \bin{011}, FLAG is \bin{1}.}
+    \item{Bits 5 and 0 are unimplemented. Bit 5 always returns \bit{1}, and bit 0 always returns \bit{0}.}
     \item{Both bits of VALUE can be read and written. When this register is written, bit 7 of the written value goes to bit 1 of VALUE.}
     \item{FLAG can only be written to, so reads return a value that is defined elsewhere.}
     \item{BIGVAL cannot be written to. Only bits 5-7 of BIGVAL are defined here, so look elsewhere for the low bits 0-4.}
@@ -179,7 +205,7 @@
 \chapter{PPU (Picture Processing Unit)}
 
 \begin{register}[H]
-  \caption{\texttt{\$FF40} - LCDC - PPU control register}
+  \caption{\hex{FF40} - LCDC - PPU control register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -195,7 +221,7 @@
 \end{register}
 
 \begin{register}[H]
-  \caption{\texttt{\$FF41} - LCDC - PPU status register}
+  \caption{\hex{FF41} - LCDC - PPU status register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -211,7 +237,7 @@
 \end{register}
 
 \begin{register}[H]
-  \caption{\texttt{\$FF42} - SCY - Vertical scroll register}
+  \caption{\hex{FF42} - SCY - Vertical scroll register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -227,7 +253,7 @@
 \end{register}
 
 \begin{register}[H]
-  \caption{\texttt{\$FF43} - SCX - Horizontal scroll register}
+  \caption{\hex{FF43} - SCX - Horizontal scroll register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -243,7 +269,7 @@
 \end{register}
 
 \begin{register}[H]
-  \caption{\texttt{\$FF43} - LY - Scanline register}
+  \caption{\hex{FF43} - LY - Scanline register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -259,7 +285,7 @@
 \end{register}
 
 \begin{register}[H]
-  \caption{\texttt{\$FF44} - LYC - Scanline compare register}
+  \caption{\hex{FF44} - LYC - Scanline compare register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -277,7 +303,7 @@
 \chapter{Port 1 (Joypad, Super Game Boy communication)}
 
 \begin{register}[H]
-  \caption{\texttt{\$FF00} - P1 - Joypad/Super Game Boy communication register}
+  \caption{\hex{FF00} - P1 - Joypad/Super Game Boy communication register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -293,7 +319,7 @@
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-6]
-      \textbf{Unimplemented}: Read as \texttt{1}
+      \textbf{Unimplemented}: Read as \bit{1}
     \item[bit 5]
       \textbf{P15}:
     \item[bit 4]
@@ -312,7 +338,7 @@
 \chapter{Serial communication}
 
 \begin{register}[H]
-  \caption{\texttt{\$FF01} - SB - Serial data register}
+  \caption{\hex{FF01} - SB - Serial data register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -333,7 +359,7 @@
 \end{register}
 
 \begin{register}[H]
-  \caption{\texttt{\$FF02} - SC - Serial control register}
+  \caption{\hex{FF02} - SC - Serial control register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -351,7 +377,7 @@
     \item[bit 7]
       \textbf{SIO\_EN}:
     \item[bit 6-1]
-      \textbf{Unimplemented}: Read as \texttt{1}
+      \textbf{Unimplemented}: Read as \bit{1}
     \item[bit 0]
       \textbf{SIO\_CLK}:
   \end{description}

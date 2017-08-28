@@ -1,8 +1,8 @@
 \chapter{MBC1 mapper chip}
 
 The majority of games for the original Game Boy use the MBC1 chip. MBC1
-supports ROM sizes up to 16 Mbit (128 banks of \texttt{\$4000} bytes) and RAM
-sizes up to 256 Kbit (4 banks of \texttt{\$2000} bytes). The information in
+supports ROM sizes up to 16 Mbit (128 banks of \hex{4000} bytes) and RAM
+sizes up to 256 Kbit (4 banks of \hex{2000} bytes). The information in
 this section is based on my MBC1 research, Tauwasser's research notes
 \cite{tauwasser_mbc1}, and Pan Docs \cite{pandocs}.
 
@@ -22,7 +22,7 @@ All registers are smaller than 8 bits, and unused bits are simply ignored
 during writes. The registers are not directly readable.
 
 \begin{register}[H]
-  \caption{\texttt{\$0000-\$1FFF} - RAM\_EN - MBC1 RAM enable register}
+  \caption{\hexrange{0000}{1FFF} - RAM\_EN - MBC1 RAM enable register}
   {
     \ttfamily
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
@@ -41,30 +41,30 @@ during writes. The registers are not directly readable.
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 3-0]
       \textbf{RAM\_EN<3:0>}: RAM enable register \\
-      \texttt{1010=} enable access to cartridge RAM \\
+      \bin{1010}= enable access to cartridge RAM \\
       All other values disable access to cartridge RAM
   \end{description}
 \end{register}
 
 The RAM\_EN register is used to enable access to the cartridge SRAM if one
 exists on the cartridge circuit board. RAM access is disabled by default but
-can be enabled by writing to the \texttt{\$0000-\$1FFF} address range a value
-with the bit pattern \texttt{1010} in the lower nibble. Upper bits don't
+can be enabled by writing to the \hexrange{0000}{1FFF} address range a value
+with the bit pattern \bin{1010} in the lower nibble. Upper bits don't
 matter, but any other bit pattern in the lower nibble disables access to RAM.
 
 When RAM access is disabled, all writes to the external RAM area
-\texttt{\$A000-\$BFFF} are ignored, and reads return \texttt{\$FF}. Pan Docs
+\hexrange{A000}{BFFF} are ignored, and reads return \hex{FF}. Pan Docs
 recommends disabling RAM when it's not being accessed to protect the contents
 \cite{pandocs}.
 
 \begin{speculation}
   We don't know the physical implementation of RAM\_EN, but it's certainly
-  possible that the \texttt{1010} bit pattern check is done at write time and
+  possible that the \bin{1010} bit pattern check is done at write time and
   the register actually consists of just a single bit.
 \end{speculation}
 
 \begin{register}[H]
-  \caption{\texttt{\$2000-\$3FFF} - BANK1 - MBC1 bank register 1}
+  \caption{\hexrange{2000}{3FFF} - BANK1 - MBC1 bank register 1}
 
   {
     \ttfamily
@@ -84,25 +84,24 @@ recommends disabling RAM when it's not being accessed to protect the contents
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 4-0]
       \textbf{BANK1<4:0>}: Bank register 1 \\
-      Never contains the value \texttt{00000}. \\
-      If \texttt{00000} is written, the resulting value will be \texttt{00001} instead.
+      Never contains the value \bin{00000}. \\
+      If \bin{00000} is written, the resulting value will be \bin{00001} instead.
   \end{description}
 \end{register}
 
 The 5-bit BANK1 register is used as the lower 5 bits of the ROM bank number
-when the CPU accesses the \texttt{\$4000-\$7FFF} memory area.
+when the CPU accesses the \hexrange{4000}{7FFF} memory area.
 
 MBC1 doesn't allow the BANK1 register to contain zero (bit pattern
-\texttt{00000}), so the initial value at reset is \texttt{00001} and attempting
-to write \texttt{00000} will write \texttt{00001} instead. This makes it
-impossible to read banks \texttt{\$00}, \texttt{\$20}, \texttt{\$40} and
-\texttt{\$60} from the \texttt{\$4000-\$7FFF} memory area, because those bank
-numbers have \texttt{00000} in the lower bits. Due to the zero value
-adjustment, requesting any of these banks actually requests the next bank (e.g.
-\texttt{\$21} instead of \texttt{\$20}).
+\bin{00000}), so the initial value at reset is \bin{00001} and attempting to
+write \bin{00000} will write \bin{00001} instead. This makes it impossible to
+read banks \hex{00}, \hex{20}, \hex{40} and \hex{60} from the
+\hexrange{4000}{7FFF} memory area, because those bank numbers have \bin{00000}
+in the lower bits. Due to the zero value adjustment, requesting any of these
+banks actually requests the next bank (e.g.  \hex{21} instead of \hex{20}).
 
 \begin{register}[H]
-  \caption{\texttt{\$4000-\$5FFF} - BANK2 - MBC1 bank register 2}
+  \caption{\hexrange{4000}{5FFF} - BANK2 - MBC1 bank register 2}
 
   \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
     \everyrow{\hline}
@@ -127,7 +126,7 @@ or as the 2-bit RAM bank number. Unlike BANK1, BANK2 doesn't disallow zero, so
 all 2-bit values are possible.
 
 \begin{register}
-  \caption{\texttt{\$6000-\$7FFF} - MODE - MBC1 mode register}
+  \caption{\hexrange{6000}{7FFF} - MODE - MBC1 mode register}
 
   \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
     \everyrow{\hline}
@@ -144,31 +143,31 @@ all 2-bit values are possible.
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 0]
       \textbf{MODE}: Mode register \\
-      \texttt{1=} BANK2 affects accesses to \texttt{\$0000-\$3FFF}, \texttt{\$4000-\$7FFF}, \texttt{\$A000-\$BFFF} \\
-      \texttt{0=} BANK2 affects only accesses to \texttt{\$4000-\$7FFF} \\
+      \bin{1}= BANK2 affects accesses to \hexrange{0000}{3FFF}, \hexrange{4000}{7FFF}, \hexrange{A000}{BFFF} \\
+      \bin{0}= BANK2 affects only accesses to \hexrange{4000}{7FFF} \\
   \end{description}
 \end{register}
 
 The MODE register determines how the BANK2 register value is used during memory
 accesses.
 
-Most documentation, including Pan Docs \cite{pandocs}, calls value \texttt{0}
-ROM banking mode, and value \texttt{1} RAM banking mode. This terminology
+Most documentation, including Pan Docs \cite{pandocs}, calls value \bin{0}
+ROM banking mode, and value \bin{1} RAM banking mode. This terminology
 reflects the common use cases, but "RAM banking" is slightly misleading because
-value \texttt{1} also affects ROM reads in multicart cartridges and cartridges
+value \bin{1} also affects ROM reads in multicart cartridges and cartridges
 that have a 8 or 16 Mbit ROM chip.
 
-\section{ROM in the \texttt{\$0000-\$7FFF} area}
+\section{ROM in the \hexrange{0000}{7FFF} area}
 
 In MBC1 cartridges, the A0-A13 cartridge bus signals are connected directly to
 the corresponding ROM pins, and the remaining ROM pins (A14-A20) are controlled
 by the MBC1. These remaining pins form the ROM bank number.
 
-When the \texttt{\$0000-\$3FFF} address range is accessed, the effective bank
+When the \hexrange{0000}{3FFF} address range is accessed, the effective bank
 number depends on the MODE register. In MODE 0 the bank number is always 0, but
 in MODE 1 it's formed by shifting the BANK2 register value left by 5 bits.
 
-When the \texttt{\$4000-\$7FFF} addess range is accessed, the effective bank
+When the \hexrange{4000}{7FFF} addess range is accessed, the effective bank
 number is always a combination of BANK1 and BANK2 register values.
 
 If the cartridge ROM is smaller than 16 Mbit, there are less ROM address pins
@@ -185,98 +184,98 @@ ignored because those bits are simply not connected to the ROM.
     \rowfont{\rmfamily}
     & \multicolumn2{c|}{Bank number} & Address within bank \\
     \rowfont{\rmfamily}
-    ROM address bits & 20-19 & 18-14 & 13-0 \\
-    \$0000-\$3FFF, MODE = 0 & 00 & 00000 & A<13:0> \\
-    \$0000-\$3FFF, MODE = 1 & BANK2 & 00000 & A<13:0> \\
-    \$4000-\$7FFF & BANK2 & BANK1 & A<13:0> \\
+    ROM address bits                      & 20-19    & 18-14       & 13-0    \\
+    \hexrange{0000}{3FFF}, MODE = \bin{0} & \bin{00} & \bin{00000} & A<13:0> \\
+    \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2    & \bin{00000} & A<13:0> \\
+    \hexrange{4000}{7FFF}                 & BANK2    & BANK1       & A<13:0> \\
     \hline
   \end{tabu}
 \end{table}
 
 \subsubsection{ROM banking example 1}
 
-Let's assume we have previously written \texttt{\$12} to the BANK1 register and
-\texttt{\$01} to the BANK2 register. The effective bank number during ROM reads
+Let's assume we have previously written \hex{12} to the BANK1 register and
+\bin{01} to the BANK2 register. The effective bank number during ROM reads
 depends on which address range we read and on the value of the MODE register:
 
 \begin{description}[style=nextline]
   \item[Value of the BANK1 register]
   {
     \ttfamily
-    \colorbox{blue!30}{10010}
+    0b\colorbox{blue!30}{10010}
   }
   \item[Value of the BANK2 register]
   {
     \ttfamily
-    \colorbox{red!30}{01}
+    0b\colorbox{red!30}{01}
   }
-  \item[Effective ROM bank number (reading \texttt{\$4000-\$7FFF})]
+  \item[Effective ROM bank number (reading \hexrange{4000}{7FFF})]
   {
     \ttfamily
-    \colorbox{red!30}{01}\colorbox{blue!30}{10010} (50 = \$32)
+    0b\colorbox{red!30}{01}\colorbox{blue!30}{10010} (= 50 = \hex{32})
   }
-  \item[Effective ROM bank number (reading \texttt{\$0000-\$3FFF}, MODE = 0)]
+  \item[Effective ROM bank number (reading \hexrange{0000}-{3FFF}, MODE = \bin{0})]
   {
     \ttfamily
-    \colorbox{gray!10}{00}\colorbox{gray!10}{00000} (0 = \$00)
+    0b\colorbox{gray!10}{00}\colorbox{gray!10}{00000} (= 0 = \hex{00})
   }
-  \item[Effective ROM bank number (reading \texttt{\$0000-\$3FFF}, MODE = 1)]
+  \item[Effective ROM bank number (reading \hexrange{0000}-{3FFF}, MODE = \bin{1})]
   {
     \ttfamily
-    \colorbox{red!30}{01}\colorbox{gray!10}{00000} (32 = \$40)
+    0b\colorbox{red!30}{01}\colorbox{gray!10}{00000} (= 32 = \hex{40})
   }
 \end{description}
 
 \subsubsection{ROM banking example 2}
 
 Let's assume we have previously requested ROM bank number 68, MBC1 mode is
-\texttt{0}, and we are now reading a byte from \texttt{\$72A7}. The actual
-physical ROM address that will be read is going to be \texttt{\$1132A7} and is
+\bin{0}, and we are now reading a byte from \hex{72A7}. The actual
+physical ROM address that will be read is going to be \hex{1132A7} and is
 constructed in the following way:
 
 \begin{description}[leftmargin=15em,style=nextline]
   \item[Value of the BANK1 register]
   {
     \ttfamily
-    \colorbox{blue!30}{00100}
+    0b\colorbox{blue!30}{00100}
   }
   \item[Value of the BANK2 register]
   {
     \ttfamily
-    \colorbox{red!30}{10}
+    0b\colorbox{red!30}{10}
   }
   \item[ROM bank number]
   {
     \ttfamily
-    \colorbox{red!30}{10}\colorbox{blue!30}{00100} (68 = \$44)
+    0b\colorbox{red!30}{10}\colorbox{blue!30}{00100} (= 68 = \hex{44})
   }
   \item[Address being read]
   {
     \ttfamily
-    \colorbox{gray!10}{01}\colorbox{green!30}{11 0010 1010 0111} (\$72A7)
+    0b\colorbox{gray!10}{01}\colorbox{green!30}{11 0010 1010 0111} (= \hex{72A7})
   }
   \item[Actual physical ROM address]
   {
     \ttfamily
-    \colorbox{red!30}{1 0}\colorbox{blue!30}{001 00}\colorbox{green!30}{11 0010 1010 0111} (\$1132A7)
+    0b\colorbox{red!30}{1 0}\colorbox{blue!30}{001 00}\colorbox{green!30}{11 0010 1010 0111} (= \hex{1132A7})
   }
 \end{description}
 
-\section{RAM in the \texttt{\$A000-\$BFFF} area}
+\section{RAM in the \hexrange{A000}{BFFF} area}
 
-Some MBC1 carts include SRAM, which is mapped to the \texttt{\$A000-\$BFFF}
+Some MBC1 carts include SRAM, which is mapped to the \hexrange{A000}{BFFF}
 area. If no RAM is present, or RAM is not enabled with the RAM\_EN register,
-all reads return \texttt{\$FF} and writes have no effect.
+all reads return \hex{FF} and writes have no effect.
 
 On boards that have RAM, the A0-A12 cartridge bus signals are connected
 directly to the corresponding RAM pins, and pins A13-A14 are controlled by the
 MBC1. Most of the time the RAM size is 64 Kbit, which corresponds to a single
-bank of \$2000 bytes. With larger RAM sizes the BANK2 register value can be
+bank of \hex{2000} bytes. With larger RAM sizes the BANK2 register value can be
 used for RAM banking to provide the two high address bits.
 
 In MODE 0 the BANK2 register value is not used, so the first RAM bank is always
-mapped to the \texttt{\$A000-\$BFFF} area. In MODE 1 the BANK2 register value
-is used as the bank number.
+mapped to the \hexrange{A000}{BFFF} area. In MODE 1 the BANK2 register value is
+used as the bank number.
 
 \begin{table}[H]
   \caption{Mapping of physical RAM address bits in MBC1 carts}
@@ -287,35 +286,35 @@ is used as the bank number.
     \rowfont{\rmfamily}
     & Bank number & Address within bank \\
     \rowfont{\rmfamily}
-    RAM address bits & 14-13 & 12-0 \\
-    \$A000-\$BFFF, MODE = 0 & 00 & A<12:0> \\
-    \$A000-\$BFFF, MODE = 1 & BANK2 & A<12:0> \\
+    RAM address bits                      & 14-13    & 12-0    \\
+    \hexrange{A000}{BFFF}, MODE = \bin{0} & \bin{00} & A<12:0> \\
+    \hexrange{A000}{BFFF}, MODE = \bin{1} & BANK2    & A<12:0> \\
     \hline
   \end{tabu}
 \end{table}
 
 \subsubsection{RAM banking example 1}
 
-Let's assume we have previously written \texttt{\$02} to the BANK2 register, MODE
-is \texttt{1}, RAM\_EN is \texttt{1010} and we are now reading a byte from
-\texttt{\$B123}. The actual physical RAM address that will be read is going to
-be \texttt{\$5123} and is constructed in the following way:
+Let's assume we have previously written \bin{10} to the BANK2 register, MODE is
+\bin{1}, RAM\_EN is \bin{1010} and we are now reading a byte from \hex{B123}.
+The actual physical RAM address that will be read is going to be \hex{5123} and
+is constructed in the following way:
 
 \begin{description}[leftmargin=15em,style=nextline]
   \item[Value of the BANK2 register]
   {
     \ttfamily
-    \colorbox{red!30}{10}
+    0b\colorbox{red!30}{10}
   }
   \item[Address being read]
   {
     \ttfamily
-    \colorbox{gray!10}{101}\colorbox{green!30}{1 0001 0010 0011} (\$B123)
+    0b\colorbox{gray!10}{101}\colorbox{green!30}{1 0001 0010 0011} (= \hex{B123})
   }
   \item[Actual physical RAM address]
   {
     \ttfamily
-    \colorbox{red!30}{10}\colorbox{green!30}{1 0001 0010 0011} (\$5123)
+    0b\colorbox{red!30}{10}\colorbox{green!30}{1 0001 0010 0011} (= \hex{5123})
   }
 \end{description}
 
@@ -332,13 +331,13 @@ In MBC1 multicarts bit 4 of the BANK1 register is not physically connected to
 anything, so it's skipped. This means that the bank number is actually a 6-bit
 number. In all known MBC1 multicarts the games reserve 16 banks each, so BANK2
 can actually be considered "game number", while BANK1 is the internal bank
-number within the selected game. At reset BANK2 is \texttt{00}, and the "game"
+number within the selected game. At reset BANK2 is \bin{00}, and the "game"
 in this slot is actually a game selection menu. The menu code selects MODE 1
 and writes the game number to BANK2 once the user selects a game.
 
 From a ROM banking point of view, multicarts simply skip bit 4 of the BANK1
 register, but otherwise the behaviour is the same. MODE 1 guarantees that all
-ROM accesses, including accesses to \texttt{\$0000-\$3FFF}, use the BANK2
+ROM accesses, including accesses to \hexrange{0000}{3FFF}, use the BANK2
 register value.
 
 \begin{table}[H]
@@ -350,47 +349,47 @@ register value.
     \rowfont{\rmfamily}
     & \multicolumn2{c|}{Bank number} & Address within bank \\
     \rowfont{\rmfamily}
-    ROM address bits & 19-18 & 17-14 & 13-0 \\
-    \$0000-\$3FFF, MODE = 0 & 00 & 0000 & A<13:0> \\
-    \$0000-\$3FFF, MODE = 1 & BANK2 & 0000 & A<13:0> \\
-    \$4000-\$7FFF & BANK2 & BANK1<3:0> & A<13:0> \\
+    ROM address bits                      & 19-18    & 17-14      & 13-0    \\
+    \hexrange{0000}{3FFF}, MODE = \bin{0} & \bin{00} & \bin{0000} & A<13:0> \\
+    \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2    & \bin{0000} & A<13:0> \\
+    \hexrange{4000}{7FFF}                 & BANK2    & BANK1<3:0> & A<13:0> \\
     \hline
   \end{tabu}
 \end{table}
 
 \subsubsection{ROM banking example 1}
 
-Let's assume we have previously requested "game number" 3 (binary \texttt{11})
-and ROM bank number 29 (hex \texttt{\$1D}), MBC1 mode is \texttt{1}, and we are
-now reading a byte from \texttt{\$6C15}. The actual physical ROM address that
-will be read is going to be \texttt{\$F6C15} and is constructed in the
+Let's assume we have previously requested "game number" 3 (= \bin{11})
+and ROM bank number 29 (= \hex{1D}), MBC1 mode is \bin{1}, and we are
+now reading a byte from \hex{6C15}. The actual physical ROM address that
+will be read is going to be \hex{F6C15} and is constructed in the
 following way:
 
 \begin{description}[leftmargin=15em,style=nextline]
   \item[Value of the BANK1 register]
   {
     \ttfamily
-    \colorbox{gray!10}{1}\colorbox{blue!30}{1101}
+    0b\colorbox{gray!10}{1}\colorbox{blue!30}{1101}
   }
   \item[Value of the BANK2 register]
   {
     \ttfamily
-    \colorbox{red!30}{11}
+    0b\colorbox{red!30}{11}
   }
   \item[ROM bank number]
   {
     \ttfamily
-    \colorbox{red!30}{11}\colorbox{blue!30}{1101} (61 = \$3D)
+    0b\colorbox{red!30}{11}\colorbox{blue!30}{1101} (= 61 = \hex{3D})
   }
   \item[Address being read]
   {
     \ttfamily
-    \colorbox{gray!10}{01}\colorbox{green!30}{10 1100 0001 0101} (\$6C15)
+    0b\colorbox{gray!10}{01}\colorbox{green!30}{10 1100 0001 0101} (= \hex{6C15})
   }
   \item[Actual physical ROM address]
   {
     \ttfamily
-    \colorbox{red!30}{11}\colorbox{blue!30}{11 01}\colorbox{green!30}{10 1100 0001 0101} (\$F6C15)
+    0b\colorbox{red!30}{11}\colorbox{blue!30}{11 01}\colorbox{green!30}{10 1100 0001 0101} (= \hex{F6C15})
   }
 \end{description}
 
@@ -405,12 +404,12 @@ One example of a good heuristic is logo data verification.
 
 So, if you have a 8 Mbit cart with MBC1, first assume that it's a multicart and
 bank numbers are 6-bit values. Set BANK1 to zero and loop through the four
-possible BANK2 values while checking the data at \texttt{\$0104-\$0133}.  In
-other words, check logo data starting from physical ROM locations
-\texttt{\$00104}, \texttt{\$40104}, \texttt{\$80104}, and \texttt{\$C0104}.  If
-proper logo data exists with most of the BANK2 values, the cart is most likely
-a multicart. Note that multicarts can just have two actual games, so one of the
-locations might not have the header data in place.
+possible BANK2 values while checking the data at \hexrange{0104}{0133}. In
+other words, check logo data starting from physical ROM locations \hex{00104},
+\hex{40104}, \hex{80104}, and \hex{C0104}. If proper logo data exists with most
+of the BANK2 values, the cart is most likely a multicart. Note that multicarts
+can just have two actual games, so one of the locations might not have the
+header data in place.
 
 \section{Dumping MBC1 carts}
 
@@ -419,10 +418,10 @@ total number of banks is read from the header, and each bank is read one byte
 at a time. However, BANK1 register zero-adjustment and multicart cartridges
 need to be considered in ROM dumping code.
 
-Banks \texttt{\$20}, \texttt{\$40} and \texttt{\$60} can only be read from the
-\texttt{\$0000-\$3FFF} memory area and only when MODE register value is
-\texttt{1}. Using MODE 1 has no undesirable effects when doing ROM dumping, so
-using it at all times is recommended for simplicity.
+Banks \hex{20}, \hex{40} and \hex{60} can only be read from the
+\hexrange{0000}{3FFF} memory area and only when MODE register value is \bin{1}.
+Using MODE 1 has no undesirable effects when doing ROM dumping, so using it at
+all times is recommended for simplicity.
 
 Multicarts should be detected using the logo check described earlier, and if a
 multicart is detected, BANK1 should be considered a 4-bit register in the

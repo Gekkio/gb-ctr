@@ -9,43 +9,43 @@
 \begin{table}
   \begin{center}
     \everyrow{\hline}
-    \caption{\$FFxx registers: \$FF00-\$FF1F}
+    \caption{\hex{FFxx} registers: \hexrange{FF00}{FF1F}}
     \ttfamily
     \begin{tabu} to \linewidth {|X[l]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
       \rowfont{\small}
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
-      \$FF00~P1 & \unmappedbit & \unmappedbit & P15 {\scriptsize buttons} & P14 {\scriptsize d-pad} & P13 {\scriptsize \faArrowCircleDown~start} & P12 {\scriptsize \faArrowCircleUp~select} & P11 {\scriptsize \faArrowCircleLeft~B} & P10 {\scriptsize \faArrowCircleRight~A} \\
-      \$FF01~SB & \multicolumn{8}{c|}{SB<7:0>} \\
-      \$FF02~SC & SIO\_EN & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \gbcbit SIO\_FAST & SIO\_CLK \\
-      \$FF03 & \unmappedbyte \\
-      \$FF04~DIV & \multicolumn{8}{c|}{DIVH<7:0>} \\
-      \$FF05~TIMA & \multicolumn{8}{c|}{TIMA<7:0>} \\
-      \$FF06~TMA & \multicolumn{8}{c|}{TMA<7:0>} \\
-      \$FF07~TAC & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & TAC\_EN & \multicolumn{2}{c|}{TAC\_CLK<1:0>} \\
-      \$FF08 & \unmappedbyte \\
-      \$FF09 & \unmappedbyte \\
-      \$FF0A & \unmappedbyte \\
-      \$FF0B & \unmappedbyte \\
-      \$FF0C & \unmappedbyte \\
-      \$FF0D & \unmappedbyte \\
-      \$FF0E & \unmappedbyte \\
-      \$FF0F~IF & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & IF\_JOYPAD & IF\_SERIAL & IF\_TIMER & IF\_STAT & IF\_VBLANK \\
-      \$FF10~NR10 & & & & & & & & \\
-      \$FF11~NR11 & & & & & & & & \\
-      \$FF12~NR12 & & & & & & & & \\
-      \$FF13~NR13 & & & & & & & & \\
-      \$FF14~NR14 & & & & & & & & \\
-      \$FF15 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF16~NR21 & & & & & & & & \\
-      \$FF17~NR22 & & & & & & & & \\
-      \$FF18~NR23 & & & & & & & & \\
-      \$FF19~NR24 & & & & & & & & \\
-      \$FF1A~NR30 & & & & & & & & \\
-      \$FF1B~NR31 & & & & & & & & \\
-      \$FF1C~NR32 & & & & & & & & \\
-      \$FF1D~NR33 & & & & & & & & \\
-      \$FF1E~NR34 & & & & & & & & \\
-      \$FF1F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF00~P1 & \unmappedbit & \unmappedbit & P15 {\scriptsize buttons} & P14 {\scriptsize d-pad} & P13 {\scriptsize \faArrowCircleDown~start} & P12 {\scriptsize \faArrowCircleUp~select} & P11 {\scriptsize \faArrowCircleLeft~B} & P10 {\scriptsize \faArrowCircleRight~A} \\
+      0xFF01~SB & \multicolumn{8}{c|}{SB<7:0>} \\
+      0xFF02~SC & SIO\_EN & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \gbcbit SIO\_FAST & SIO\_CLK \\
+      0xFF03 & \unmappedbyte \\
+      0xFF04~DIV & \multicolumn{8}{c|}{DIVH<7:0>} \\
+      0xFF05~TIMA & \multicolumn{8}{c|}{TIMA<7:0>} \\
+      0xFF06~TMA & \multicolumn{8}{c|}{TMA<7:0>} \\
+      0xFF07~TAC & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & TAC\_EN & \multicolumn{2}{c|}{TAC\_CLK<1:0>} \\
+      0xFF08 & \unmappedbyte \\
+      0xFF09 & \unmappedbyte \\
+      0xFF0A & \unmappedbyte \\
+      0xFF0B & \unmappedbyte \\
+      0xFF0C & \unmappedbyte \\
+      0xFF0D & \unmappedbyte \\
+      0xFF0E & \unmappedbyte \\
+      0xFF0F~IF & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & IF\_JOYPAD & IF\_SERIAL & IF\_TIMER & IF\_STAT & IF\_VBLANK \\
+      0xFF10~NR10 & & & & & & & & \\
+      0xFF11~NR11 & & & & & & & & \\
+      0xFF12~NR12 & & & & & & & & \\
+      0xFF13~NR13 & & & & & & & & \\
+      0xFF14~NR14 & & & & & & & & \\
+      0xFF15 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF16~NR21 & & & & & & & & \\
+      0xFF17~NR22 & & & & & & & & \\
+      0xFF18~NR23 & & & & & & & & \\
+      0xFF19~NR24 & & & & & & & & \\
+      0xFF1A~NR30 & & & & & & & & \\
+      0xFF1B~NR31 & & & & & & & & \\
+      0xFF1C~NR32 & & & & & & & & \\
+      0xFF1D~NR33 & & & & & & & & \\
+      0xFF1E~NR34 & & & & & & & & \\
+      0xFF1F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
       \rowfont{\small}
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
     \end{tabu}
@@ -55,43 +55,43 @@
 \begin{table}
   \begin{center}
     \everyrow{\hline}
-    \caption{\$FFxx registers: \$FF20-\$FF3F}
+    \caption{\hex{FFxx} registers: \hexrange{FF20}{FF3F}}
     \ttfamily
     \begin{tabu} to \linewidth {|X[l]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
       \rowfont{\small}
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
-      \$FF20~NR41 & & & & & & & & \\
-      \$FF21~NR42 & & & & & & & & \\
-      \$FF22~NR43 & & & & & & & & \\
-      \$FF23~NR44 & & & & & & & & \\
-      \$FF24~NR50 & & & & & & & & \\
-      \$FF25~NR51 & & & & & & & & \\
-      \$FF26~NR52 & & & & & & & & \\
-      \$FF27 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF28 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF29 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF2A & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF2B & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF2C & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF2D & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF2E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF2F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF30~WAVE00 & & & & & & & & \\
-      \$FF31~WAVE01 & & & & & & & & \\
-      \$FF32~WAVE02 & & & & & & & & \\
-      \$FF33~WAVE03 & & & & & & & & \\
-      \$FF34~WAVE04 & & & & & & & & \\
-      \$FF35~WAVE05 & & & & & & & & \\
-      \$FF36~WAVE06 & & & & & & & & \\
-      \$FF37~WAVE07 & & & & & & & & \\
-      \$FF38~WAVE08 & & & & & & & & \\
-      \$FF39~WAVE09 & & & & & & & & \\
-      \$FF3A~WAVE10 & & & & & & & & \\
-      \$FF3B~WAVE11 & & & & & & & & \\
-      \$FF3C~WAVE12 & & & & & & & & \\
-      \$FF3D~WAVE13 & & & & & & & & \\
-      \$FF3E~WAVE14 & & & & & & & & \\
-      \$FF3F~WAVE15 & & & & & & & & \\
+      0xFF20~NR41 & & & & & & & & \\
+      0xFF21~NR42 & & & & & & & & \\
+      0xFF22~NR43 & & & & & & & & \\
+      0xFF23~NR44 & & & & & & & & \\
+      0xFF24~NR50 & & & & & & & & \\
+      0xFF25~NR51 & & & & & & & & \\
+      0xFF26~NR52 & & & & & & & & \\
+      0xFF27 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF28 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF29 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF2A & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF2B & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF2C & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF2D & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF2E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF2F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF30~WAV00 & & & & & & & & \\
+      0xFF31~WAV01 & & & & & & & & \\
+      0xFF32~WAV02 & & & & & & & & \\
+      0xFF33~WAV03 & & & & & & & & \\
+      0xFF34~WAV04 & & & & & & & & \\
+      0xFF35~WAV05 & & & & & & & & \\
+      0xFF36~WAV06 & & & & & & & & \\
+      0xFF37~WAV07 & & & & & & & & \\
+      0xFF38~WAV08 & & & & & & & & \\
+      0xFF39~WAV09 & & & & & & & & \\
+      0xFF3A~WAV10 & & & & & & & & \\
+      0xFF3B~WAV11 & & & & & & & & \\
+      0xFF3C~WAV12 & & & & & & & & \\
+      0xFF3D~WAV13 & & & & & & & & \\
+      0xFF3E~WAV14 & & & & & & & & \\
+      0xFF3F~WAV15 & & & & & & & & \\
       \rowfont{\small}
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
     \end{tabu}
@@ -101,43 +101,43 @@
 \begin{table}
   \begin{center}
     \everyrow{\hline}
-    \caption{\$FFxx registers: \$FF40-\$FF5F}
+    \caption{\hex{FFxx} registers: \hexrange{FF40}{FF5F}}
     \ttfamily
     \begin{tabu} to \linewidth {|X[l]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
       \rowfont{\small}
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
-      \$FF40~LCDC & LCD\_EN & WIN\_MAP & WIN\_EN & TILE\_SEL & BG\_MAP & OBJ\_SIZE & OBJ\_EN & BG\_EN \\
-      \$FF41~STAT & \cellcolor{LightGray} & INTR\_LYC & INTR\_M2 & INTR\_M1 & INTR\_M0 & LYC\_STAT & \multicolumn{2}{c|}{LCD\_MODE<1:0>} \\
-      \$FF42~SCY & & & & & & & & \\
-      \$FF43~SCX & & & & & & & & \\
-      \$FF44~LY & & & & & & & & \\
-      \$FF45~LYC & & & & & & & & \\
-      \$FF46~DMA & & & & & & & & \\
-      \$FF47~BGP & & & & & & & & \\
-      \$FF48~OBP0 & & & & & & & & \\
-      \$FF49~OBP1 & & & & & & & & \\
-      \$FF4A~WY & & & & & & & & \\
-      \$FF4B~WX & & & & & & & & \\
-      \$FF4C~???? & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \gbcbit \$FF4D~KEY1 & \gbcbit KEY1\_FAST & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \gbcbit KEY1\_EN \\
-      \$FF4E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \gbcbit \$FF4F~VBK & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \multicolumn{2}{c|}{\gbcbit VBK<1:0>} \\
-      \$FF50~BOOT & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & BOOT\_LOCK \\
-      \$FF51~HDMA1 & & & & & & & & \\
-      \$FF52~HDMA2 & & & & & & & & \\
-      \$FF53~HDMA3 & & & & & & & & \\
-      \$FF54~HDMA4 & & & & & & & & \\
-      \$FF55~HDMA5 & & & & & & & & \\
-      \$FF56~RP & & & & & & & & \\
-      \$FF57 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF58 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF59 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF5A & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF5B & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF5C & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF5D & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF5E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF5F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF40~LCDC & LCD\_EN & WIN\_MAP & WIN\_EN & TILE\_SEL & BG\_MAP & OBJ\_SIZE & OBJ\_EN & BG\_EN \\
+      0xFF41~STAT & \cellcolor{LightGray} & INTR\_LYC & INTR\_M2 & INTR\_M1 & INTR\_M0 & LYC\_STAT & \multicolumn{2}{c|}{LCD\_MODE<1:0>} \\
+      0xFF42~SCY & & & & & & & & \\
+      0xFF43~SCX & & & & & & & & \\
+      0xFF44~LY & & & & & & & & \\
+      0xFF45~LYC & & & & & & & & \\
+      0xFF46~DMA & & & & & & & & \\
+      0xFF47~BGP & & & & & & & & \\
+      0xFF48~OBP0 & & & & & & & & \\
+      0xFF49~OBP1 & & & & & & & & \\
+      0xFF4A~WY & & & & & & & & \\
+      0xFF4B~WX & & & & & & & & \\
+      0xFF4C~???? & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      \gbcbit 0xFF4D~KEY1 & \gbcbit KEY1\_FAST & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \gbcbit KEY1\_EN \\
+      0xFF4E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      \gbcbit 0xFF4F~VBK & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \multicolumn{2}{c|}{\gbcbit VBK<1:0>} \\
+      0xFF50~BOOT & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & BOOT\_LOCK \\
+      0xFF51~HDMA1 & & & & & & & & \\
+      0xFF52~HDMA2 & & & & & & & & \\
+      0xFF53~HDMA3 & & & & & & & & \\
+      0xFF54~HDMA4 & & & & & & & & \\
+      0xFF55~HDMA5 & & & & & & & & \\
+      0xFF56~RP & & & & & & & & \\
+      0xFF57 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF58 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF59 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF5A & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF5B & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF5C & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF5D & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF5E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF5F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
       \rowfont{\small}
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
     \end{tabu}
@@ -147,44 +147,44 @@
 \begin{table}
   \begin{center}
     \everyrow{\hline}
-    \caption{\$FFxx registers: \$FF60-\$FF7F, \$FFFF}
+    \caption{\hex{FFxx} registers: \hexrange{FF60}{FF7F}, \hex{FFFF}}
     \ttfamily
     \begin{tabu} to \linewidth {|X[l]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
       \rowfont{\small}
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
-      \$FF60 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF61 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF62 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF63 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF64 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF65 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF66 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF67 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \gbcbit \$FF68~BCPS & & & & & & & & \\
-      \gbcbit \$FF69~BCPD & & & & & & & & \\
-      \gbcbit \$FF6A~OCPS & & & & & & & & \\
-      \gbcbit \$FF6B~OCPD & & & & & & & & \\
-      \$FF6C~???? & \multicolumn{8}{c|}{} \\
-      \$FF6D & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF6E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF6F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \gbcbit \$FF70~SVBK & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \multicolumn{2}{c|}{\gbcbit SVBK<1:0>}\\
-      \$FF71 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF72~???? & \multicolumn{8}{c|}{} \\
-      \$FF73~???? & \multicolumn{8}{c|}{} \\
-      \$FF74~???? & \multicolumn{8}{c|}{} \\
-      \$FF75~???? & \multicolumn{8}{c|}{} \\
-      \gbcbit \$FF76~PCM12 & \multicolumn{4}{c|}{\gbcbit PCM12\_CH2} & \multicolumn{4}{c|}{\gbcbit PCM12\_CH1} \\
-      \gbcbit \$FF77~PCM34 & \multicolumn{4}{c|}{\gbcbit PCM34\_CH4} & \multicolumn{4}{c|}{\gbcbit PCM34\_CH3} \\
-      \$FF78 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF79 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF7A & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF7B & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF7C & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF7D & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF7E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FF7F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
-      \$FFFF~IE & \multicolumn{3}{c|}{IE\_UNUSED<2:0>} & IE\_JOYPAD & IE\_SERIAL & IE\_TIMER & IE\_STAT & IE\_VBLANK \\
+      0xFF60 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF61 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF62 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF63 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF64 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF65 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF66 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF67 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      \gbcbit 0xFF68~BCPS & & & & & & & & \\
+      \gbcbit 0xFF69~BCPD & & & & & & & & \\
+      \gbcbit 0xFF6A~OCPS & & & & & & & & \\
+      \gbcbit 0xFF6B~OCPD & & & & & & & & \\
+      0xFF6C~???? & \multicolumn{8}{c|}{} \\
+      0xFF6D & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF6E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF6F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      \gbcbit 0xFF70~SVBK & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \unmappedbit & \multicolumn{2}{c|}{\gbcbit SVBK<1:0>}\\
+      0xFF71 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF72~???? & \multicolumn{8}{c|}{} \\
+      0xFF73~???? & \multicolumn{8}{c|}{} \\
+      0xFF74~???? & \multicolumn{8}{c|}{} \\
+      0xFF75~???? & \multicolumn{8}{c|}{} \\
+      \gbcbit 0xFF76~PCM12 & \multicolumn{4}{c|}{\gbcbit PCM12\_CH2} & \multicolumn{4}{c|}{\gbcbit PCM12\_CH1} \\
+      \gbcbit 0xFF77~PCM34 & \multicolumn{4}{c|}{\gbcbit PCM34\_CH4} & \multicolumn{4}{c|}{\gbcbit PCM34\_CH3} \\
+      0xFF78 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF79 & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF7A & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF7B & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF7C & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF7D & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF7E & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFF7F & \multicolumn{8}{c|}{\cellcolor{LightGray}} \\
+      0xFFFF~IE & \multicolumn{3}{c|}{IE\_UNUSED<2:0>} & IE\_JOYPAD & IE\_SERIAL & IE\_TIMER & IE\_STAT & IE\_VBLANK \\
       \rowfont{\small}
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
     \end{tabu}
