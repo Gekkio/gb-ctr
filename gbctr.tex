@@ -202,6 +202,31 @@ Examples:
 
 \part{Game Boy CPU peripherals}
 
+\chapter{Boot ROM}
+
+\begin{register}[H]
+  \caption{\hex{FF50} - BOOT - Boot ROM lock register}
+  {
+    \ttfamily
+    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
+      \everyrow{\hline}
+      \hline
+      U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & R/W-0     \\
+      \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & BOOT\_OFF \\
+      \rowfont{\rmfamily\small}
+      bit 7                   & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0     \\
+      \hline
+    \end{tabu}
+  }
+
+  \begin{description}[leftmargin=5em, style=nextline]
+    \item[bit 7-1]
+      \textbf{Unimplemented}: Read as \bit{1}
+    \item[bit 0]
+      \textbf{BOOT\_OFF}: Boot ROM lock bit \\
+  \end{description}
+\end{register}
+
 \chapter{PPU (Picture Processing Unit)}
 
 \begin{register}[H]
@@ -211,10 +236,10 @@ Examples:
     \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
       \everyrow{\hline}
       \hline
-      R/W-0    & R/W-0      & R/W-0     & R/W-0      & R/W-0       & R/W-0         & R/W-0       & R/W-0      \\
+      R/W-0   & R/W-0    & R/W-0   & R/W-0     & R/W-0   & R/W-0     & R/W-0   & R/W-0  \\
       LCD\_EN & WIN\_MAP & WIN\_EN & TILE\_SEL & BG\_MAP & OBJ\_SIZE & OBJ\_EN & BG\_EN \\
       \rowfont{\rmfamily\small}
-      bit 7    & 6          & 5         & 4          & 3           & 2             & 1           & bit 0      \\
+      bit 7   & 6        & 5       & 4         & 3       & 2         & 1       & bit 0  \\
       \hline
     \end{tabu}
   }
