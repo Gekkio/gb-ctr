@@ -1,0 +1,76 @@
+\chapter{Game Boy external bus}
+
+\section{Bus timings}
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{0.4\textwidth}
+    \begin{tikztimingtable}
+      CLK 4MHz & L 4{C} N(E4) 2{C} N(E6) 3{C} \\
+      PHI 1MHz & L 4C 4C C                    \\
+      A0-A14   & X U 7D{addr} U               \\
+      RD       & X 9L                         \\
+      WR       & X 9H                         \\
+      A15      & X 2H 6T T                    \\
+      CS       & X 9H                         \\
+      Data     & X 2Z 6D{data} Z              \\
+      \extracode
+      \begin{pgfonlayer}{background}
+        \vertlines[help lines, dashed]{1, 9}
+      \end{pgfonlayer}
+    \end{tikztimingtable}
+    \caption{\hexrange{0000}{7FFF}}
+  \end{subfigure}
+  \begin{subfigure}{0.4\textwidth}
+    \begin{tikztimingtable}
+      CLK 4MHz & L 4{C} N(E4) 2{C} N(E6) 3{C} \\
+      PHI 1MHz & L 4C 4C C                    \\
+      A0-A14   & X 9U                         \\
+      RD       & X 9L                         \\
+      WR       & X 9H                         \\
+      A15      & X 9H                         \\
+      CS       & X 9H                         \\
+      Data     & X 9Z                         \\
+      \extracode
+      \begin{pgfonlayer}{background}
+        \vertlines[help lines, dashed]{1, 9}
+      \end{pgfonlayer}
+    \end{tikztimingtable}
+    \caption{\hexrange{8000}{9FFF}}
+  \end{subfigure}
+  \begin{subfigure}{0.4\textwidth}
+    \begin{tikztimingtable}
+      CLK 4MHz & L 4{C} N(E4) 2{C} N(E6) 3{C} \\
+      PHI 1MHz & L 4C 4C C                    \\
+      A0-A14   & X U 7D{addr} U               \\
+      RD       & X 9L                         \\
+      WR       & X 9H                         \\
+      A15      & X 9H                         \\
+      CS       & X 2H 6T T                    \\
+      Data     & X 2Z 6D{data} Z              \\
+      \extracode
+      \begin{pgfonlayer}{background}
+        \vertlines[help lines, dashed]{1, 9}
+      \end{pgfonlayer}
+    \end{tikztimingtable}
+    \caption{\hexrange{A000}{FDFF}}
+  \end{subfigure}
+  \begin{subfigure}{0.4\textwidth}
+    \begin{tikztimingtable}
+      CLK 4MHz & L 4{C} N(E4) 2{C} N(E6) 3{C} \\
+      PHI 1MHz & L 4C 4C C                    \\
+      A0-A14   & X U 7D{addr} U               \\
+      RD       & X 9L                         \\
+      WR       & X 9H                         \\
+      A15      & X 9H                         \\
+      CS       & X 9H                         \\
+      Data     & X 9Z                         \\
+      \extracode
+      \begin{pgfonlayer}{background}
+        \vertlines[help lines, dashed]{1, 9}
+      \end{pgfonlayer}
+    \end{tikztimingtable}
+    \caption{\hexrange{FE00}{FFFF}}
+  \end{subfigure}
+  \caption{External bus timings for read cycles}
+\end{figure}
