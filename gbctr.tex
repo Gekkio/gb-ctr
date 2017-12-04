@@ -225,8 +225,8 @@ Examples:
       \textbf{Unimplemented}: Read as \bit{1}
     \item[bit 0]
       \textbf{BOOT\_OFF}: Boot ROM lock bit \\
-      \bin{1}= Boot ROM is disabled and \hexrange{0000}{0100} works normally. \\
-      \bin{0}= Boot ROM is active and intercepts accesses to \hexrange{0000}{0100}. \\
+      \bin{1}= Boot ROM is disabled and \hexrange{0000}{00FF} works normally. \\
+      \bin{0}= Boot ROM is active and intercepts accesses to \hexrange{0000}{00FF}. \\
 
       BOOT\_OFF can only transition from \bin{0} to \bin{1}, so once \bin{1}
       has been written, the boot ROM is permanently disabled until the next
