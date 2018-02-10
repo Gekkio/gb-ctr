@@ -24,7 +24,7 @@ Unconditional jump to the absolute address specified by the operand \texttt{nn}.
     3 bytes
   \item[Duration]
     4 machine cycles
-  \item[Timing] \parbox{\textwidth}{
+  \item[Timing] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 ; [opacity=0.4] 8D{Read: nn} X \\
@@ -49,7 +49,7 @@ Unconditional jump to the absolute address specified by the register HL.
     1 bytes
   \item[Duration]
     1 machine cycle
-  \item[Timing] \parbox{\textwidth}{
+  \item[Timing] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: HL} X \\
@@ -72,6 +72,8 @@ if opcode == 0xE9:
 
 Conditional jump to the absolute address specified by the operand \texttt{nn}, depending on the condition \texttt{cc}.
 
+Note that the target address is read even when the condition is false!
+
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode + data]
     \hex{C2}/\hex{D2}/\hex{CA}/\hex{DA}, LSB of \texttt{nn}, MSB of \texttt{nn}
@@ -79,12 +81,12 @@ Conditional jump to the absolute address specified by the operand \texttt{nn}, d
     3 bytes
   \item[Duration]
     3 machine cycles (cc=false), or 4 machine cycles (cc=true)
-  \item[Timing (cc=false)] \parbox{\textwidth}{
+  \item[Timing (cc=false)] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} ; [opacity=0.4] 8D{Read: PC+3} X \\
     \end{tikztimingtable}}
-  \item[Timing (cc=true)] \parbox{\textwidth}{
+  \item[Timing (cc=true)] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 ; [opacity=0.4] 8D{Read: nn} X \\
@@ -110,7 +112,7 @@ Unconditional jump to the relative address specified by the signed operand \text
     2 bytes
   \item[Duration]
     3 machine cycles
-  \item[Timing] \parbox{\textwidth}{
+  \item[Timing] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Value of r} 8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8U                 ; [opacity=0.4] 8D{Read: PC+2+r} X \\
@@ -123,7 +125,7 @@ if opcode == 0x18:
 \end{verbatim}
 \end{description}
 
-\subsection{JR cc}
+\subsection{JR cc, r}
 \label{inst:JR_cc}
 
 Conditional jump to the relative address specified by the signed operand \texttt{r}, depending on the condition \texttt{cc}.
@@ -135,12 +137,12 @@ Conditional jump to the relative address specified by the signed operand \texttt
     2 bytes
   \item[Duration]
     2 machine cycles (cc=false), or 3 machine cycles (cc=true)
-  \item[Timing (cc=false)] \parbox{\textwidth}{
+  \item[Timing (cc=false)] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Value of r} ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} ; [opacity=0.4] 8D{Read: PC+2} X \\
     \end{tikztimingtable}}
-  \item[Timing (cc=true)] \parbox{\textwidth}{
+  \item[Timing (cc=true)] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Value of r} 8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8U                 ; [opacity=0.4] 8D{Read: PC+2+r} X \\
@@ -166,7 +168,7 @@ Unconditional function call to the absolute address specified by the operand \te
     3 bytes
   \item[Duration]
     6 machine cycles
-  \item[Timing] \parbox{\textwidth}{
+  \item[Timing] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} 8D{MSB of PC+3} 8D{LSB of PC+3} ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 8D{Write: SP-1} 8D{Write: SP-2} ; [opacity=0.4] 8D{Read: nn} X \\
@@ -181,7 +183,7 @@ if opcode == 0xCD:
 \end{verbatim}
 \end{description}
 
-\subsection{CALL cc}
+\subsection{CALL cc, nn}
 \label{inst:CALL_cc}
 
 Conditional function call to the absolute address specified by the operand \texttt{nn}, depending on the condition \texttt{cc}.
@@ -193,12 +195,12 @@ Conditional function call to the absolute address specified by the operand \text
     3 bytes
   \item[Duration]
     3 machine cycles (cc=false), or 6 machine cycles (cc=true)
-  \item[Timing (cc=false)] \parbox{\textwidth}{
+  \item[Timing (cc=false)] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} ; [opacity=0.4] 8D{Read: PC+3} X \\
     \end{tikztimingtable}}
-  \item[Timing (cc=true)] \parbox{\textwidth}{
+  \item[Timing (cc=true)] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} 8D{MSB of PC+3} 8D{LSB of PC+3} ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 8D{Write: SP-1} 8D{Write: SP-2} ; [opacity=0.4] 8D{Read: nn} X \\
@@ -226,7 +228,7 @@ Unconditional return from function.
     1 byte
   \item[Duration]
     4 machine cycles
-  \item[Timing] \parbox{\textwidth}{
+  \item[Timing] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of PC} 8D{MSB of PC}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8D{Read: SP}  8D{Read: SP+1} 8U                 ; [opacity=0.4] 8D{Read: new PC} X \\
@@ -250,19 +252,19 @@ Conditional return from function, depending on the condition \texttt{cc}.
     1 byte
   \item[Duration]
     2 machine cycles (cc=false), or 5 machine cycles (cc=true)
-  \item[Timing (cc=false)] \parbox{\textwidth}{
+  \item[Timing (cc=false)] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Internal delay} ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} 8U                 ; [opacity=0.4] 8D{Read: PC+1} X \\
     \end{tikztimingtable}}
-  \item[Timing (cc=true)] \parbox{\textwidth}{
+  \item[Timing (cc=true)] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Internal delay} 8D{LSB of PC} 8D{MSB of PC}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8U                 8D{Read: SP}  8D{Read: SP+1} 8U                 ; [opacity=0.4] 8D{Read: new PC} X \\
     \end{tikztimingtable}}
 \item[Pseudocode] \begin{verbatim}
 opcode = read(PC++)
-if opcode in [0xC0, 0XD0, 0xC8, 0xD8]:
+if opcode in [0xC0, 0xD0, 0xC8, 0xD8]:
   if F.check_condition(cc):
     PC = unsigned_16(lsb=read(SP++), msb=read(SP++))
 \end{verbatim}
@@ -280,7 +282,7 @@ Unconditional return from function. Also enables interrupts by setting IME=1.
     1 byte
   \item[Duration]
     4 machine cycles
-  \item[Timing] \parbox{\textwidth}{
+  \item[Timing] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of PC} 8D{MSB of PC}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8D{Read: SP}  8D{Read: SP+1} 8U                 ; [opacity=0.4] 8D{Read: new PC} X \\
@@ -305,7 +307,7 @@ Unconditional function call to the absolute fixed address defined by the opcode.
     1 byte
   \item[Duration]
     4 machine cycles
-  \item[Timing] \parbox{\textwidth}{
+  \item[Timing] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Internal delay} 8D{MSB of PC+1} 8D{LSB of PC+1} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8U                 8D{Write: SP-1} 8D{Write: SP-2} ; [opacity=0.4] 8D{Read: new PC} X \\
@@ -353,7 +355,7 @@ delay of one machine cycle and increment PC by one.
     1 byte
   \item[Duration]
     1 machine cycle
-  \item[Timing] \parbox{\textwidth}{
+  \item[Timing] \parbox{0.8\textwidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: PC+1} X \\
