@@ -79,7 +79,10 @@
 {colframe=SteelBlue,colback=Azure,title=\faPuzzlePiece,fonttitle=\small}
 
 \newtcolorbox{caveat}
-{colframe=Crimson,colback=MistyRose,title=\faExclamation,fonttitle=\small}
+{colframe=Crimson,colback=MistyRose,title=\faInfoCircle,fonttitle=\small}
+
+\newtcolorbox{warning}
+{colframe=Gold,colback=LemonChiffon,title=\faExclamationTriangle,fonttitle=\small}
 
 \floatstyle{plaintop}
 \newfloat{register}{h}{lor}[chapter]
@@ -89,6 +92,8 @@
 \newcommand{\bin}[1]{\texttt{0b#1}}
 \newcommand{\hex}[1]{\texttt{0x#1}}
 \newcommand{\hexrange}[2]{\texttt{0x#1-0x#2}}
+
+\setcounter{tocdepth}{4}
 
 \begin{document}
 
@@ -104,11 +109,13 @@
 
 \hypersetup{pageanchor=true}
 
-\tableofcontents
-
-\chapter*{Introduction}
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+\phantomsection
 
 \chapter*{How to read this document}
+\addcontentsline{toc}{chapter}{How to read this document}
+\phantomsection
 
 \begin{speculation}
   This is something that hasn't been verified, but would make a lot of sense.
@@ -117,6 +124,10 @@
 \begin{caveat}
   This explains some caveat about this documentation that you should know.
 \end{caveat}
+
+\begin{warning}
+  This is a warning about something.
+\end{warning}
 
 \section{Formatting of numbers}
 
@@ -199,7 +210,13 @@ Examples:
   \end{itemize}
 \end{register}
 
+\clearpage
+
+\tableofcontents
+
 \part{Game Boy CPU and the Sharp LR35902 instruction set}
+
+\include{xx-instruction-set}
 
 \part{Game Boy CPU peripherals}
 

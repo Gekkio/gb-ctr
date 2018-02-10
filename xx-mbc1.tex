@@ -151,11 +151,13 @@ all 2-bit values are possible.
 The MODE register determines how the BANK2 register value is used during memory
 accesses.
 
-Most documentation, including Pan Docs \cite{pandocs}, calls value \bin{0}
-ROM banking mode, and value \bin{1} RAM banking mode. This terminology
-reflects the common use cases, but "RAM banking" is slightly misleading because
-value \bin{1} also affects ROM reads in multicart cartridges and cartridges
-that have a 8 or 16 Mbit ROM chip.
+\begin{warning}
+  Most documentation, including Pan Docs \cite{pandocs}, calls value \bin{0}
+  ROM banking mode, and value \bin{1} RAM banking mode. This terminology
+  reflects the common use cases, but "RAM banking" is slightly misleading because
+  value \bin{1} also affects ROM reads in multicart cartridges and cartridges
+  that have a 8 or 16 Mbit ROM chip.
+\end{warning}
 
 \section{ROM in the \hexrange{0000}{7FFF} area}
 

@@ -1,0 +1,372 @@
+\chapter{Sharp LR35902 instruction set}
+
+\section{8-bit load and store instructions}
+
+\section{16-bit load and store instructions}
+
+\section{8-bit arithmetic instructions}
+
+\section{16-bit arithmetic instructions}
+
+\section{Rotate, shift, and bit operation instructions}
+
+\section{Control flow instructions}
+
+\subsection{JP nn}
+\label{inst:JP}
+
+Unconditional jump to the absolute address specified by the operand \texttt{nn}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{C3}, LSB of \texttt{nn}, MSB of \texttt{nn}
+  \item[Length]
+    3 bytes
+  \item[Duration]
+    4 machine cycles
+  \item[Timing] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}   X \\
+      Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 ; [opacity=0.4] 8D{Read: nn} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xC3:
+  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  PC = nn
+\end{verbatim}
+\end{description}
+
+\subsection{JP HL}
+\label{inst:JP_HL}
+
+Unconditional jump to the absolute address specified by the register HL.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{E9}
+  \item[Length]
+    1 bytes
+  \item[Duration]
+    1 machine cycle
+  \item[Timing] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}   X \\
+      Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: HL} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xE9:
+  PC = HL
+\end{verbatim}
+\end{description}
+
+\begin{warning}
+  In some documentation this instruction is written as \texttt{JP [HL]}. This
+  is very misleading, since brackets are usually used to indicate a memory
+  read, and this instruction simply copies the value of HL to PC.
+\end{warning}
+
+\subsection{JP cc, nn}
+\label{inst:JP_cc}
+
+Conditional jump to the absolute address specified by the operand \texttt{nn}, depending on the condition \texttt{cc}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{C2}/\hex{D2}/\hex{CA}/\hex{DA}, LSB of \texttt{nn}, MSB of \texttt{nn}
+  \item[Length]
+    3 bytes
+  \item[Duration]
+    3 machine cycles (cc=false), or 4 machine cycles (cc=true)
+  \item[Timing (cc=false)] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  ; [opacity=0.4] 8D{Decode}     X \\
+      Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} ; [opacity=0.4] 8D{Read: PC+3} X \\
+    \end{tikztimingtable}}
+  \item[Timing (cc=true)] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}   X \\
+      Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 ; [opacity=0.4] 8D{Read: nn} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode in [0xC2, 0xD2, 0xCA, 0xDA]:
+  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  if F.check_condition(cc):
+    PC = nn
+\end{verbatim}
+\end{description}
+
+\subsection{JR r}
+\label{inst:JR}
+
+Unconditional jump to the relative address specified by the signed operand \texttt{r}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{18}, offset \texttt{r}
+  \item[Length]
+    2 bytes
+  \item[Duration]
+    3 machine cycles
+  \item[Timing] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{Value of r} 8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
+      Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8U                 ; [opacity=0.4] 8D{Read: PC+2+r} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x18:
+  r = signed_8(read(PC++))
+  PC = PC + r
+\end{verbatim}
+\end{description}
+
+\subsection{JR cc}
+\label{inst:JR_cc}
+
+Conditional jump to the relative address specified by the signed operand \texttt{r}, depending on the condition \texttt{cc}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{20}/\hex{30}/\hex{28}/\hex{38}, offset \texttt{r}
+  \item[Length]
+    2 bytes
+  \item[Duration]
+    2 machine cycles (cc=false), or 3 machine cycles (cc=true)
+  \item[Timing (cc=false)] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{Value of r} ; [opacity=0.4] 8D{Decode}     X \\
+      Memory  & X 8D{Read: PC} 8D{Read: PC+1} ; [opacity=0.4] 8D{Read: PC+2} X \\
+    \end{tikztimingtable}}
+  \item[Timing (cc=true)] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{Value of r} 8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
+      Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8U                 ; [opacity=0.4] 8D{Read: PC+2+r} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode in [0x20, 0x30, 0x28, 0x38]:
+  r = signed_8(read(PC++))
+  if F.check_condition(cc):
+    PC = PC + r
+\end{verbatim}
+\end{description}
+
+\subsection{CALL nn}
+\label{inst:CALL}
+
+Unconditional function call to the absolute address specified by the operand \texttt{nn}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{CD}, LSB of \texttt{nn}, MSB of \texttt{nn}
+  \item[Length]
+    3 bytes
+  \item[Duration]
+    6 machine cycles
+  \item[Timing] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} 8D{MSB of PC+3} 8D{LSB of PC+3} ; [opacity=0.4] 8D{Decode}   X \\
+      Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 8D{Write: SP-1} 8D{Write: SP-2} ; [opacity=0.4] 8D{Read: nn} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xCD:
+  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  write(--SP, msb(PC))
+  write(--SP, lsb(PC))
+  PC = nn
+\end{verbatim}
+\end{description}
+
+\subsection{CALL cc}
+\label{inst:CALL_cc}
+
+Conditional function call to the absolute address specified by the operand \texttt{nn}, depending on the condition \texttt{cc}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{C4}/\hex{D4}/\hex{CC}/\hex{DC}, LSB of \texttt{nn}, MSB of \texttt{nn}
+  \item[Length]
+    3 bytes
+  \item[Duration]
+    3 machine cycles (cc=false), or 6 machine cycles (cc=true)
+  \item[Timing (cc=false)] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  ; [opacity=0.4] 8D{Decode}     X \\
+      Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} ; [opacity=0.4] 8D{Read: PC+3} X \\
+    \end{tikztimingtable}}
+  \item[Timing (cc=true)] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} 8D{MSB of PC+3} 8D{LSB of PC+3} ; [opacity=0.4] 8D{Decode}   X \\
+      Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 8D{Write: SP-1} 8D{Write: SP-2} ; [opacity=0.4] 8D{Read: nn} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode in [0xC4, 0xD4, 0xCC, 0xDC]:
+  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  if F.check_condition(cc):
+    write(--SP, msb(PC))
+    write(--SP, lsb(PC))
+    PC = nn
+\end{verbatim}
+\end{description}
+
+\subsection{RET}
+\label{inst:RET}
+
+Unconditional return from function.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{C9}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    4 machine cycles
+  \item[Timing] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{LSB of PC} 8D{MSB of PC}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
+      Memory  & X 8D{Read: PC} 8D{Read: SP}  8D{Read: SP+1} 8U                 ; [opacity=0.4] 8D{Read: new PC} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xC9:
+  PC = unsigned_16(lsb=read(SP++), msb=read(SP++))
+\end{verbatim}
+\end{description}
+
+\subsection{RET cc}
+\label{inst:RET_cc}
+
+Conditional return from function, depending on the condition \texttt{cc}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{C0}/\hex{D0}/\hex{C8}/\hex{D8}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles (cc=false), or 5 machine cycles (cc=true)
+  \item[Timing (cc=false)] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{Internal delay} ; [opacity=0.4] 8D{Decode}     X \\
+      Memory  & X 8D{Read: PC} 8U                 ; [opacity=0.4] 8D{Read: PC+1} X \\
+    \end{tikztimingtable}}
+  \item[Timing (cc=true)] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{Internal delay} 8D{LSB of PC} 8D{MSB of PC}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
+      Memory  & X 8D{Read: PC} 8U                 8D{Read: SP}  8D{Read: SP+1} 8U                 ; [opacity=0.4] 8D{Read: new PC} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode in [0xC0, 0XD0, 0xC8, 0xD8]:
+  if F.check_condition(cc):
+    PC = unsigned_16(lsb=read(SP++), msb=read(SP++))
+\end{verbatim}
+\end{description}
+
+\subsection{RETI}
+\label{inst:RETI}
+
+Unconditional return from function. Also enables interrupts by setting IME=1.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{D9}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    4 machine cycles
+  \item[Timing] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{LSB of PC} 8D{MSB of PC}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
+      Memory  & X 8D{Read: PC} 8D{Read: SP}  8D{Read: SP+1} 8U                 ; [opacity=0.4] 8D{Read: new PC} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xD9:
+  PC = unsigned_16(lsb=read(SP++), msb=read(SP++))
+  IME = 1
+\end{verbatim}
+\end{description}
+
+\subsection{RST n}
+\label{inst:RST}
+
+Unconditional function call to the absolute fixed address defined by the opcode.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode + data]
+    \hex{C7}/\hex{D7}/\hex{E7}/\hex{F7}/\hex{CF}/\hex{DF}/\hex{EF}/\hex{FF}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    4 machine cycles
+  \item[Timing] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   8D{Internal delay} 8D{MSB of PC+1} 8D{LSB of PC+1} ; [opacity=0.4] 8D{Decode}       X \\
+      Memory  & X 8D{Read: PC} 8U                 8D{Write: SP-1} 8D{Write: SP-2} ; [opacity=0.4] 8D{Read: new PC} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode in [0xC7, 0xD7, 0xE7, 0xF7, 0xCF, 0xDF, 0xEF, 0xFF]:
+  n = rst_address(opcode)
+  write(--SP, msb(PC))
+  write(--SP, lsb(PC))
+  PC = unsigned_16(lsb=n, msb=0x00)
+\end{verbatim}
+\end{description}
+
+\section{Miscellaneous instructions}
+
+\subsection{HALT}
+\label{inst:HALT}
+
+\subsection{STOP}
+\label{inst:STOP}
+
+\subsection{DI}
+\label{inst:DI}
+
+\subsection{EI}
+\label{inst:EI}
+
+\subsection{CCF}
+\label{inst:CCF}
+
+\subsection{SCF}
+\label{inst:SCF}
+
+\subsection{NOP}
+\label{inst:NOP}
+
+No-operation. This instruction doesn't do anything, but can be used to add a
+delay of one machine cycle and increment PC by one.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \hex{00}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Timing] \parbox{\textwidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}     X \\
+      Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: PC+1} X \\
+    \end{tikztimingtable}}
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x00:
+  // nothing
+\end{verbatim}
+\end{description}
+
+\subsection{DAA}
+\label{inst:DAA}
+
+\subsection{CPL}
+\label{inst:CPL}
