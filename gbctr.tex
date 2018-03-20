@@ -115,6 +115,16 @@
 \addcontentsline{toc}{chapter}{Preface}
 \phantomsection
 
+\begin{caveat}
+  \Huge
+  IMPORTANT: This document focuses at the moment on 1st and 2nd generation
+  devices (models before the Game Boy Color), and some hardware details are
+  very different in later generations. \\
+
+  Be very careful if you make assumptions about later generation devices based
+  on this document!
+\end{caveat}
+
 \chapter*{How to read this document}
 \addcontentsline{toc}{chapter}{How to read this document}
 \phantomsection
@@ -220,7 +230,7 @@ Examples:
 
 \include{xx-instruction-set}
 
-\part{Game Boy CPU peripherals}
+\part{Game Boy CPU peripherals and features}
 
 \chapter{Boot ROM}
 
@@ -251,6 +261,41 @@ Examples:
       has been written, the boot ROM is permanently disabled until the next
       system reset. Writing \bin{0} when BOOT\_OFF is \bin{0} has no effect and
       doesn't lock the boot ROM.
+  \end{description}
+\end{register}
+
+\chapter{DMA (Direct Memory Access)}
+
+\section{Object Attribute Memory (OAM) DMA}
+
+\begin{register}[H]
+  \caption{\hex{FF46} - DMA - OAM DMA control register}
+  {
+    \ttfamily
+    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
+      \everyrow{\hline}
+      \hline
+      R/W-x   & R/W-x    & R/W-x   & R/W-x     & R/W-x   & R/W-x     & R/W-x   & R/W-x  \\
+      \multicolumn{8}{|c|}{DMA<7:0>} \\
+      \rowfont{\rmfamily\small}
+      bit 7   & 6        & 5       & 4         & 3       & 2         & 1       & bit 0  \\
+      \hline
+    \end{tabu}
+  }
+
+  \begin{description}[leftmargin=5em, style=nextline]
+    \item[bit 0]
+      \textbf{DMA<7:0>}: OAM DMA source address \\
+      Specifies the top 8 bits of the OAM DMA source address.
+
+      Writing to this register requests an OAM DMA transfer, but the write has
+      an effect only after a delay of one extra machine cycle.
+
+      Reading this register returns the last written value. The stored value is
+      not cleared on reset, so the initial value is unknown and should not be
+      relied on. However, 1st and 2nd generation devices tend to start with
+      \hex{FF} as the initial value, and later generations tend to start with
+      \hex{00}, so these values could be assumed if necessary.
   \end{description}
 \end{register}
 
