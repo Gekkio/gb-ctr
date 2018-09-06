@@ -31,8 +31,7 @@ during writes. The registers are not directly readable.
       U                     & U                     & U                     & U                     & W-0                                    & W-0 & W-0 & W-0   \\
       \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn4{c|}{RAM\_EN<3:0>} \\
       \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5                     & 4                     & 3                                      & 2   & 1   & bit 0 \\
-      \hline
+      bit 7                 & 6                     & 5                     & 4                     & 3                                      & 2   & 1   & bit 0
     \end{tabu}
   }
 
@@ -74,8 +73,7 @@ recommends disabling RAM when it's not being accessed to protect the contents
       U                     & U                     & U                     & W-0                                  & W-0 & W-0 & W-0 & W-1   \\
       \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn5{c|}{BANK1<4:0>} \\
       \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5                     & 4                                    & 3   & 2   & 1   & bit 0 \\
-      \hline
+      bit 7                 & 6                     & 5                     & 4                                    & 3   & 2   & 1   & bit 0
     \end{tabu}
   }
 
@@ -109,8 +107,7 @@ banks actually requests the next bank (e.g.  \hex{21} instead of \hex{20}).
     U                     & U                     & U                     & U                     & U                     & U                     & W-0                                  & W-0   \\
     \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn2{c|}{BANK2<1:0>} \\
     \rowfont{\small}
-    bit 7                 & 6                     & 5                     & 4                     & 3                     & 2                     & 1                                    & bit 0 \\
-    \hline
+    bit 7                 & 6                     & 5                     & 4                     & 3                     & 2                     & 1                                    & bit 0
   \end{tabu}
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -134,8 +131,7 @@ all 2-bit values are possible.
     U                     & U                     & U                     & U                           & U & U & U & W-0   \\
     \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & MODE \\
     \rowfont{\small}
-    bit 7                 & 6                     & 5                     & 4                              & 3   & 2   & 1   & bit 0 \\
-    \hline
+    bit 7                 & 6                     & 5                     & 4                              & 3   & 2   & 1   & bit 0
   \end{tabu}
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -189,8 +185,7 @@ ignored because those bits are simply not connected to the ROM.
     ROM address bits                      & 20-19    & 18-14       & 13-0    \\
     \hexrange{0000}{3FFF}, MODE = \bin{0} & \bin{00} & \bin{00000} & A<13:0> \\
     \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2    & \bin{00000} & A<13:0> \\
-    \hexrange{4000}{7FFF}                 & BANK2    & BANK1       & A<13:0> \\
-    \hline
+    \hexrange{4000}{7FFF}                 & BANK2    & BANK1       & A<13:0>
   \end{tabu}
 \end{table}
 
@@ -290,8 +285,7 @@ used as the bank number.
     \rowfont{\rmfamily}
     RAM address bits                      & 14-13    & 12-0    \\
     \hexrange{A000}{BFFF}, MODE = \bin{0} & \bin{00} & A<12:0> \\
-    \hexrange{A000}{BFFF}, MODE = \bin{1} & BANK2    & A<12:0> \\
-    \hline
+    \hexrange{A000}{BFFF}, MODE = \bin{1} & BANK2    & A<12:0>
   \end{tabu}
 \end{table}
 
@@ -354,8 +348,7 @@ register value.
     ROM address bits                      & 19-18    & 17-14      & 13-0    \\
     \hexrange{0000}{3FFF}, MODE = \bin{0} & \bin{00} & \bin{0000} & A<13:0> \\
     \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2    & \bin{0000} & A<13:0> \\
-    \hexrange{4000}{7FFF}                 & BANK2    & BANK1<3:0> & A<13:0> \\
-    \hline
+    \hexrange{4000}{7FFF}                 & BANK2    & BANK1<3:0> & A<13:0>
   \end{tabu}
 \end{table}
 

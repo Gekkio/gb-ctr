@@ -158,7 +158,7 @@ Examples:
               & 4-bit      & 8-bit          & 16-bit     \\
   \hline
   Binary      & \bin{0101} & \bin{10100101} & \bin{0000101010100101} \\
-  Hexadecimal & \hex{5}    & \hex{A5}       & \hex{0AA5} \\
+  Hexadecimal & \hex{5}    & \hex{A5}       & \hex{0AA5}
 \end{tabular}
 
 \section{Register definitions}
@@ -173,8 +173,7 @@ Examples:
       R/W-0                          & R/W-1                   & U-1                             & R-0  & R-1                      & R-x & W-1 & U-0   \\
       \multicolumn2{|c|}{VALUE<1:0>} & \cellcolor{LightGray} - & \multicolumn3{c|}{BIGVAL<7:5>} & FLAG & \cellcolor{LightGray} - \\
       \rowfont{\rmfamily\small}
-      bit 7                          & 6                       & 5                               & 4    & 3                        & 2   & 1   & bit 0 \\
-      \hline
+      bit 7                          & 6                       & 5                               & 4    & 3                        & 2   & 1   & bit 0
     \end{tabu}
   }
 
@@ -207,8 +206,7 @@ Examples:
       VALUE<1:0> & \rmfamily Bits 1 and 0 of VALUE \\
       \cellcolor{LightGray} - & \rmfamily Unimplemented bit \\
       BIGVAL<7:5> & \rmfamily Bits 7, 6, 5 of BIGVAL \\
-      FLAG & \rmfamily Single-bit value FLAG \\
-      \hline
+      FLAG & \rmfamily Single-bit value FLAG
     \end{tabu}
   }
 
@@ -245,8 +243,7 @@ Examples:
       U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & R/W-0     \\
       \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & BOOT\_OFF \\
       \rowfont{\rmfamily\small}
-      bit 7                   & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0     \\
-      \hline
+      bit 7                   & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0
     \end{tabu}
   }
 
@@ -279,8 +276,7 @@ Examples:
       R/W-0   & R/W-0    & R/W-0   & R/W-0     & R/W-0   & R/W-0     & R/W-0   & R/W-0  \\
       LCD\_EN & WIN\_MAP & WIN\_EN & TILE\_SEL & BG\_MAP & OBJ\_SIZE & OBJ\_EN & BG\_EN \\
       \rowfont{\rmfamily\small}
-      bit 7   & 6        & 5       & 4         & 3       & 2         & 1       & bit 0  \\
-      \hline
+      bit 7   & 6        & 5       & 4         & 3       & 2         & 1       & bit 0
     \end{tabu}
   }
 \end{register}
@@ -295,8 +291,7 @@ Examples:
       U-1 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \cellcolor{LightGray} - & INTR\_LYC & INTR\_M2 & INTR\_M1 & INTR\_M0 & LYC\_STAT & \multicolumn2{c|}{LCD\_MODE<1:0>} \\
       \rowfont{\rmfamily\small}
-      bit 7    & 6          & 5         & 4          & 3           & 2             & 1           & bit 0      \\
-      \hline
+      bit 7    & 6          & 5         & 4          & 3           & 2             & 1           & bit 0
     \end{tabu}
   }
 \end{register}
@@ -311,8 +306,7 @@ Examples:
       R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \multicolumn8{|c|}{SCY<7:0>} \\
       \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0 \\
-      \hline
+      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
     \end{tabu}
   }
 \end{register}
@@ -327,8 +321,7 @@ Examples:
       R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \multicolumn8{|c|}{SCX<7:0>} \\
       \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0 \\
-      \hline
+      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
     \end{tabu}
   }
 \end{register}
@@ -343,8 +336,7 @@ Examples:
       R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \multicolumn8{|c|}{LY<7:0>} \\
       \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0 \\
-      \hline
+      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
     \end{tabu}
   }
 \end{register}
@@ -359,8 +351,7 @@ Examples:
       R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \multicolumn8{|c|}{LYC<7:0>} \\
       \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0 \\
-      \hline
+      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
     \end{tabu}
   }
 \end{register}
@@ -377,8 +368,7 @@ Examples:
       U-1                     & U-1                     & W-0 & W-0 & R-x & R-x & R-x & R-x   \\
       \cellcolor{LightGray} - & \cellcolor{LightGray} - & P15 & P14 & P13 & P12 & P11 & P10   \\
       \rowfont{\rmfamily\small}
-      bit 7                   & 6                       & 5   & 4   & 3   & 2   & 1   & bit 0 \\
-      \hline
+      bit 7                   & 6                       & 5   & 4   & 3   & 2   & 1   & bit 0
     \end{tabu}
   }
 
@@ -412,8 +402,7 @@ Examples:
       R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \multicolumn8{|c|}{SB<7:0>} \\
       \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0 \\
-      \hline
+      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
     \end{tabu}
   }
 
@@ -433,8 +422,7 @@ Examples:
       R/W-0  & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & R/W-0   \\
       SIO\_EN & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & SIO\_CLK \\
       \rowfont{\rmfamily\small}
-      bit 7  & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0   \\
-      \hline
+      bit 7  & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0
     \end{tabu}
   }
 
