@@ -29,6 +29,7 @@
 \usepackage{fontawesome}
 \usepackage{hyperref}
 \usepackage[all]{hypcap}
+\usepackage{hyphenat}
 
 % aliases to support old fontawesome package versions
 \providecommand\faArrowCircleDown{\faCircleArrowDown}
@@ -93,7 +94,7 @@
 \newcommand{\bit}[1]{\texttt{#1}}
 \newcommand{\bin}[1]{\texttt{0b#1}}
 \newcommand{\hex}[1]{\texttt{0x#1}}
-\newcommand{\hexrange}[2]{\texttt{0x#1-0x#2}}
+\newcommand{\hexrange}[2]{\texttt{0x#1\hyp{}0x#2}}
 
 \setcounter{tocdepth}{4}
 
