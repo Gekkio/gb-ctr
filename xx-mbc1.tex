@@ -211,15 +211,15 @@ depends on which address range we read and on the value of the MODE register:
     \ttfamily
     0b\colorbox{red!30}{01}\colorbox{blue!30}{10010} (= 50 = \hex{32})
   }
-  \item[Effective ROM bank number (reading \hexrange{0000}-{3FFF}, MODE = \bin{0})]
+  \item[Effective ROM bank number (reading \hexrange{0000}{3FFF}, MODE = \bin{0})]
   {
     \ttfamily
     0b\colorbox{gray!10}{00}\colorbox{gray!10}{00000} (= 0 = \hex{00})
   }
-  \item[Effective ROM bank number (reading \hexrange{0000}-{3FFF}, MODE = \bin{1})]
+  \item[Effective ROM bank number (reading \hexrange{0000}{3FFF}, MODE = \bin{1})]
   {
     \ttfamily
-    0b\colorbox{red!30}{01}\colorbox{gray!10}{00000} (= 32 = \hex{40})
+    0b\colorbox{red!30}{01}\colorbox{gray!10}{00000} (= 32 = \hex{20})
   }
 \end{description}
 
