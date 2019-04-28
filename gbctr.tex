@@ -14,7 +14,7 @@
 \usepackage{charter}
 \usepackage{mathpazo}
 \usepackage[ttdefault=true]{AnonymousPro}
-\usepackage{tabu}
+\usepackage{tabularx}
 \usepackage{pdflscape}
 \usepackage{enumitem}
 \usepackage{ccicons}
@@ -98,6 +98,10 @@
 \newcommand{\hex}[1]{\texttt{0x#1}}
 \newcommand{\hexrange}[2]{\texttt{0x#1\hyp{}0x#2}}
 
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}%
+\newcolumntype{C}{>{\centering\arraybackslash}X}%
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}%
+
 \setcounter{tocdepth}{4}
 
 \begin{document}
@@ -157,7 +161,7 @@ Examples:
 \vspace{0.5cm}
 
 \begin{tabular}{l l l l}
-              & 4-bit      & 8-bit          & 16-bit     \\
+              & 4-bit      & 8-bit          & 16-bit                 \\
   \hline
   Binary      & \bin{0101} & \bin{10100101} & \bin{0000101010100101} \\
   Hexadecimal & \hex{5}    & \hex{A5}       & \hex{0AA5}
@@ -169,14 +173,15 @@ Examples:
   \caption{\hex{1234} - This is a hardware register definition}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|C|C|C|C|C|C|C|C|}
       \hline
-      R/W-0                          & R/W-1                   & U-1                             & R-0  & R-1                      & R-x & W-1 & U-0   \\
-      \multicolumn2{|c|}{VALUE<1:0>} & \cellcolor{LightGray} - & \multicolumn3{c|}{BIGVAL<7:5>} & FLAG & \cellcolor{LightGray} - \\
-      \rowfont{\rmfamily\small}
-      bit 7                          & 6                       & 5                               & 4    & 3                        & 2   & 1   & bit 0
-    \end{tabu}
+      R/W-0                            & R/W-1                   & U-1                              & R-0  & R-1                      & R-x & W-1 & U-0   \\
+      \hline
+      \multicolumn{2}{|c|}{VALUE<1:0>} & \cellcolor{LightGray} - & \multicolumn{3}{c|}{BIGVAL<7:5>} & FLAG & \cellcolor{LightGray} - \\
+      \hline
+      bit 7                            & 6                       & 5                                & 4    & 3                        & 2   & 1   & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 
   \textbf{Top row legend:}
@@ -202,14 +207,17 @@ Examples:
   \textbf{Middle row legend:} \\
   {
     \ttfamily
-    \begin{tabu} to 0.5\textwidth {|X[l]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{0.5\textwidth}{|L|C|}
       \hline
-      VALUE<1:0> & \rmfamily Bits 1 and 0 of VALUE \\
-      \cellcolor{LightGray} - & \rmfamily Unimplemented bit \\
-      BIGVAL<7:5> & \rmfamily Bits 7, 6, 5 of BIGVAL \\
-      FLAG & \rmfamily Single-bit value FLAG
-    \end{tabu}
+      VALUE<1:0>              & \rmfamily Bits 1 and 0 of VALUE  \\
+      \hline
+      \cellcolor{LightGray} - & \rmfamily Unimplemented bit      \\
+      \hline
+      BIGVAL<7:5>             & \rmfamily Bits 7, 6, 5 of BIGVAL \\
+      \hline
+      FLAG                    & \rmfamily Single-bit value FLAG  \\
+      \hline
+    \end{tabularx}
   }
 
   \vspace{3mm}
@@ -239,14 +247,15 @@ Examples:
   \caption{\hex{FF50} - BOOT - Boot ROM lock register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & R/W-0     \\
+      \hline
       \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & BOOT\_OFF \\
-      \rowfont{\rmfamily\small}
-      bit 7                   & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0
-    \end{tabu}
+      \hline
+      bit 7                   & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0     \\
+      \hline
+    \end{tabularx}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -272,14 +281,15 @@ Examples:
   \caption{\hex{FF40} - LCDC - PPU control register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
       R/W-0   & R/W-0    & R/W-0   & R/W-0     & R/W-0   & R/W-0     & R/W-0   & R/W-0  \\
+      \hline
       LCD\_EN & WIN\_MAP & WIN\_EN & TILE\_SEL & BG\_MAP & OBJ\_SIZE & OBJ\_EN & BG\_EN \\
-      \rowfont{\rmfamily\small}
-      bit 7   & 6        & 5       & 4         & 3       & 2         & 1       & bit 0
-    \end{tabu}
+      \hline
+      bit 7   & 6        & 5       & 4         & 3       & 2         & 1       & bit 0  \\
+      \hline
+    \end{tabularx}
   }
 \end{register}
 
@@ -287,14 +297,15 @@ Examples:
   \caption{\hex{FF41} - LCDC - PPU status register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
-      U-1 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
-      \cellcolor{LightGray} - & INTR\_LYC & INTR\_M2 & INTR\_M1 & INTR\_M0 & LYC\_STAT & \multicolumn2{c|}{LCD\_MODE<1:0>} \\
-      \rowfont{\rmfamily\small}
-      bit 7    & 6          & 5         & 4          & 3           & 2             & 1           & bit 0
-    \end{tabu}
+      U-1                     & R/W-0     & R/W-0    & R/W-0    & R/W-0    & R/W-0     & R/W-0                                & R/W-0 \\
+      \hline
+      \cellcolor{LightGray} - & INTR\_LYC & INTR\_M2 & INTR\_M1 & INTR\_M0 & LYC\_STAT & \multicolumn{2}{c|}{LCD\_MODE<1:0>} \\
+      \hline
+      bit 7                   & 6         & 5        & 4        & 3        & 2         & 1                                    & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 \end{register}
 
@@ -302,14 +313,15 @@ Examples:
   \caption{\hex{FF42} - SCY - Vertical scroll register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
-      R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
-      \multicolumn8{|c|}{SCY<7:0>} \\
-      \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
-    \end{tabu}
+      R/W-0                           & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
+      \hline
+      \multicolumn{8}{|c|}{SCY<7:0>} \\
+      \hline
+      bit 7                           & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 \end{register}
 
@@ -317,14 +329,15 @@ Examples:
   \caption{\hex{FF43} - SCX - Horizontal scroll register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
-      R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
-      \multicolumn8{|c|}{SCX<7:0>} \\
-      \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
-    \end{tabu}
+      R/W-0                           & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
+      \hline
+      \multicolumn{8}{|c|}{SCX<7:0>} \\
+      \hline
+      bit 7                           & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 \end{register}
 
@@ -332,14 +345,15 @@ Examples:
   \caption{\hex{FF43} - LY - Scanline register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
-      R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
-      \multicolumn8{|c|}{LY<7:0>} \\
-      \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
-    \end{tabu}
+      R/W-0                          & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
+      \hline
+      \multicolumn{8}{|c|}{LY<7:0>} \\
+      \hline
+      bit 7                          & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 \end{register}
 
@@ -347,14 +361,15 @@ Examples:
   \caption{\hex{FF44} - LYC - Scanline compare register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
-      R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
-      \multicolumn8{|c|}{LYC<7:0>} \\
-      \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
-    \end{tabu}
+      R/W-0                           & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
+      \hline
+      \multicolumn{8}{|c|}{LYC<7:0>} \\
+      \hline
+      bit 7                           & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 \end{register}
 
@@ -364,14 +379,15 @@ Examples:
   \caption{\hex{FF00} - P1 - Joypad/Super Game Boy communication register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U-1                     & U-1                     & W-0 & W-0 & R-x & R-x & R-x & R-x   \\
+      \hline
       \cellcolor{LightGray} - & \cellcolor{LightGray} - & P15 & P14 & P13 & P12 & P11 & P10   \\
-      \rowfont{\rmfamily\small}
-      bit 7                   & 6                       & 5   & 4   & 3   & 2   & 1   & bit 0
-    \end{tabu}
+      \hline
+      bit 7                   & 6                       & 5   & 4   & 3   & 2   & 1   & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -398,14 +414,15 @@ Examples:
   \caption{\hex{FF01} - SB - Serial data register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
-      R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
-      \multicolumn8{|c|}{SB<7:0>} \\
-      \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5   & 4   & 3   & 2   & 1   & bit 0
-    \end{tabu}
+      R/W-0                          & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
+      \hline
+      \multicolumn{8}{|c|}{SB<7:0>} \\
+      \hline
+      bit 7                          & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -418,14 +435,15 @@ Examples:
   \caption{\hex{FF02} - SC - Serial control register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
-      R/W-0  & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & R/W-0   \\
+      R/W-0   & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & R/W-0    \\
+      \hline
       SIO\_EN & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & SIO\_CLK \\
-      \rowfont{\rmfamily\small}
-      bit 7  & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0
-    \end{tabu}
+      \hline
+      bit 7   & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0    \\
+      \hline
+    \end{tabularx}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]

@@ -35,14 +35,15 @@ not begin immediately.
   \caption{\hex{FF46} - DMA - OAM DMA control register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
-      R/W-x   & R/W-x    & R/W-x   & R/W-x     & R/W-x   & R/W-x     & R/W-x   & R/W-x  \\
+      R/W-x                           & R/W-x & R/W-x & R/W-x & R/W-x & R/W-x & R/W-x & R/W-x \\
+      \hline
       \multicolumn{8}{|c|}{DMA<7:0>} \\
-      \rowfont{\rmfamily\small}
-      bit 7   & 6        & 5       & 4         & 3       & 2         & 1       & bit 0
-    \end{tabu}
+      \hline
+      bit 7                           & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -81,14 +82,17 @@ behaviour can happen.
 \begin{table}[H]
   \caption{OAM DMA address decoding scheme}
   \rmfamily
-  \begin{tabu} to \textwidth {|X[10,l]|X[5,l]|X[10,l]|}
-    \everyrow{\hline}
+  \begin{tabularx}{\textwidth}{|L|L|L|}
     \hline
     DMA register value & Used bus      & Asserted chip select signal \\
+    \hline
     \hexrange{00}{7F}  & external bus  & external ROM (A15)          \\
+    \hline
     \hexrange{80}{9F}  & video RAM bus & video RAM (MCS)             \\
-    \hexrange{A0}{FF}  & external bus  & external RAM (CS)
-  \end{tabu}
+    \hline
+    \hexrange{A0}{FF}  & external bus  & external RAM (CS)           \\
+    \hline
+  \end{tabularx}
 \end{table}
 
 \subsection{OAM DMA transfer timing}

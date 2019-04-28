@@ -25,14 +25,15 @@ during writes. The registers are not directly readable.
   \caption{\hexrange{0000}{1FFF} - RAM\_EN - MBC1 RAM enable register}
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U                     & U                     & U                     & U                     & W-0                                    & W-0 & W-0 & W-0   \\
-      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn4{c|}{RAM\_EN<3:0>} \\
-      \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5                     & 4                     & 3                                      & 2   & 1   & bit 0
-    \end{tabu}
+      \hline
+      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn{4}{c|}{RAM\_EN<3:0>} \\
+      \hline
+      bit 7                 & 6                     & 5                     & 4                     & 3                                      & 2   & 1   & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -67,14 +68,15 @@ recommends disabling RAM when it's not being accessed to protect the contents
 
   {
     \ttfamily
-    \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-      \everyrow{\hline}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U                     & U                     & U                     & W-0                                  & W-0 & W-0 & W-0 & W-1   \\
-      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn5{c|}{BANK1<4:0>} \\
-      \rowfont{\rmfamily\small}
-      bit 7                 & 6                     & 5                     & 4                                    & 3   & 2   & 1   & bit 0
-    \end{tabu}
+      \hline
+      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn{5}{c|}{BANK1<4:0>} \\
+      \hline
+      bit 7                 & 6                     & 5                     & 4                                    & 3   & 2   & 1   & bit 0 \\
+      \hline
+    \end{tabularx}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -101,14 +103,18 @@ banks actually requests the next bank (e.g.  \hex{21} instead of \hex{20}).
 \begin{register}[H]
   \caption{\hexrange{4000}{5FFF} - BANK2 - MBC1 bank register 2}
 
-  \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-    \everyrow{\hline}
-    \hline
-    U                     & U                     & U                     & U                     & U                     & U                     & W-0                                  & W-0   \\
-    \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn2{c|}{BANK2<1:0>} \\
-    \rowfont{\small}
-    bit 7                 & 6                     & 5                     & 4                     & 3                     & 2                     & 1                                    & bit 0
-  \end{tabu}
+  {
+    \ttfamily
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+      \hline
+      U                     & U                     & U                     & U                     & U                     & U                     & W-0                                  & W-0   \\
+      \hline
+      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn{2}{c|}{BANK2<1:0>} \\
+      \hline
+      bit 7                 & 6                     & 5                     & 4                     & 3                     & 2                     & 1                                    & bit 0 \\
+      \hline
+    \end{tabularx}
+  }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-2]
@@ -125,14 +131,18 @@ all 2-bit values are possible.
 \begin{register}
   \caption{\hexrange{6000}{7FFF} - MODE - MBC1 mode register}
 
-  \begin{tabu} to \textwidth {|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|X[c]|}
-    \everyrow{\hline}
-    \hline
-    U                     & U                     & U                     & U                           & U & U & U & W-0   \\
-    \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & MODE \\
-    \rowfont{\small}
-    bit 7                 & 6                     & 5                     & 4                              & 3   & 2   & 1   & bit 0
-  \end{tabu}
+  {
+    \ttfamily
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+      \hline
+      U                     & U                     & U                     & U                           & U & U & U & W-0   \\
+      \hline
+      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & MODE \\
+      \hline
+      bit 7                 & 6                     & 5                     & 4                              & 3   & 2   & 1   & bit 0 \\
+      \hline
+    \end{tabularx}
+  }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-1]
@@ -175,18 +185,19 @@ ignored because those bits are simply not connected to the ROM.
 
 \begin{table}[H]
   \caption{Mapping of physical ROM address bits in MBC1 carts}
-  \ttfamily
-  \begin{tabu} to \textwidth {|X[10,l]|X[2,c]|X[5,c]|X[14,c]|}
-    \everyrow{\hline}
+  \begin{tabular}{|l|c|c|c|}
     \hline
-    \rowfont{\rmfamily}
-    & \multicolumn2{c|}{Bank number} & Address within bank \\
-    \rowfont{\rmfamily}
+    & \multicolumn{2}{c|}{Bank number} & Address within bank \\
+    \hline
     ROM address bits                      & 20-19    & 18-14       & 13-0    \\
+    \hline
     \hexrange{0000}{3FFF}, MODE = \bin{0} & \bin{00} & \bin{00000} & A<13:0> \\
+    \hline
     \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2    & \bin{00000} & A<13:0> \\
-    \hexrange{4000}{7FFF}                 & BANK2    & BANK1       & A<13:0>
-  \end{tabu}
+    \hline
+    \hexrange{4000}{7FFF}                 & BANK2    & BANK1       & A<13:0> \\
+    \hline
+  \end{tabular}
 \end{table}
 
 \subsubsection{ROM banking example 1}
@@ -276,17 +287,16 @@ used as the bank number.
 
 \begin{table}[H]
   \caption{Mapping of physical RAM address bits in MBC1 carts}
-  \ttfamily
-  \begin{tabu} to \textwidth {|X[10,l]|X[5,c]|X[13,c]|}
-    \everyrow{\hline}
+  \begin{tabular}{|l|c|c|}
     \hline
-    \rowfont{\rmfamily}
     & Bank number & Address within bank \\
-    \rowfont{\rmfamily}
     RAM address bits                      & 14-13    & 12-0    \\
+    \hline
     \hexrange{A000}{BFFF}, MODE = \bin{0} & \bin{00} & A<12:0> \\
-    \hexrange{A000}{BFFF}, MODE = \bin{1} & BANK2    & A<12:0>
-  \end{tabu}
+    \hline
+    \hexrange{A000}{BFFF}, MODE = \bin{1} & BANK2    & A<12:0> \\
+    \hline
+  \end{tabular}
 \end{table}
 
 \subsubsection{RAM banking example 1}
@@ -338,18 +348,19 @@ register value.
 
 \begin{table}[H]
   \caption{Mapping of physical ROM address bits in MBC1 multicarts}
-  \ttfamily
-  \begin{tabu} to \textwidth {|X[10,l]|X[2,c]|X[5,c]|X[14,c]|}
-    \everyrow{\hline}
+  \begin{tabular}{|l|c|c|c|}
     \hline
-    \rowfont{\rmfamily}
-    & \multicolumn2{c|}{Bank number} & Address within bank \\
-    \rowfont{\rmfamily}
+    & \multicolumn{2}{c|}{Bank number} & Address within bank \\
+    \hline
     ROM address bits                      & 19-18    & 17-14      & 13-0    \\
+    \hline
     \hexrange{0000}{3FFF}, MODE = \bin{0} & \bin{00} & \bin{0000} & A<13:0> \\
+    \hline
     \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2    & \bin{0000} & A<13:0> \\
-    \hexrange{4000}{7FFF}                 & BANK2    & BANK1<3:0> & A<13:0>
-  \end{tabu}
+    \hline
+    \hexrange{4000}{7FFF}                 & BANK2    & BANK1<3:0> & A<13:0> \\
+    \hline
+  \end{tabular}
 \end{table}
 
 \subsubsection{ROM banking example 1}
