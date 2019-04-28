@@ -1,5 +1,5 @@
 TARGET := gbctr
-PDFLATEX ?= xelatex -shell-escape
+PDFLATEX ?= xelatex -shell-escape -halt-on-error
 
 ifeq ($(TRAVIS_BRANCH),master)
 REVISION := "$(shell git rev-list --count master)"
