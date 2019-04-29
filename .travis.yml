@@ -5,6 +5,7 @@ language: c
 addons:
   apt:
     packages:
+      - cmake
       - latex-xcolor
       - lmodern
       - pgf
@@ -40,9 +41,10 @@ before_script:
   - git lfs pull
 
 script:
+  - cmake .
   - make
 
 after_success:
   - eval "$(ssh-agent -s)"
   - ssh-add .travis/id_rsa
-  - rsync -qt -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=quiet -p $DEPLOY_PORT -l travis" gbctr.pdf $DEPLOY_HOST:gb-docs/gbctr.pdf > /dev/null 2>&1
+  - rsync -qt -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=quiet -p $DEPLOY_PORT -l travis" build/gbctr.pdf $DEPLOY_HOST:gb-docs/gbctr.pdf > /dev/null 2>&1

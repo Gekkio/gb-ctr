@@ -4,11 +4,14 @@
 *.swp
 
 /_minted-gbctr
-/config.tex
-/revision.tex
-/*.pdf
 *.aux
 *.bbl
 *.blg
 *.out
 *.toc
+
+build/
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
