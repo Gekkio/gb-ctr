@@ -1,0 +1,74 @@
+\chapter{MBC2 mapper chip}
+
+MBC2 supports ROM sizes up to 2 Mbit (16 banks of \hex{4000} bytes) and
+includes an internal 512x4 bit RAM array, which is its unique feature. The
+information in this section is based on my MBC2 research, Tauwasser's research
+notes \cite{tauwasser_mbc2}, and Pan Docs \cite{pandocs}.
+
+\begin{speculation}
+  MBC1 is strictly more powerful than MBC2, because it supports more ROM and
+  RAM. This raises a very important question: why does MBC2 exist? It's
+  possible that Nintendo tried to integrate a small amount of RAM on the MBC
+  chip for cost reasons, but it seems that this didn't work out very well since
+  all later MBCs revert this design decision and use separate RAM chips.
+\end{speculation}
+
+\section{MBC2 registers}
+
+\begin{caveat}
+  These registers don't have any standard names and are usually referred to
+  using their address ranges or purposes instead. This document uses names to
+  clarify which register is meant when referring to one.
+\end{caveat}
+
+The MBC2 chip includes two registers that affect the behaviour of the chip.
+
+\begin{register}[H]
+  \caption{RAMG - MBC2 RAM gate register}
+  {
+    \ttfamily
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+      \hline
+      U                     & U                     & U                     & U                     & W-0                                    & W-0 & W-0 & W-0   \\
+      \hline
+      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn{4}{c|}{RAMG<3:0>} \\
+      \hline
+      bit 7                 & 6                     & 5                     & 4                     & 3                                      & 2   & 1   & bit 0 \\
+      \hline
+    \end{tabularx}
+  }
+
+  \begin{description}[leftmargin=5em, style=nextline]
+    \item[bit 7-4]
+      \textbf{Unimplemented}: Ignored during writes
+    \item[bit 3-0]
+      \textbf{RAMG<3:0>}: RAM gate register \\
+      \bin{1010}= enable access to chip RAM \\
+      All other values disable access to chip RAM
+  \end{description}
+\end{register}
+
+\begin{register}[H]
+  \caption{ROMB - MBC2 ROM bank register}
+  {
+    \ttfamily
+    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+      \hline
+      U                     & U                     & U                     & U                     & W-0                                    & W-0 & W-0 & W-1   \\
+      \hline
+      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn{4}{c|}{ROMB<3:0>} \\
+      \hline
+      bit 7                 & 6                     & 5                     & 4                     & 3                                      & 2   & 1   & bit 0 \\
+      \hline
+    \end{tabularx}
+  }
+
+  \begin{description}[leftmargin=5em, style=nextline]
+    \item[bit 7-4]
+      \textbf{Unimplemented}: Ignored during writes
+    \item[bit 3-0]
+      \textbf{ROMB<3:0>}: ROM bank register \\
+      Never contains the value \bin{0000}. \\
+      If \bin{0000} is written, the resulting value will be \bin{0001} instead.
+  \end{description}
+\end{register}
