@@ -22,14 +22,14 @@ All registers are smaller than 8 bits, and unused bits are simply ignored
 during writes. The registers are not directly readable.
 
 \begin{register}[H]
-  \caption{\hexrange{0000}{1FFF} - RAM\_EN - MBC1 RAM enable register}
+  \caption{\hexrange{0000}{1FFF} - RAMG - MBC1 RAM gate register}
   {
     \ttfamily
     \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U                     & U                     & U                     & U                     & W-0                                    & W-0 & W-0 & W-0   \\
       \hline
-      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn{4}{c|}{RAM\_EN<3:0>} \\
+      \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \cellcolor{LightGray} & \multicolumn{4}{c|}{RAMG<3:0>} \\
       \hline
       bit 7                 & 6                     & 5                     & 4                     & 3                                      & 2   & 1   & bit 0 \\
       \hline
@@ -40,17 +40,17 @@ during writes. The registers are not directly readable.
     \item[bit 7-4]
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 3-0]
-      \textbf{RAM\_EN<3:0>}: RAM enable register \\
+      \textbf{RAMG<3:0>}: RAM gate register \\
       \bin{1010}= enable access to cartridge RAM \\
       All other values disable access to cartridge RAM
   \end{description}
 \end{register}
 
-The RAM\_EN register is used to enable access to the cartridge SRAM if one
-exists on the cartridge circuit board. RAM access is disabled by default but
-can be enabled by writing to the \hexrange{0000}{1FFF} address range a value
-with the bit pattern \bin{1010} in the lower nibble. Upper bits don't
-matter, but any other bit pattern in the lower nibble disables access to RAM.
+The RAMG register is used to enable access to the cartridge SRAM if one exists
+on the cartridge circuit board. RAM access is disabled by default but can be
+enabled by writing to the \hexrange{0000}{1FFF} address range a value with the
+bit pattern \bin{1010} in the lower nibble. Upper bits don't matter, but any
+other bit pattern in the lower nibble disables access to RAM.
 
 When RAM access is disabled, all writes to the external RAM area
 \hexrange{A000}{BFFF} are ignored, and reads return \hex{FF}. Pan Docs
@@ -58,9 +58,9 @@ recommends disabling RAM when it's not being accessed to protect the contents
 \cite{pandocs}.
 
 \begin{speculation}
-  We don't know the physical implementation of RAM\_EN, but it's certainly
-  possible that the \bin{1010} bit pattern check is done at write time and
-  the register actually consists of just a single bit.
+  We don't know the physical implementation of RAMG, but it's certainly
+  possible that the \bin{1010} bit pattern check is done at write time and the
+  register actually consists of just a single bit.
 \end{speculation}
 
 \begin{register}[H]
@@ -172,8 +172,9 @@ the corresponding ROM pins, and the remaining ROM pins (A14-A20) are controlled
 by the MBC1. These remaining pins form the ROM bank number.
 
 When the \hexrange{0000}{3FFF} address range is accessed, the effective bank
-number depends on the MODE register. In MODE 0 the bank number is always 0, but
-in MODE 1 it's formed by shifting the BANK2 register value left by 5 bits.
+number depends on the MODE register. In MODE \bin{0} the bank number is always
+0, but in MODE \bin{1} it's formed by shifting the BANK2 register value left by
+5 bits.
 
 When the \hexrange{4000}{7FFF} addess range is accessed, the effective bank
 number is always a combination of BANK1 and BANK2 register values.
@@ -185,17 +186,19 @@ ignored because those bits are simply not connected to the ROM.
 
 \begin{table}[H]
   \caption{Mapping of physical ROM address bits in MBC1 carts}
+  \centering
   \begin{tabular}{|l|c|c|c|}
     \hline
-    & \multicolumn{2}{c|}{Bank number} & Address within bank \\
+    & \multicolumn{3}{c|}{ROM address bits} \\
+    Accessed address & \multicolumn{2}{c|}{Bank number} & Address within bank \\
     \hline
-    ROM address bits                      & 20-19    & 18-14       & 13-0    \\
+    & 20-19 & 18-14 & 13-0 \\
     \hline
     \hexrange{0000}{3FFF}, MODE = \bin{0} & \bin{00} & \bin{00000} & A<13:0> \\
     \hline
-    \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2    & \bin{00000} & A<13:0> \\
+    \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2 & \bin{00000} & A<13:0> \\
     \hline
-    \hexrange{4000}{7FFF}                 & BANK2    & BANK1       & A<13:0> \\
+    \hexrange{4000}{7FFF} & BANK2 & BANK1 & A<13:0> \\
     \hline
   \end{tabular}
 \end{table}
@@ -272,8 +275,8 @@ constructed in the following way:
 \section{RAM in the \hexrange{A000}{BFFF} area}
 
 Some MBC1 carts include SRAM, which is mapped to the \hexrange{A000}{BFFF}
-area. If no RAM is present, or RAM is not enabled with the RAM\_EN register,
-all reads return \hex{FF} and writes have no effect.
+area. If no RAM is present, or RAM is not enabled with the RAMG register, all
+reads return \hex{FF} and writes have no effect.
 
 On boards that have RAM, the A0-A12 cartridge bus signals are connected
 directly to the corresponding RAM pins, and pins A13-A14 are controlled by the
@@ -281,20 +284,23 @@ MBC1. Most of the time the RAM size is 64 Kbit, which corresponds to a single
 bank of \hex{2000} bytes. With larger RAM sizes the BANK2 register value can be
 used for RAM banking to provide the two high address bits.
 
-In MODE 0 the BANK2 register value is not used, so the first RAM bank is always
-mapped to the \hexrange{A000}{BFFF} area. In MODE 1 the BANK2 register value is
-used as the bank number.
+In MODE \bin{0} the BANK2 register value is not used, so the first RAM bank is
+always mapped to the \hexrange{A000}{BFFF} area. In MODE \bin{1} the BANK2
+register value is used as the bank number.
 
 \begin{table}[H]
   \caption{Mapping of physical RAM address bits in MBC1 carts}
+  \centering
   \begin{tabular}{|l|c|c|}
     \hline
-    & Bank number & Address within bank \\
-    RAM address bits                      & 14-13    & 12-0    \\
+    & \multicolumn{2}{c|}{RAM address bits} \\
+    Accessed address & Bank number & Address within bank \\
+    \hline
+    & 14-13 & 12-0 \\
     \hline
     \hexrange{A000}{BFFF}, MODE = \bin{0} & \bin{00} & A<12:0> \\
     \hline
-    \hexrange{A000}{BFFF}, MODE = \bin{1} & BANK2    & A<12:0> \\
+    \hexrange{A000}{BFFF}, MODE = \bin{1} & BANK2 & A<12:0> \\
     \hline
   \end{tabular}
 \end{table}
@@ -302,9 +308,9 @@ used as the bank number.
 \subsubsection{RAM banking example 1}
 
 Let's assume we have previously written \bin{10} to the BANK2 register, MODE is
-\bin{1}, RAM\_EN is \bin{1010} and we are now reading a byte from \hex{B123}.
-The actual physical RAM address that will be read is going to be \hex{5123} and
-is constructed in the following way:
+\bin{1}, RAMG is \bin{1010} and we are now reading a byte from \hex{B123}.  The
+actual physical RAM address that will be read is going to be \hex{5123} and is
+constructed in the following way:
 
 \begin{description}[leftmargin=15em,style=nextline]
   \item[Value of the BANK2 register]
@@ -337,28 +343,30 @@ In MBC1 multicarts bit 4 of the BANK1 register is not physically connected to
 anything, so it's skipped. This means that the bank number is actually a 6-bit
 number. In all known MBC1 multicarts the games reserve 16 banks each, so BANK2
 can actually be considered "game number", while BANK1 is the internal bank
-number within the selected game. At reset BANK2 is \bin{00}, and the "game"
-in this slot is actually a game selection menu. The menu code selects MODE 1
+number within the selected game. At reset BANK2 is \bin{00}, and the "game" in
+this slot is actually a game selection menu. The menu code selects MODE \bin{1}
 and writes the game number to BANK2 once the user selects a game.
 
 From a ROM banking point of view, multicarts simply skip bit 4 of the BANK1
-register, but otherwise the behaviour is the same. MODE 1 guarantees that all
-ROM accesses, including accesses to \hexrange{0000}{3FFF}, use the BANK2
+register, but otherwise the behaviour is the same. MODE \bin{1} guarantees that
+all ROM accesses, including accesses to \hexrange{0000}{3FFF}, use the BANK2
 register value.
 
 \begin{table}[H]
   \caption{Mapping of physical ROM address bits in MBC1 multicarts}
+  \centering
   \begin{tabular}{|l|c|c|c|}
     \hline
-    & \multicolumn{2}{c|}{Bank number} & Address within bank \\
+    & \multicolumn{3}{c|}{ROM address bits} \\
+    Accessed address & \multicolumn{2}{c|}{Bank number} & Address within bank \\
     \hline
-    ROM address bits                      & 19-18    & 17-14      & 13-0    \\
+    & 19-18 & 17-14 & 13-0 \\
     \hline
     \hexrange{0000}{3FFF}, MODE = \bin{0} & \bin{00} & \bin{0000} & A<13:0> \\
     \hline
-    \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2    & \bin{0000} & A<13:0> \\
+    \hexrange{0000}{3FFF}, MODE = \bin{1} & BANK2 & \bin{0000} & A<13:0> \\
     \hline
-    \hexrange{4000}{7FFF}                 & BANK2    & BANK1<3:0> & A<13:0> \\
+    \hexrange{4000}{7FFF} & BANK2 & BANK1<3:0> & A<13:0> \\
     \hline
   \end{tabular}
 \end{table}
@@ -426,8 +434,8 @@ need to be considered in ROM dumping code.
 
 Banks \hex{20}, \hex{40} and \hex{60} can only be read from the
 \hexrange{0000}{3FFF} memory area and only when MODE register value is \bin{1}.
-Using MODE 1 has no undesirable effects when doing ROM dumping, so using it at
-all times is recommended for simplicity.
+Using MODE \bin{1} has no undesirable effects when doing ROM dumping, so using
+it at all times is recommended for simplicity.
 
 Multicarts should be detected using the logo check described earlier, and if a
 multicart is detected, BANK1 should be considered a 4-bit register in the
