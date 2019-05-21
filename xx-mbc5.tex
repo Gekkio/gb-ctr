@@ -47,7 +47,7 @@ recommends disabling RAM when it's not being accessed to protect the contents
 \end{speculation}
 
 \begin{register}[H]
-  \caption{\hexrange{2000}{3FFF} - ROMB0 - MBC5 lower ROM bank register}
+  \caption{\hexrange{2000}{2FFF} - ROMB0 - MBC5 lower ROM bank register}
 
   {
     \ttfamily
@@ -72,7 +72,7 @@ The 8-bit ROMB0 register is used as the lower 8 bits of the ROM bank number
 when the CPU accesses the \hexrange{4000}{7FFF} memory area.
 
 \begin{register}[H]
-  \caption{\hexrange{2000}{3FFF} - ROMB1 - MBC5 upper ROM bank register}
+  \caption{\hexrange{3000}{3FFF} - ROMB1 - MBC5 upper ROM bank register}
 
   {
     \ttfamily
