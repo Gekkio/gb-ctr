@@ -47,6 +47,7 @@ add_latex_document(gbctr.tex
     config.tex xx-dma.tex xx-external-bus.tex xx-instruction-set.tex
     xx-mbc1.tex xx-mbc2.tex xx-mbc3.tex xx-mbc30.tex xx-mbc5.tex xx-mbc6.tex xx-huc1.tex xx-huc3.tex
     xx-memory-map.tex xx-opcode-tables.tex
-    code-snippets/mbc1_dump.py
+    code-snippets/mbc1_rom_dump.py
+    code-snippets/mbc2_rom_dump.py
   CONFIGURE config.tex
   BIBFILES gbctr.bib)
