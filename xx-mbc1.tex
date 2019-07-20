@@ -53,7 +53,7 @@ bit pattern \bin{1010} in the lower nibble. Upper bits don't matter, but any
 other bit pattern in the lower nibble disables access to RAM.
 
 When RAM access is disabled, all writes to the external RAM area
-\hexrange{A000}{BFFF} are ignored, and reads return \hex{FF}. Pan Docs
+\hexrange{A000}{BFFF} are ignored, and reads return undefined values. Pan Docs
 recommends disabling RAM when it's not being accessed to protect the contents
 \cite{pandocs}.
 
@@ -276,7 +276,7 @@ constructed in the following way:
 
 Some MBC1 carts include SRAM, which is mapped to the \hexrange{A000}{BFFF}
 area. If no RAM is present, or RAM is not enabled with the RAMG register, all
-reads return \hex{FF} and writes have no effect.
+reads return undefined values and writes have no effect.
 
 On boards that have RAM, the A0-A12 cartridge bus signals are connected
 directly to the corresponding RAM pins, and pins A13-A14 are controlled by the
