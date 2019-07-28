@@ -5,7 +5,7 @@
 OAM DMA is a high-throughput mechanism for copying data to the OAM area (a.k.a.
 Object Attribute Memory, a.k.a. sprite memory). It can copy one byte per
 machine cycle without involving the CPU at all, which is much faster than the
-fastest possible \texttt{memcpy} routine that can be written with the LR35902
+fastest possible \texttt{memcpy} routine that can be written with the SM83
 instruction set. However, a transfer cannot be cancelled and the transfer
 length cannot be controlled, so the DMA transfer always updates the entire OAM
 area (= 160 bytes) even if you actually want to just update the first couple of
