@@ -46,8 +46,13 @@ add_latex_document(gbctr.tex
   INPUTS
     config.tex xx-dma.tex xx-external-bus.tex xx-instruction-set.tex
     xx-mbc1.tex xx-mbc2.tex xx-mbc3.tex xx-mbc30.tex xx-mbc5.tex xx-mbc6.tex xx-huc1.tex xx-huc3.tex
-    xx-memory-map.tex xx-opcode-tables.tex
+    xx-memory-map.tex xx-opcode-tables.tex xx-pinouts.tex
     code-snippets/mbc1_rom_dump.py
     code-snippets/mbc2_rom_dump.py
+    images/DMG-CPU-pinout.pdf
+    images/MGB-CPU-pinout.pdf
+    images/MBC1-pinout.pdf
+    images/MBC2-pinout.pdf
+    images/MBC5-pinout.pdf
   CONFIGURE config.tex
   BIBFILES gbctr.bib)
