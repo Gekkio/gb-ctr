@@ -1,6 +1,6 @@
 # File: UseLATEX.cmake
 # CMAKE commands to actually use the LaTeX compiler
-# Version: 2.4.9
+# Version: 2.6.1
 # Author: Kenneth Moreland <kmorel@sandia.gov>
 #
 # Copyright 2004, 2015 Sandia Corporation.
@@ -114,6 +114,22 @@
 #       in the multibib package.
 #
 # History:
+#
+# 2.6.1 Fix issue with detecting long undefined reference warnings that
+#       LaTeX "helpfully" split across lines (and which fowled up our
+#       regex).
+#
+# 2.6.0 Skip image conversion targets that are not used when a force option
+#       is given. This helps prevent errors for missing conversion programs
+#       that are not needed. (Thanks to Martin Wetzel.)
+#
+# 2.5.0 Parse biber output for warnings.
+#
+#       For regular bibtex, you get warnings about undefined references
+#       when you run latex. However, when using biber, biber itself prints
+#       out the said warning and latex sees nothing. Thus, when using biber
+#       the regular output is now suppressed and the log file is scanned
+#       for potential issues.
 #
 # 2.4.9 Use biblatex.cfg file if it exists and the USE_BIBLATEX option is ON.
 #
@@ -431,10 +447,6 @@ endfunction(latex_get_filename_component)
 # Functions that perform processing during a LaTeX build.
 #############################################################################
 function(latex_execute_latex)
-  if(NOT LATEX_TARGET)
-    message(SEND_ERROR "Need to define LATEX_TARGET")
-  endif()
-
   if(NOT LATEX_WORKING_DIRECTORY)
     message(SEND_ERROR "Need to define LATEX_WORKING_DIRECTORY")
   endif()
@@ -445,6 +457,10 @@ function(latex_execute_latex)
 
   if(NOT LATEX_OUTPUT_FILE)
     message(SEND_ERROR "Need to define LATEX_OUTPUT_FILE")
+  endif()
+
+  if(NOT LATEX_LOG_FILE)
+    message(SEND_ERROR "Need to define LATEX_LOG_FILE")
   endif()
 
   set(full_command_original "${LATEX_FULL_COMMAND}")
@@ -472,6 +488,8 @@ function(latex_execute_latex)
     COMMAND ${LATEX_FULL_COMMAND}
     WORKING_DIRECTORY "${LATEX_WORKING_DIRECTORY_SEP}"
     RESULT_VARIABLE execute_result
+    OUTPUT_VARIABLE ignore
+    ERROR_VARIABLE ignore
     )
 
   if(NOT ${execute_result} EQUAL 0)
@@ -482,10 +500,9 @@ function(latex_execute_latex)
     message("\n\nLaTeX command failed")
     message("${full_command_original}")
     message("Log output:")
-    file(READ "${LATEX_WORKING_DIRECTORY}/${LATEX_TARGET}.log" log_output)
+    file(READ "${LATEX_WORKING_DIRECTORY}/${LATEX_LOG_FILE}" log_output)
     message("${log_output}")
-    message(FATAL_ERROR
-      "Successfully executed LaTeX, but LaTeX returned an error.")
+    message(FATAL_ERROR "Executed LaTeX, but LaTeX returned an error.")
   endif()
 endfunction(latex_execute_latex)
 
@@ -739,6 +756,39 @@ function(latex_correct_synctex)
 endfunction(latex_correct_synctex)
 
 function(latex_check_important_warnings)
+  # Check for biber warnings/errors if that was run
+  set(bib_log_file ${LATEX_TARGET}.blg)
+  if(EXISTS ${bib_log_file})
+    file(READ ${bib_log_file} bib_log)
+    if(bib_log MATCHES "INFO - This is Biber")
+      message("\nChecking ${bib_log_file} for Biber warnings/errors.")
+
+      string(REGEX MATCHALL
+        "[A-Z]+ - [^\n]*"
+        biber_messages
+        "${bib_log}")
+
+      set(found_error)
+      foreach(message ${biber_messages})
+        if(NOT message MATCHES  "^INFO - ")
+          set(found_error TRUE)
+          message("${message}")
+        endif()
+      endforeach(message)
+
+      if(found_error)
+        latex_get_filename_component(log_file_path ${bib_log_file} ABSOLUTE)
+        message("\nConsult ${log_file_path} for more information on Biber output.")
+      else()
+        message("No known important Biber output found.")
+      endif(found_error)
+    else() # Biber output not in log file
+      message("Skipping biber checks (biber not used)")
+    endif()
+  else() # No bib log file
+    message("Skipping bibliography checks (not run)")
+  endif()
+
   set(log_file ${LATEX_TARGET}.log)
 
   message("\nChecking ${log_file} for important warnings.")
@@ -755,15 +805,15 @@ function(latex_check_important_warnings)
 
   file(READ ${log_file} log)
 
-  # Check for undefined references
+  # Check for declared LaTeX warnings
   string(REGEX MATCHALL
-    "\n[^\n]*Reference[^\n]*undefined[^\n]*"
-    reference_warnings
+    "\nLaTeX Warning:[^\n]*"
+    latex_warnings
     "${log}")
-  if(reference_warnings)
+  if(latex_warnings)
     set(found_error TRUE)
-    message("\nFound missing reference warnings.")
-    foreach(warning ${reference_warnings})
+    message("\nFound declared LaTeX warnings.")
+    foreach(warning ${latex_warnings})
       string(STRIP "${warning}" warning_no_newline)
       message("${warning_no_newline}")
     endforeach(warning)
@@ -1261,19 +1311,23 @@ function(latex_process_images dvi_outputs_var pdf_outputs_var)
       make_directory("${path}")
 
       # Do conversions for dvi.
-      latex_convert_image(output_files "${file}" .eps "${convert_flags}"
-        "${LATEX_DVI_IMAGE_EXTENSIONS}" "${ARGN}")
-      list(APPEND dvi_outputs ${output_files})
+      if(NOT LATEX_FORCE_PDF)
+          latex_convert_image(output_files "${file}" .eps "${convert_flags}"
+            "${LATEX_DVI_IMAGE_EXTENSIONS}" "${ARGN}")
+          list(APPEND dvi_outputs ${output_files})
+      endif ()
 
       # Do conversions for pdf.
-      if(is_raster)
-        latex_convert_image(output_files "${file}" .png "${convert_flags}"
-          "${LATEX_PDF_IMAGE_EXTENSIONS}" "${ARGN}")
-        list(APPEND pdf_outputs ${output_files})
-      else()
-        latex_convert_image(output_files "${file}" .pdf "${convert_flags}"
-          "${LATEX_PDF_IMAGE_EXTENSIONS}" "${ARGN}")
-        list(APPEND pdf_outputs ${output_files})
+      if(NOT LATEX_FORCE_DVI AND NOT LATEX_FORCE_HTML)
+        if(is_raster)
+          latex_convert_image(output_files "${file}" .png "${convert_flags}"
+            "${LATEX_PDF_IMAGE_EXTENSIONS}" "${ARGN}")
+          list(APPEND pdf_outputs ${output_files})
+        else()
+          latex_convert_image(output_files "${file}" .pdf "${convert_flags}"
+            "${LATEX_PDF_IMAGE_EXTENSIONS}" "${ARGN}")
+          list(APPEND pdf_outputs ${output_files})
+        endif()
       endif()
     else()
       message(WARNING "Could not find file ${CMAKE_CURRENT_SOURCE_DIR}/${file}.  Are you sure you gave relative paths to IMAGES?")
@@ -1429,10 +1483,10 @@ function(add_latex_targets_internal)
     set(latex_build_command
       ${CMAKE_COMMAND}
         -D LATEX_BUILD_COMMAND=execute_latex
-        -D LATEX_TARGET=${LATEX_TARGET}
         -D LATEX_WORKING_DIRECTORY="${output_dir}"
         -D LATEX_FULL_COMMAND="${latex_build_command}"
         -D LATEX_OUTPUT_FILE="${LATEX_TARGET}.dvi"
+        -D LATEX_LOG_FILE="${LATEX_TARGET}.log"
         -P "${LATEX_USE_LATEX_LOCATION}"
       )
   endif()
@@ -1445,10 +1499,10 @@ function(add_latex_targets_internal)
     set(pdflatex_build_command
       ${CMAKE_COMMAND}
         -D LATEX_BUILD_COMMAND=execute_latex
-        -D LATEX_TARGET=${LATEX_TARGET}
         -D LATEX_WORKING_DIRECTORY="${output_dir}"
         -D LATEX_FULL_COMMAND="${pdflatex_build_command}"
         -D LATEX_OUTPUT_FILE="${LATEX_TARGET}.pdf"
+        -D LATEX_LOG_FILE="${LATEX_TARGET}.log"
         -P "${LATEX_USE_LATEX_LOCATION}"
       )
   endif()
@@ -1600,6 +1654,7 @@ function(add_latex_targets_internal)
   endif()
 
   if(LATEX_BIBFILES)
+    set(suppress_bib_output)
     if(LATEX_USE_BIBLATEX)
       if(NOT BIBER_COMPILER)
         message(SEND_ERROR "I need the biber command.")
@@ -1607,7 +1662,12 @@ function(add_latex_targets_internal)
       set(bib_compiler ${BIBER_COMPILER})
       set(bib_compiler_flags ${BIBER_COMPILER_ARGS})
 
-      if (LATEX_USE_BIBLATEX_CONFIG)
+      if(NOT BIBER_COMPILER_ARGS MATCHES ".*-q.*")
+        # Only suppress bib output if the quiet option is not specified.
+        set(suppress_bib_output TRUE)
+      endif()
+
+      if(LATEX_USE_BIBLATEX_CONFIG)
         list(APPEND auxiliary_clean_files ${output_dir}/biblatex.cfg)
         list(APPEND make_dvi_depends ${output_dir}/biblatex.cfg)
         list(APPEND make_pdf_depends ${output_dir}/biblatex.cfg)
@@ -1617,6 +1677,7 @@ function(add_latex_targets_internal)
       set(bib_compiler_flags ${BIBTEX_COMPILER_ARGS})
     endif() 
     if(LATEX_MULTIBIB_NEWCITES)
+      # Suppressed bib output currently not supported for multibib
       foreach (multibib_auxfile ${LATEX_MULTIBIB_NEWCITES})
         latex_get_filename_component(multibib_target ${multibib_auxfile} NAME_WE)
         set(make_dvi_command ${make_dvi_command}
@@ -1629,12 +1690,25 @@ function(add_latex_targets_internal)
           ${output_dir}/${multibib_target}.aux)
       endforeach (multibib_auxfile ${LATEX_MULTIBIB_NEWCITES})
     else()
+      set(full_bib_command
+        ${bib_compiler} ${bib_compiler_flags} ${LATEX_TARGET})
+      if(suppress_bib_output)
+        set(full_bib_command
+          ${CMAKE_COMMAND}
+          -D LATEX_BUILD_COMMAND=execute_latex
+          -D LATEX_WORKING_DIRECTORY="${output_dir}"
+          -D LATEX_FULL_COMMAND="${full_bib_command}"
+          -D LATEX_OUTPUT_FILE="${LATEX_TARGET}.bbl"
+          -D LATEX_LOG_FILE="${LATEX_TARGET}.blg"
+          -P "${LATEX_USE_LATEX_LOCATION}"
+          )
+      endif()
       set(make_dvi_command ${make_dvi_command}
         COMMAND ${CMAKE_COMMAND} -E chdir ${output_dir}
-        ${bib_compiler} ${bib_compiler_flags} ${LATEX_TARGET})
+        ${full_bib_command})
       set(make_pdf_command ${make_pdf_command}
         COMMAND ${CMAKE_COMMAND} -E chdir ${output_dir}
-        ${bib_compiler} ${bib_compiler_flags} ${LATEX_TARGET})
+        ${full_bib_command})
     endif()
 
     foreach (bibfile ${LATEX_BIBFILES})
