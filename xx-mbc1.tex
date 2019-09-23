@@ -203,7 +203,7 @@ ignored because those bits are simply not connected to the ROM.
   \end{tabular}
 \end{table}
 
-\subsubsection{ROM banking example 1}
+\subsection{ROM banking example 1}
 
 Let's assume we have previously written \hex{12} to the BANK1 register and
 \bin{01} to the BANK2 register. The effective bank number during ROM reads
@@ -237,7 +237,7 @@ depends on which address range we read and on the value of the MODE register:
   }
 \end{description}
 
-\subsubsection{ROM banking example 2}
+\subsection{ROM banking example 2}
 
 Let's assume we have previously requested ROM bank number 68, MBC1 mode is
 \bin{0}, and we are now reading a byte from \hex{72A7}. The actual
@@ -305,7 +305,7 @@ register value is used as the bank number.
   \end{tabular}
 \end{table}
 
-\subsubsection{RAM banking example 1}
+\subsection{RAM banking example 1}
 
 Let's assume we have previously written \bin{10} to the BANK2 register, MODE is
 \bin{1}, RAMG is \bin{1010} and we are now reading a byte from \hex{B123}.  The
@@ -371,7 +371,7 @@ register value.
   \end{tabular}
 \end{table}
 
-\subsubsection{ROM banking example 1}
+\subsection{ROM banking example 1}
 
 Let's assume we have previously requested "game number" 3 (= \bin{11})
 and ROM bank number 29 (= \hex{1D}), MBC1 mode is \bin{1}, and we are
@@ -407,7 +407,7 @@ following way:
   }
 \end{description}
 
-\subsubsection{Detecting multicarts}
+\subsection{Detecting multicarts}
 
 MBC1 multicarts are not detectable by simply looking at the ROM header, because
 the ROM type value is just one of the normal MBC1 values. However, detection is
