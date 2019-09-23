@@ -1,0 +1,41 @@
+%!TEX root = ../../gbctr.tex
+%!TEX program = xelatex
+\providecommand{\main}{../..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
+
+\chapter{Boot ROM}
+
+\begin{register}[H]
+  \caption{\hex{FF50} - BOOT - Boot ROM lock register}
+  {
+    \ttfamily
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
+      \hline
+      U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & R/W-0     \\
+      \hline
+      \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & \cellcolor{LightGray} - & BOOT\_OFF \\
+      \hline
+      bit 7                   & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0     \\
+      \hline
+    \end{tabularx}{\parfillskip=0pt\par}
+  }
+
+  \begin{description}[leftmargin=5em, style=nextline]
+    \item[bit 7-1]
+      \textbf{Unimplemented}: Read as \bit{1}
+    \item[bit 0]
+      \textbf{BOOT\_OFF}: Boot ROM lock bit\\
+      \bin{1}= Boot ROM is disabled and \hexrange{0000}{00FF} works normally.\\
+      \bin{0}= Boot ROM is active and intercepts accesses to \hexrange{0000}{00FF}.
+
+      \bigskip
+
+      BOOT\_OFF can only transition from \bin{0} to \bin{1}, so once \bin{1}
+      has been written, the boot ROM is permanently disabled until the next
+      system reset. Writing \bin{0} when BOOT\_OFF is \bin{0} has no effect and
+      doesn't lock the boot ROM.
+  \end{description}
+\end{register}
+
+\end{document}

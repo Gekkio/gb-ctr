@@ -46,7 +46,11 @@ add_latex_document(gbctr.tex
   INPUTS
     config.tex
     chapter/cpu/instruction-set.tex
+    chapter/peripherals/boot-rom.tex
     chapter/peripherals/dma.tex
+    chapter/peripherals/ppu.tex
+    chapter/peripherals/p1.tex
+    chapter/peripherals/serial.tex
     chapter/cartridges/huc1.tex
     chapter/cartridges/huc3.tex
     chapter/cartridges/mbc1.tex
@@ -55,6 +59,9 @@ add_latex_document(gbctr.tex
     chapter/cartridges/mbc30.tex
     chapter/cartridges/mbc5.tex
     chapter/cartridges/mbc6.tex
+    chapter/cartridges/mbc7.tex
+    chapter/cartridges/mmm01.tex
+    chapter/cartridges/tama5.tex
     appendix/external-bus.tex
     appendix/memory-map.tex
     appendix/opcode-tables.tex
