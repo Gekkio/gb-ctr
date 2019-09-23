@@ -3,13 +3,6 @@
 *.log
 *.swp
 
-/_minted-gbctr
-*.aux
-*.bbl
-*.blg
-*.out
-*.toc
-
 build/
 CMakeCache.txt
 CMakeFiles
