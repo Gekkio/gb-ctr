@@ -1,3 +1,5 @@
+%!TEX program = xelatex
+
 \include{config}
 
 \ifnum \draft=1
@@ -235,7 +237,7 @@ Examples:
 
 \part{Game Boy CPU and the Sharp SM83 instruction set}
 
-\include{xx-instruction-set}
+\include{chapter/cpu/instruction-set}
 
 \part{Game Boy CPU peripherals and features}
 
@@ -271,7 +273,7 @@ Examples:
   \end{description}
 \end{register}
 
-\include{xx-dma}
+\include{chapter/peripherals/dma}
 
 \chapter{PPU (Picture Processing Unit)}
 
@@ -456,19 +458,19 @@ Examples:
 
 \part{Game Boy game cartridges}
 
-\include{xx-mbc1}
-\include{xx-mbc2}
-\include{xx-mbc3}
-\include{xx-mbc30}
-\include{xx-mbc5}
-\include{xx-mbc6}
+\include{chapter/cartridges/mbc1}
+\include{chapter/cartridges/mbc2}
+\include{chapter/cartridges/mbc3}
+\include{chapter/cartridges/mbc30}
+\include{chapter/cartridges/mbc5}
+\include{chapter/cartridges/mbc6}
 
 \chapter{MBC7}
 
 TODO.
 
-\include{xx-huc1}
-\include{xx-huc3}
+\include{chapter/cartridges/huc1}
+\include{chapter/cartridges/huc3}
 
 \chapter{MMM01}
 
@@ -483,10 +485,10 @@ TODO.
 \phantomsection
 
 \begin{appendices}
-\include{xx-opcode-tables}
-\include{xx-memory-map}
-\include{xx-external-bus}
-\include{xx-pinouts}
+\include{appendix/opcode-tables}
+\include{appendix/memory-map}
+\include{appendix/external-bus}
+\include{appendix/pinouts}
 \end{appendices}
 
 \bibliography{gbctr}

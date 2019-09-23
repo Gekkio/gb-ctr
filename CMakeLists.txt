@@ -44,9 +44,21 @@ include(third-party/UseLATEX.cmake)
 
 add_latex_document(gbctr.tex
   INPUTS
-    config.tex xx-dma.tex xx-external-bus.tex xx-instruction-set.tex
-    xx-mbc1.tex xx-mbc2.tex xx-mbc3.tex xx-mbc30.tex xx-mbc5.tex xx-mbc6.tex xx-huc1.tex xx-huc3.tex
-    xx-memory-map.tex xx-opcode-tables.tex xx-pinouts.tex
+    config.tex
+    chapter/cpu/instruction-set.tex
+    chapter/peripherals/dma.tex
+    chapter/cartridges/huc1.tex
+    chapter/cartridges/huc3.tex
+    chapter/cartridges/mbc1.tex
+    chapter/cartridges/mbc2.tex
+    chapter/cartridges/mbc3.tex
+    chapter/cartridges/mbc30.tex
+    chapter/cartridges/mbc5.tex
+    chapter/cartridges/mbc6.tex
+    appendix/external-bus.tex
+    appendix/memory-map.tex
+    appendix/opcode-tables.tex
+    appendix/pinouts.tex
     code-snippets/mbc1_rom_dump.py
     code-snippets/mbc2_rom_dump.py
     images/DMG-CPU-pinout.pdf
