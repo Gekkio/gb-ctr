@@ -1,2 +1,6 @@
 \newcommand{\Revision}{@REVISION@}
-\newcount\draft\draft=@DRAFT@
+\if @DRAFT@0
+  \newcount\draft\draft=0
+\else
+  \newcount\draft\draft=1
+\fi
