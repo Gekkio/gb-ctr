@@ -1,4 +1,8 @@
 %!TEX program = xelatex
+\providecommand{\main}{.} 
+
+\newcount\draft\draft=1
+\newcommand{\Revision}{}
 
 \include{config}
 
@@ -25,13 +29,14 @@
 \usepackage{tikz-timing}
 \usepackage{wrapfig}
 \usepackage{float}
-\usepackage{minted}
+\usepackage[cache=false]{minted}
 \usepackage{enumitem}
-\usepackage[most]{tcolorbox}
+\usepackage[many]{tcolorbox}
 \usepackage{fontawesome}
 \usepackage{hyperref}
 \usepackage[all]{hypcap}
 \usepackage{hyphenat}
+\usepackage{subfiles}
 
 \usetikztiminglibrary{either}
 
@@ -45,7 +50,7 @@
 
 \usemintedstyle{autumn}
 
-\graphicspath{{images/}}
+\graphicspath{{\main/images/}}
 
 \bibliographystyle{plain}
 
@@ -98,9 +103,9 @@
 \newcommand{\hex}[1]{\texttt{0x#1}}
 \newcommand{\hexrange}[2]{\texttt{0x#1\hyp{}0x#2}}
 
-\newcolumntype{L}{>{\raggedright\arraybackslash}X}%
-\newcolumntype{C}{>{\centering\arraybackslash}X}%
-\newcolumntype{R}{>{\raggedleft\arraybackslash}X}%
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
 
 \setcounter{tocdepth}{4}
 
@@ -126,7 +131,9 @@
   \Huge
   IMPORTANT: This document focuses at the moment on 1st and 2nd generation
   devices (models before the Game Boy Color), and some hardware details are
-  very different in later generations. \\
+  very different in later generations.
+
+  \bigskip
 
   Be very careful if you make assumptions about later generation devices based
   on this document!
@@ -173,7 +180,7 @@ Examples:
   \caption{\hex{1234} - This is a hardware register definition}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|C|C|C|C|C|C|C|C|}
+    \begin{tabularx}{\linewidth}{|C|C|C|C|C|C|C|C|}
       \hline
       R/W-0                            & R/W-1                   & U-1                              & R-0  & R-1                      & R-x & W-1 & U-0   \\
       \hline
@@ -181,9 +188,10 @@ Examples:
       \hline
       bit 7                            & 6                       & 5                                & 4    & 3                        & 2   & 1   & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
+  \medskip
   \textbf{Top row legend:}
   \begin{description}[leftmargin=5em, style=nextline]
     \item[R]
@@ -204,10 +212,12 @@ Examples:
       Bit is unknown (e.g. depends on external things such as user input).
   \end{description}
 
-  \textbf{Middle row legend:} \\
+  \medskip
+  \textbf{Middle row legend:}
+
   {
     \ttfamily
-    \begin{tabularx}{0.5\textwidth}{|L|C|}
+    \begin{tabularx}{0.5\linewidth}{|L|C|}
       \hline
       VALUE<1:0>              & \rmfamily Bits 1 and 0 of VALUE  \\
       \hline
@@ -237,7 +247,7 @@ Examples:
 
 \part{Game Boy CPU and the Sharp SM83 instruction set}
 
-\include{chapter/cpu/instruction-set}
+\subfile{chapter/cpu/instruction-set}
 
 \part{Game Boy CPU peripherals and features}
 
@@ -247,7 +257,7 @@ Examples:
   \caption{\hex{FF50} - BOOT - Boot ROM lock register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & R/W-0     \\
       \hline
@@ -255,16 +265,18 @@ Examples:
       \hline
       bit 7                   & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0     \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-1]
       \textbf{Unimplemented}: Read as \bit{1}
     \item[bit 0]
-      \textbf{BOOT\_OFF}: Boot ROM lock bit \\
-      \bin{1}= Boot ROM is disabled and \hexrange{0000}{00FF} works normally. \\
-      \bin{0}= Boot ROM is active and intercepts accesses to \hexrange{0000}{00FF}. \\
+      \textbf{BOOT\_OFF}: Boot ROM lock bit\\
+      \bin{1}= Boot ROM is disabled and \hexrange{0000}{00FF} works normally.\\
+      \bin{0}= Boot ROM is active and intercepts accesses to \hexrange{0000}{00FF}.
+
+      \bigskip
 
       BOOT\_OFF can only transition from \bin{0} to \bin{1}, so once \bin{1}
       has been written, the boot ROM is permanently disabled until the next
@@ -273,7 +285,7 @@ Examples:
   \end{description}
 \end{register}
 
-\include{chapter/peripherals/dma}
+\subfile{chapter/peripherals/dma}
 
 \chapter{PPU (Picture Processing Unit)}
 
@@ -281,7 +293,7 @@ Examples:
   \caption{\hex{FF40} - LCDC - PPU control register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       R/W-0   & R/W-0    & R/W-0   & R/W-0     & R/W-0   & R/W-0     & R/W-0   & R/W-0  \\
       \hline
@@ -289,7 +301,7 @@ Examples:
       \hline
       bit 7   & 6        & 5       & 4         & 3       & 2         & 1       & bit 0  \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 \end{register}
 
@@ -297,7 +309,7 @@ Examples:
   \caption{\hex{FF41} - LCDC - PPU status register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U-1                     & R/W-0     & R/W-0    & R/W-0    & R/W-0    & R/W-0     & R/W-0                                & R/W-0 \\
       \hline
@@ -305,7 +317,7 @@ Examples:
       \hline
       bit 7                   & 6         & 5        & 4        & 3        & 2         & 1                                    & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 \end{register}
 
@@ -313,7 +325,7 @@ Examples:
   \caption{\hex{FF42} - SCY - Vertical scroll register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       R/W-0                           & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \hline
@@ -321,7 +333,7 @@ Examples:
       \hline
       bit 7                           & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 \end{register}
 
@@ -329,7 +341,7 @@ Examples:
   \caption{\hex{FF43} - SCX - Horizontal scroll register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       R/W-0                           & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \hline
@@ -337,7 +349,7 @@ Examples:
       \hline
       bit 7                           & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 \end{register}
 
@@ -345,7 +357,7 @@ Examples:
   \caption{\hex{FF44} - LY - Scanline register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       R/W-0                          & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \hline
@@ -353,7 +365,7 @@ Examples:
       \hline
       bit 7                          & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 \end{register}
 
@@ -361,7 +373,7 @@ Examples:
   \caption{\hex{FF45} - LYC - Scanline compare register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       R/W-0                           & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \hline
@@ -369,7 +381,7 @@ Examples:
       \hline
       bit 7                           & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 \end{register}
 
@@ -379,7 +391,7 @@ Examples:
   \caption{\hex{FF00} - P1 - Joypad/Super Game Boy communication register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U-1                     & U-1                     & W-0 & W-0 & R-x & R-x & R-x & R-x   \\
       \hline
@@ -387,7 +399,7 @@ Examples:
       \hline
       bit 7                   & 6                       & 5   & 4   & 3   & 2   & 1   & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -414,7 +426,7 @@ Examples:
   \caption{\hex{FF01} - SB - Serial data register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       R/W-0                          & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 & R/W-0 \\
       \hline
@@ -422,7 +434,7 @@ Examples:
       \hline
       bit 7                          & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -435,7 +447,7 @@ Examples:
   \caption{\hex{FF02} - SC - Serial control register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       R/W-0   & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & U-1                     & R/W-0    \\
       \hline
@@ -443,7 +455,7 @@ Examples:
       \hline
       bit 7   & 6                       & 5                       & 4                       & 3                       & 2                       & 1                       & bit 0    \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -458,19 +470,19 @@ Examples:
 
 \part{Game Boy game cartridges}
 
-\include{chapter/cartridges/mbc1}
-\include{chapter/cartridges/mbc2}
-\include{chapter/cartridges/mbc3}
-\include{chapter/cartridges/mbc30}
-\include{chapter/cartridges/mbc5}
-\include{chapter/cartridges/mbc6}
+\subfile{chapter/cartridges/mbc1}
+\subfile{chapter/cartridges/mbc2}
+\subfile{chapter/cartridges/mbc3}
+\subfile{chapter/cartridges/mbc30}
+\subfile{chapter/cartridges/mbc5}
+\subfile{chapter/cartridges/mbc6}
 
 \chapter{MBC7}
 
 TODO.
 
-\include{chapter/cartridges/huc1}
-\include{chapter/cartridges/huc3}
+\subfile{chapter/cartridges/huc1}
+\subfile{chapter/cartridges/huc3}
 
 \chapter{MMM01}
 
@@ -485,10 +497,10 @@ TODO.
 \phantomsection
 
 \begin{appendices}
-\include{appendix/opcode-tables}
-\include{appendix/memory-map}
-\include{appendix/external-bus}
-\include{appendix/pinouts}
+\subfile{appendix/opcode-tables}
+\subfile{appendix/memory-map}
+\subfile{appendix/external-bus}
+\subfile{appendix/pinouts}
 \end{appendices}
 
 \bibliography{gbctr}

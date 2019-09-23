@@ -1,5 +1,8 @@
 %!TEX root = ../../gbctr.tex
 %!TEX program = xelatex
+\providecommand{\main}{../..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
 
 \chapter{MBC1 mapper chip}
 
@@ -28,7 +31,7 @@ during writes. The registers are not directly readable.
   \caption{\hexrange{0000}{1FFF} - RAMG - MBC1 RAM gate register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U                     & U                     & U                     & U                     & W-0                                    & W-0 & W-0 & W-0   \\
       \hline
@@ -36,15 +39,15 @@ during writes. The registers are not directly readable.
       \hline
       bit 7                 & 6                     & 5                     & 4                     & 3                                      & 2   & 1   & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-4]
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 3-0]
-      \textbf{RAMG<3:0>}: RAM gate register \\
-      \bin{1010}= enable access to cartridge RAM \\
+      \textbf{RAMG<3:0>}: RAM gate register\\
+      \bin{1010}= enable access to cartridge RAM\\
       All other values disable access to cartridge RAM
   \end{description}
 \end{register}
@@ -71,7 +74,7 @@ recommends disabling RAM when it's not being accessed to protect the contents
 
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U                     & U                     & U                     & W-0                                  & W-0 & W-0 & W-0 & W-1   \\
       \hline
@@ -79,15 +82,15 @@ recommends disabling RAM when it's not being accessed to protect the contents
       \hline
       bit 7                 & 6                     & 5                     & 4                                    & 3   & 2   & 1   & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-5]
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 4-0]
-      \textbf{BANK1<4:0>}: Bank register 1 \\
-      Never contains the value \bin{00000}. \\
+      \textbf{BANK1<4:0>}: Bank register 1\\
+      Never contains the value \bin{00000}.\\
       If \bin{00000} is written, the resulting value will be \bin{00001} instead.
   \end{description}
 \end{register}
@@ -108,7 +111,7 @@ banks actually requests the next bank (e.g.  \hex{21} instead of \hex{20}).
 
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U                     & U                     & U                     & U                     & U                     & U                     & W-0                                  & W-0   \\
       \hline
@@ -116,7 +119,7 @@ banks actually requests the next bank (e.g.  \hex{21} instead of \hex{20}).
       \hline
       bit 7                 & 6                     & 5                     & 4                     & 3                     & 2                     & 1                                    & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
@@ -136,7 +139,7 @@ all 2-bit values are possible.
 
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U                     & U                     & U                     & U                           & U & U & U & W-0   \\
       \hline
@@ -144,16 +147,16 @@ all 2-bit values are possible.
       \hline
       bit 7                 & 6                     & 5                     & 4                              & 3   & 2   & 1   & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-1]
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 0]
-      \textbf{MODE}: Mode register \\
-      \bin{1}= BANK2 affects accesses to \hexrange{0000}{3FFF}, \hexrange{4000}{7FFF}, \hexrange{A000}{BFFF} \\
-      \bin{0}= BANK2 affects only accesses to \hexrange{4000}{7FFF} \\
+      \textbf{MODE}: Mode register\\
+      \bin{1}= BANK2 affects accesses to \hexrange{0000}{3FFF}, \hexrange{4000}{7FFF}, \hexrange{A000}{BFFF}\\
+      \bin{0}= BANK2 affects only accesses to \hexrange{4000}{7FFF}
   \end{description}
 \end{register}
 
@@ -448,3 +451,5 @@ dumping code.
   \inputminted[frame=lines]{python}{code-snippets/mbc1_rom_dump.py}
   \caption{Python pseudo-code for MBC1 ROM dumping}
 \end{listing}
+
+\end{document}

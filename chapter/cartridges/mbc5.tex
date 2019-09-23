@@ -1,5 +1,8 @@
 %!TEX root = ../../gbctr.tex
 %!TEX program = xelatex
+\providecommand{\main}{../..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
 
 \chapter{MBC5 mapper chip}
 
@@ -14,7 +17,7 @@ MBC5 research, and The Cycle-Accurate Game Boy Docs \cite{tcagbd}.
   \caption{\hexrange{0000}{1FFF} - RAMG - MBC5 RAM gate register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       W-0 & W-0 & W-0 & W-0 & W-0 & W-0 & W-0 & W-0 \\
       \hline
@@ -22,13 +25,13 @@ MBC5 research, and The Cycle-Accurate Game Boy Docs \cite{tcagbd}.
       \hline
       bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-0]
-      \textbf{RAMG<7:0>}: RAM gate register \\
-      \bin{00001010}= enable access to cartridge RAM \\
+      \textbf{RAMG<7:0>}: RAM gate register\\
+      \bin{00001010}= enable access to cartridge RAM\\
       All other values disable access to cartridge RAM
   \end{description}
 \end{register}
@@ -54,7 +57,7 @@ recommends disabling RAM when it's not being accessed to protect the contents
 
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       W-0 & W-0 & W-0 & W-0 & W-0 & W-0 & W-0 & W-1 \\
       \hline
@@ -62,12 +65,12 @@ recommends disabling RAM when it's not being accessed to protect the contents
       \hline
       bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-0]
-      \textbf{ROMB0<7:0>}: Lower ROM bank register \\
+      \textbf{ROMB0<7:0>}: Lower ROM bank register
   \end{description}
 \end{register}
 
@@ -79,7 +82,7 @@ when the CPU accesses the \hexrange{4000}{7FFF} memory area.
 
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U & U & U & U & U & U & U & W-0 \\
       \hline
@@ -87,14 +90,14 @@ when the CPU accesses the \hexrange{4000}{7FFF} memory area.
       \hline
       bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-1]
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 0]
-      \textbf{ROMB1}: Upper ROM bank register \\
+      \textbf{ROMB1}: Upper ROM bank register
   \end{description}
 \end{register}
 
@@ -106,7 +109,7 @@ bank number when the CPU accesses the \hexrange{4000}{7FFF} memory area.
 
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U & U & U & U & W-0 & W-0 & W-0 & W-0 \\
       \hline
@@ -114,16 +117,18 @@ bank number when the CPU accesses the \hexrange{4000}{7FFF} memory area.
       \hline
       bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-4]
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 3-0]
-      \textbf{RAMB<3:0>}: RAM bank register \\
+      \textbf{RAMB<3:0>}: RAM bank register
   \end{description}
 \end{register}
 
 The 4-bit RAMB register is used as the RAM bank number when the CPU accesses
 the \hexrange{A000}{BFFF} memory area.
+
+\end{document}

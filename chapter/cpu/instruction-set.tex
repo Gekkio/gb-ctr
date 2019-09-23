@@ -1,5 +1,8 @@
 %!TEX root = ../../gbctr.tex
 %!TEX program = xelatex
+\providecommand{\main}{../..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
 
 \chapter{Sharp SM83 instruction set}
 
@@ -29,7 +32,7 @@ Unconditional jump to the absolute address specified by the operand \texttt{nn}.
     4 machine cycles
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 ; [opacity=0.4] 8D{Read: nn} X \\
@@ -56,7 +59,7 @@ Unconditional jump to the absolute address specified by the register HL.
     1 machine cycle
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: HL} X \\
@@ -90,12 +93,12 @@ Note that the operand (absolute address) is read even when the condition is fals
     3 machine cycles (cc=false), or 4 machine cycles (cc=true)
   \item[Flags]
     -
-  \item[Timing (cc=false)] \parbox{0.8\textwidth}{
+  \item[Timing (cc=false)] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} ; [opacity=0.4] 8D{Read: PC+3} X \\
     \end{tikztimingtable}}
-  \item[Timing (cc=true)] \parbox{0.8\textwidth}{
+  \item[Timing (cc=true)] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 ; [opacity=0.4] 8D{Read: nn} X \\
@@ -123,7 +126,7 @@ Unconditional jump to the relative address specified by the signed operand \text
     3 machine cycles
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Value of r} 8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8U                 ; [opacity=0.4] 8D{Read: PC+2+r} X \\
@@ -152,12 +155,12 @@ Note that the operand (relative address offset) is read even when the condition 
     2 machine cycles (cc=false), or 3 machine cycles (cc=true)
   \item[Flags]
     -
-  \item[Timing (cc=false)] \parbox{0.8\textwidth}{
+  \item[Timing (cc=false)] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Value of r} ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} ; [opacity=0.4] 8D{Read: PC+2} X \\
     \end{tikztimingtable}}
-  \item[Timing (cc=true)] \parbox{0.8\textwidth}{
+  \item[Timing (cc=true)] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Value of r} 8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8U                 ; [opacity=0.4] 8D{Read: PC+2+r} X \\
@@ -185,7 +188,7 @@ Unconditional function call to the absolute address specified by the operand \te
     6 machine cycles
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} 8D{MSB of PC+3} 8D{LSB of PC+3} ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 8D{Write: SP-1} 8D{Write: SP-2} ; [opacity=0.4] 8D{Read: nn} X \\
@@ -216,12 +219,12 @@ Note that the operand (absolute address) is read even when the condition is fals
     3 machine cycles (cc=false), or 6 machine cycles (cc=true)
   \item[Flags]
     -
-  \item[Timing (cc=false)] \parbox{0.8\textwidth}{
+  \item[Timing (cc=false)] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} ; [opacity=0.4] 8D{Read: PC+3} X \\
     \end{tikztimingtable}}
-  \item[Timing (cc=true)] \parbox{0.8\textwidth}{
+  \item[Timing (cc=true)] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of nn}  8D{MSB of nn}  8D{Internal delay} 8D{MSB of PC+3} 8D{LSB of PC+3} ; [opacity=0.4] 8D{Decode}   X \\
       Memory  & X 8D{Read: PC} 8D{Read: PC+1} 8D{Read: PC+2} 8U                 8D{Write: SP-1} 8D{Write: SP-2} ; [opacity=0.4] 8D{Read: nn} X \\
@@ -251,7 +254,7 @@ Unconditional return from function.
     4 machine cycles
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of PC} 8D{MSB of PC}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8D{Read: SP}  8D{Read: SP+1} 8U                 ; [opacity=0.4] 8D{Read: new PC} X \\
@@ -277,12 +280,12 @@ Conditional return from function, depending on the condition \texttt{cc}.
     2 machine cycles (cc=false), or 5 machine cycles (cc=true)
   \item[Flags]
     -
-  \item[Timing (cc=false)] \parbox{0.8\textwidth}{
+  \item[Timing (cc=false)] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Internal delay} ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} 8U                 ; [opacity=0.4] 8D{Read: PC+1} X \\
     \end{tikztimingtable}}
-  \item[Timing (cc=true)] \parbox{0.8\textwidth}{
+  \item[Timing (cc=true)] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Internal delay} 8D{LSB of PC} 8D{MSB of PC}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8U                 8D{Read: SP}  8D{Read: SP+1} 8U                 ; [opacity=0.4] 8D{Read: new PC} X \\
@@ -309,7 +312,7 @@ Unconditional return from function. Also enables interrupts by setting IME=1.
     4 machine cycles
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{LSB of PC} 8D{MSB of PC}  8D{Internal delay} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8D{Read: SP}  8D{Read: SP+1} 8U                 ; [opacity=0.4] 8D{Read: new PC} X \\
@@ -336,7 +339,7 @@ Unconditional function call to the absolute fixed address defined by the opcode.
     4 machine cycles
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   8D{Internal delay} 8D{MSB of PC+1} 8D{LSB of PC+1} ; [opacity=0.4] 8D{Decode}       X \\
       Memory  & X 8D{Read: PC} 8U                 8D{Write: SP-1} 8D{Write: SP-2} ; [opacity=0.4] 8D{Read: new PC} X \\
@@ -374,7 +377,7 @@ effects of the EI instruction if any.
     1 machine cycle
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: PC+1} X \\
@@ -400,7 +403,7 @@ Schedules interrupt handling to be enabled after the next machine cycle.
     1 machine cycle (+ 1 machine cycle for the effect)
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: PC+1} X \\
@@ -426,7 +429,7 @@ Flips the carry flag, and clears the N and H flags.
     1 machine cycle
   \item[Flags]
     N = 0, H = 0, C = \faStar
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: PC+1} X \\
@@ -454,7 +457,7 @@ Sets the carry flag, and clears the N and H flags.
     1 machine cycle
   \item[Flags]
     N = 0, H = 0, C = 1
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: PC+1} X \\
@@ -483,7 +486,7 @@ delay of one machine cycle and increment PC by one.
     1 machine cycle
   \item[Flags]
     -
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: PC+1} X \\
@@ -507,7 +510,7 @@ if opcode == 0x00:
     1 machine cycle
   \item[Flags]
     Z = \faStar, H = 0, C = \faStar
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: PC+1} X \\
@@ -528,7 +531,7 @@ Flips all the bits in the A register, and sets the N and H flags.
     1 machine cycle
   \item[Flags]
     N = 1, H = 1
-  \item[Timing] \parbox{0.8\textwidth}{
+  \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       Purpose & X 8D{Decode}   ; [opacity=0.4] 8D{Decode}     X \\
       Memory  & X 8D{Read: PC} ; [opacity=0.4] 8D{Read: PC+1} X \\
@@ -541,3 +544,5 @@ if opcode == 0x2F:
   flags.H = 1
 \end{verbatim}
 \end{description}
+
+\end{document}

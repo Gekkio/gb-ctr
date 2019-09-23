@@ -1,9 +1,7 @@
 %!TEX root = gbctr.tex
 %!TEX program = xelatex
 
-\newcommand{\Revision}{@REVISION@}
+\renewcommand{\Revision}{@REVISION@}
 \if @DRAFT@0
-  \newcount\draft\draft=0
-\else
-  \newcount\draft\draft=1
+  \draft 0\relax
 \fi

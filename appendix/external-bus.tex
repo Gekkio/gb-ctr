@@ -1,5 +1,8 @@
 %!TEX root = ../gbctr.tex
 %!TEX program = xelatex
+\providecommand{\main}{..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
 
 \chapter{Game Boy external bus}
 
@@ -28,7 +31,7 @@
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}{0.4\linewidth}
     \begin{tikztimingtable}
       CLK 4MHz & L 9{C}          \\
       PHI 1MHz & L 4C 4C C       \\
@@ -49,7 +52,7 @@
     \caption[0x0000-0x7FFF]{\hexrange{0000}{7FFF}\footnotemark}
     \vspace{1cm}
   \end{subfigure}
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}{0.4\linewidth}
     \begin{tikztimingtable}
       CLK 4MHz & L 9{C}          \\
       PHI 1MHz & L 4C 4C C       \\
@@ -70,7 +73,7 @@
     \caption{\hexrange{A000}{FDFF}}
     \vspace{1cm}
   \end{subfigure}
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}{0.4\linewidth}
     \begin{tikztimingtable}
       CLK 4MHz & L 9{C}        \\
       PHI 1MHz & L 4C 4C C     \\
@@ -101,7 +104,7 @@
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}{0.4\linewidth}
     \begin{tikztimingtable}
       CLK 4MHz & L 9{C}          \\
       PHI 1MHz & L 4C 4C C       \\
@@ -121,7 +124,7 @@
     \caption[0x0000-0x7FFF]{\hexrange{0000}{7FFF}\footnotemark}
     \vspace{1cm}
   \end{subfigure}
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}{0.4\linewidth}
     \begin{tikztimingtable}
       CLK 4MHz & L 9{C}          \\
       PHI 1MHz & L 4C 4C C       \\
@@ -141,7 +144,7 @@
     \caption{\hexrange{A000}{FDFF}}
     \vspace{1cm}
   \end{subfigure}
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}{0.4\linewidth}
     \begin{tikztimingtable}
       CLK 4MHz & L 9{C}        \\
       PHI 1MHz & L 4C 4C C     \\
@@ -172,7 +175,7 @@
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}{0.4\linewidth}
     \begin{tikztimingtable}
       CLK 4MHz & L 9{C}          \\
       PHI 1MHz & L 4C 4C C       \\
@@ -192,7 +195,7 @@
     \caption[0x0000-0x7FFF]{\hexrange{0000}{7FFF}\footnotemark}
     \vspace{1cm}
   \end{subfigure}
-  \begin{subfigure}{0.4\textwidth}
+  \begin{subfigure}{0.4\linewidth}
     \begin{tikztimingtable}
       CLK 4MHz & L 9{C}          \\
       PHI 1MHz & L 4C 4C C       \\
@@ -220,3 +223,5 @@
   enabled. Boot ROM accesses do not affect the external bus, so it is in the
   idle state.
 }
+
+\end{document}

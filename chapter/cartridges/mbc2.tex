@@ -1,5 +1,8 @@
 %!TEX root = ../../gbctr.tex
 %!TEX program = xelatex
+\providecommand{\main}{../..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
 
 \chapter{MBC2 mapper chip}
 
@@ -37,7 +40,7 @@ are simply ignored during writes. The registers are not directly readable.
   \caption{\hexrange{0000}{3FFF} when A8=\bin{0} - RAMG - MBC2 RAM gate register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U & U & U & U & W-0 & W-0 & W-0 & W-0 \\
       \hline
@@ -45,15 +48,15 @@ are simply ignored during writes. The registers are not directly readable.
       \hline
       bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-4]
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 3-0]
-      \textbf{RAMG<3:0>}: RAM gate register \\
-      \bin{1010}= enable access to chip RAM \\
+      \textbf{RAMG<3:0>}: RAM gate register\\
+      \bin{1010}= enable access to chip RAM\\
       All other values disable access to chip RAM
   \end{description}
 \end{register}
@@ -77,7 +80,7 @@ recommends disabling RAM when it's not being accessed to protect the contents
   \caption{\hexrange{0000}{3FFF} when A8=\bin{1} - ROMB - MBC2 ROM bank register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       U & U & U & U & W-0 & W-0 & W-0 & W-1 \\
       \hline
@@ -85,15 +88,15 @@ recommends disabling RAM when it's not being accessed to protect the contents
       \hline
       bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 7-4]
       \textbf{Unimplemented}: Ignored during writes
     \item[bit 3-0]
-      \textbf{ROMB<3:0>}: ROM bank register \\
-      Never contains the value \bin{0000}. \\
+      \textbf{ROMB<3:0>}: ROM bank register\\
+      Never contains the value \bin{0000}.\\
       If \bin{0000} is written, the resulting value will be \bin{0001} instead.
   \end{description}
 \end{register}
@@ -179,3 +182,5 @@ other banks.
   \inputminted[frame=lines]{python}{code-snippets/mbc2_rom_dump.py}
   \caption{Python pseudo-code for MBC2 ROM dumping}
 \end{listing}
+
+\end{document}

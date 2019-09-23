@@ -1,5 +1,8 @@
 %!TEX root = ../gbctr.tex
 %!TEX program = xelatex
+\providecommand{\main}{..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
 
 \chapter{Instruction set tables}
 
@@ -67,7 +70,7 @@ pastraiser.com \cite{pastraiser}.
       \hline
       Fx & \oplb LDH A,(n)                      & \oplw POP AF    & \oplb LD A,(C)                        & \opmi \hyperref[inst:DI]{DI}    & \opun                                     & \oplw PUSH AF   & \opab OR n                       & \opcf \hyperref[inst:RST]{RST 0x30} & \oplw LD HL,SP+e                    & \oplw LD SP,HL                     & \oplb LD A,(nn)                      & \opmi \hyperref[inst:EI]{EI} & \opun                                    & \opun                               & \opab CP n      & \opcf \hyperref[inst:RST]{RST 0x38} \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
     \normalsize
     \normalfont\mdseries
     \begin{description}[style=sameline]
@@ -124,8 +127,10 @@ pastraiser.com \cite{pastraiser}.
       \hline
       Fx & \opbi SET 6,B & \opbi SET 6,C & \opbi SET 6,D & \opbi SET 6,E & \opbi SET 6,H & \opbi SET 6,L & \opbi SET 6,(HL) & \opbi SET 6,A & \opbi SET 7,B & \opbi SET 7,C & \opbi SET 7,D & \opbi SET 7,E & \opbi SET 7,H & \opbi SET 7,L & \opbi SET 7,(HL) & \opbi SET 7,A \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   \end{center}
 \end{table}
 
 \end{landscape}
+
+\end{document}

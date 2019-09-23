@@ -1,5 +1,8 @@
 %!TEX root = ../../gbctr.tex
 %!TEX program = xelatex
+\providecommand{\main}{../..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
 
 \chapter{DMA (Direct Memory Access)}
 
@@ -38,7 +41,7 @@ not begin immediately.
   \caption{\hex{FF46} - DMA - OAM DMA control register}
   {
     \ttfamily
-    \begin{tabularx}{\textwidth}{|X|X|X|X|X|X|X|X|}
+    \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|}
       \hline
       R/W-x                           & R/W-x & R/W-x & R/W-x & R/W-x & R/W-x & R/W-x & R/W-x \\
       \hline
@@ -46,12 +49,12 @@ not begin immediately.
       \hline
       bit 7                           & 6     & 5     & 4     & 3     & 2     & 1     & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   }
 
   \begin{description}[leftmargin=5em, style=nextline]
     \item[bit 0]
-      \textbf{DMA<7:0>}: OAM DMA source address \\
+      \textbf{DMA<7:0>}: OAM DMA source address\\
       Specifies the top 8 bits of the OAM DMA source address.
 
       Writing to this register requests an OAM DMA transfer, but it's just a
@@ -85,7 +88,7 @@ behaviour can happen.
 \begin{table}[H]
   \caption{OAM DMA address decoding scheme}
   \rmfamily
-  \begin{tabularx}{\textwidth}{|L|L|L|}
+  \begin{tabularx}{\linewidth}{|L|L|L|}
     \hline
     DMA register value & Used bus      & Asserted chip select signal \\
     \hline
@@ -95,7 +98,7 @@ behaviour can happen.
     \hline
     \hexrange{A0}{FF}  & external bus  & external RAM (CS)           \\
     \hline
-  \end{tabularx}
+  \end{tabularx}{\parfillskip=0pt\par}
 \end{table}
 
 \subsection{OAM DMA transfer timing}
@@ -105,3 +108,5 @@ TODO
 \subsection{OAM DMA bus conflicts}
 
 TODO
+
+\end{document}

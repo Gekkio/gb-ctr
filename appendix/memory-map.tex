@@ -1,5 +1,8 @@
 %!TEX root = ../gbctr.tex
 %!TEX program = xelatex
+\providecommand{\main}{..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
 
 \chapter{Memory map tables}
 
@@ -83,7 +86,7 @@
       \hline
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   \end{center}
 \end{table}
 
@@ -161,7 +164,7 @@
       \hline
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   \end{center}
 \end{table}
 
@@ -239,7 +242,7 @@
       \hline
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   \end{center}
 \end{table}
 
@@ -319,8 +322,10 @@
       \hline
       & bit 7 & 6 & 5 & 4 & 3 & 2 & 1 & bit 0 \\
       \hline
-    \end{tabularx}
+    \end{tabularx}{\parfillskip=0pt\par}
   \end{center}
 \end{table}
 
 \end{landscape}
+
+\end{document}
