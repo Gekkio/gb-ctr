@@ -6,9 +6,335 @@
 
 \chapter{Sharp SM83 instruction set}
 
-\section{8-bit load and store instructions}
+\section{8-bit load instructions}
 
-\section{16-bit load and store instructions}
+\subsection{LD r, r'}
+\label{inst:LD_r_r}
+
+Load to the 8-bit register \texttt{r}, data from the 8-bit register \texttt{r'}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{01xxxyyy}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{LD r, r'} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: LD B, C
+if opcode == 0x41:
+  B = C
+\end{verbatim}
+\end{description}
+
+\subsection{LD r, n}
+\label{inst:LD_r_n}
+
+Load to the 8-bit register \texttt{r}, the immediate data \texttt{n}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00xxx110}/various + \texttt{n}
+  \item[Length]
+    2 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD r, n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} ; [opacity=0.4] 8D{PC+2} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: LD B, n
+if opcode == 0x06:
+  B = read(PC++)
+\end{verbatim}
+\end{description}
+
+\subsection{LD r, (HL)}
+\label{inst:LD_r_hl}
+
+Load to the 8-bit register \texttt{r}, data from the absolute address specified by the 16-bit register HL.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{01xxx110}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD r, (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: LD B, (HL)
+if opcode == 0x46:
+  B = read(HL)
+\end{verbatim}
+\end{description}
+
+\subsection{LD (HL), r}
+\label{inst:LD_hl_r}
+
+Load to the absolute address specified by the 16-bit register HL, data from the 8-bit register \texttt{r}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{01110xxx}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD (HL), r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{W: data} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: LD (HL), B
+if opcode == 0x70:
+  write(HL, B)
+\end{verbatim}
+\end{description}
+
+\subsection{LD (HL), n}
+\label{inst:LD_hl_n}
+
+Load to the absolute address specified by the 16-bit register HL, the immediate data \texttt{n}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00110110}/\hex{36} + \texttt{n}
+  \item[Length]
+    2 bytes
+  \item[Duration]
+    3 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 24D{LD (HL), n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n} 8D{W: n} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{HL} ; [opacity=0.4] 8D{PC+2} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x36:
+  n = read(PC++)
+  write(HL, n)
+\end{verbatim}
+\end{description}
+
+\subsection{LD A, (BC)}
+\label{inst:LD_a_bc}
+
+Load to the 8-bit A register, data from the absolute address specified by the 16-bit register BC.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00001010}/\hex{0A}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD A, (BC)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{BC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x0A:
+  A = read(BC)
+\end{verbatim}
+\end{description}
+
+\subsection{LD A, (DE)}
+\label{inst:LD_a_de}
+
+Load to the 8-bit A register, data from the absolute address specified by the 16-bit register DE.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00011010}/\hex{1A}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD A, (DE)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{DE} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x1A:
+  A = read(DE)
+\end{verbatim}
+\end{description}
+
+\subsection{LD (BC), a}
+\label{inst:LD_bc_a}
+
+Load to the absolute address specified by the 16-bit register BC, data from the 8-bit A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00000010}/\hex{02}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD (BC), A} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{W: data} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{BC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x02:
+  write(BC, A)
+\end{verbatim}
+\end{description}
+
+\subsection{LD (DE), a}
+\label{inst:LD_de_a}
+
+Load to the absolute address specified by the 16-bit register DE, data from the 8-bit A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00010010}/\hex{12}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD (DE), A} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{W: data} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{DE} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x12:
+  write(DE, A)
+\end{verbatim}
+\end{description}
+
+\subsection{LD A, (nn)}
+\label{inst:LD_a_nn}
+
+Load to the 8-bit A register, data from the absolute address specified by the 16-bit operand \texttt{nn}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11111010}/\hex{FA} + LSB of \texttt{nn} + MSB of \texttt{nn}
+  \item[Length]
+    3 bytes
+  \item[Duration]
+    4 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4} 8D{M5/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 32D{LD A, (nn)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: lsb(nn)} 8D{R: msb(nn)} 8D{R: data} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{PC+2} 8D{nn} ; [opacity=0.4] 8D{PC+3} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xFA:
+  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  A = read(nn)
+\end{verbatim}
+\end{description}
+
+\subsection{LD (nn), A}
+\label{inst:LD_nn_a}
+
+Load to the absolute address specified by the 16-bit operand \texttt{nn}, data from the 8-bit A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11101010}/\hex{EA} + LSB of \texttt{nn} + MSB of \texttt{nn}
+  \item[Length]
+    3 bytes
+  \item[Duration]
+    4 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4} 8D{M5/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 32D{LD (nn), A} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: lsb(nn)} 8D{R: msb(nn)} 8D{W: data} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{PC+2} 8D{nn} ; [opacity=0.4] 8D{PC+3} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xFA:
+  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  write(nn, A)
+\end{verbatim}
+\end{description}
+
+\section{16-bit load instructions}
 
 \section{8-bit arithmetic instructions}
 
