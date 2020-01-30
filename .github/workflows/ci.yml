@@ -25,9 +25,10 @@ jobs:
           texlive-fonts-recommended
           texlive-lang-english
           texlive-latex-base
-          texlive-latex-recommended
           texlive-latex-extra
+          texlive-latex-recommended
           texlive-pictures
+          texlive-xetex
       - name: Run cmake
         run: cmake .
       - name: Run make
