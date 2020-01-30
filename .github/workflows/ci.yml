@@ -17,8 +17,8 @@ jobs:
       - name: Install Ubuntu packages
         run: >
           sudo apt install
-          cmake latex-xcolor lmodern pgf python-pygments
-          texlive-base texlive-fonts-extra texlive-fonts-recommended texlive-lang-english texlive-latex-base texlive-latex-extra
+          cmake latex-xcolor lmodern python-pygments
+          texlive-base texlive-fonts-extra texlive-fonts-recommended texlive-lang-english texlive-latex-base texlive-latex-extra texlive-pictures
       - name: Run cmake
         run: cmake .
       - name: Run make
