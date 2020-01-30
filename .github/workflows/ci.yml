@@ -62,7 +62,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: pdf
-          path: build/gbctr.pdf
+          path: build
       - name: Upload to S3
         run: |
           aws s3 cp build/gbctr.pdf s3://gbdocs.gekkio.fi/gbctr.pdf
