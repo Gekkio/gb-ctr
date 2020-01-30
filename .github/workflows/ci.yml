@@ -1,0 +1,29 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    name: Build PDF
+    runs-on: ubuntu-latest
+    with:
+      lfs: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Ubuntu packages
+        run: sudo apt install
+        cmake latex-xcolor lmodern pgf python-pygments
+        texlive-base texlive-fonts-extra texlive-fonts-recommended texlive-lang-english texlive-latex-base texlive-latex-extra
+      - name: Run cmake
+        run: cmake .
+      - name: Run make
+        run: make
+      - name: Upload built PDF
+        uses: actions/upload-artifact@v1
+        with:
+          name: pdf
+          path: build/gbctr.pdf
