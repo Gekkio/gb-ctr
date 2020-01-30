@@ -9,8 +9,8 @@ set(LATEX_COMPILER_FLAGS "-interaction=batchmode -file-line-error -shell-escape"
 find_package(Git QUIET REQUIRED)
 
 set(DRAFT 1)
-if(DEFINED ENV{TRAVIS_BRANCH})
-  if($ENV{TRAVIS_BRANCH} STREQUAL "master")
+if(DEFINED ENV{GITHUB_REF})
+  if($ENV{GITHUB_REF} STREQUAL "refs/heads/master")
     set(DRAFT 0)
   endif()
 endif()
