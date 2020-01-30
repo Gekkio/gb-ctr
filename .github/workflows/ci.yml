@@ -32,6 +32,12 @@ jobs:
         run: cmake .
       - name: Run make
         run: make
+      - name: Upload log
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: log
+          path: build/gbctr.log
       - name: Upload built PDF
         uses: actions/upload-artifact@v1
         with:
