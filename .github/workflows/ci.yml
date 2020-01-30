@@ -15,9 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install Ubuntu packages
-        run: sudo apt install
-        cmake latex-xcolor lmodern pgf python-pygments
-        texlive-base texlive-fonts-extra texlive-fonts-recommended texlive-lang-english texlive-latex-base texlive-latex-extra
+        run: >
+          sudo apt install
+          cmake latex-xcolor lmodern pgf python-pygments
+          texlive-base texlive-fonts-extra texlive-fonts-recommended texlive-lang-english texlive-latex-base texlive-latex-extra
       - name: Run cmake
         run: cmake .
       - name: Run make
