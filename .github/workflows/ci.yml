@@ -9,11 +9,11 @@ jobs:
   build:
     name: Build PDF
     runs-on: ubuntu-latest
-    with:
-      lfs: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          lfs: true
       - name: Install Ubuntu packages
         run: >
           sudo apt install
