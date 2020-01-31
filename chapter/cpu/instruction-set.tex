@@ -540,7 +540,7 @@ Unconditional function call to the absolute address specified by the 16-bit oper
       M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4} 8D{M5} 8D{M6} 8D{M7/M1} X \\
       Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 48D{CALL nn} ; [opacity=0.4] X \\
       Mem R/W  & X 8D{R: opcode} 8D{R: lsb(nn)} 8D{R: msb(nn)} 8U 8D{W: msb(PC+3)} 8D{W: lsb(PC+3)} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} 8D{PC+1} 8D{PC+2} 8U 8D{SP-1} 8D{SP-2} ; [opacity=0.4] 8D{nn} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{PC+2} 8D{SP} 8D{SP-1} 8D{SP-2} ; [opacity=0.4] 8D{nn} X \\
     \end{tikztimingtable}
   }
 \item[Pseudocode] \begin{verbatim}
@@ -582,7 +582,7 @@ Note that the operand (absolute address) is read even when the condition is fals
       M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4} 8D{M5} 8D{M6} 8D{M7/M1} X \\
       Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 48D{CALL cc, nn} ; [opacity=0.4] X \\
       Mem R/W  & X 8D{R: opcode} 8D{R: lsb(nn)} 8D{R: msb(nn)} 8U 8D{W: msb(PC+3)} 8D{W: lsb(PC+3)} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} 8D{PC+1} 8D{PC+2} 8U 8D{SP-1} 8D{SP-2} ; [opacity=0.4] 8D{nn} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{PC+2} 8D{SP} 8D{SP-1} 8D{SP-2} ; [opacity=0.4] 8D{nn} X \\
     \end{tikztimingtable}
   }
 \item[Pseudocode] \begin{verbatim}
@@ -712,7 +712,7 @@ Unconditional function call to the absolute fixed address defined by the opcode.
       M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4} 8D{M5/M1} X \\
       Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 32D{RST n} ; [opacity=0.4] X \\
       Mem R/W  & X 8D{R: opcode} 8U 8D{W: msb(PC+3)} 8D{W: lsb(PC+3)} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} 8U 8D{SP-1} 8D{SP-2} ; [opacity=0.4] 8D{new PC} X \\
+      Mem addr & X 8D{PC} 8D{SP} 8D{SP-1} 8D{SP-2} ; [opacity=0.4] 8D{new PC} X \\
     \end{tikztimingtable}
   }
 \item[Pseudocode] \begin{verbatim}
