@@ -334,6 +334,136 @@ if opcode == 0xFA:
 \end{verbatim}
 \end{description}
 
+\subsection{LDH A, (C)}
+\label{inst:LDH_a_c}
+
+Load to the 8-bit A register, data from the address specified by the 8-bit C
+register. The full 16-bit address is obtained by setting the most significant
+byte to \hex{FF} and the least significant byte to the value of C, so the
+possible range is \hexrange{FF00}{FFFF}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11110010}/\hex{F2}
+  \item[Length]
+    1 bytes
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LDH A, (C)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: A} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{0xFF00+C} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xF2:
+  A = read(unsigned_16(lsb=C, msb=0xFF))
+\end{verbatim}
+\end{description}
+
+\subsection{LDH (C), A}
+\label{inst:LDH_c_a}
+
+Load to the address specified by the 8-bit C register, data from the 8-bit A
+register. The full 16-bit address is obtained by setting the most significant
+byte to \hex{FF} and the least significant byte to the value of C, so the
+possible range is \hexrange{FF00}{FFFF}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11100010}/\hex{E2}
+  \item[Length]
+    1 bytes
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LDH (C), A} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{W: A} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{0xFF00+C} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xE2:
+  write(unsigned_16(lsb=C, msb=0xFF), A)
+\end{verbatim}
+\end{description}
+
+\subsection{LDH A, (n)}
+\label{inst:LDH_a_n}
+
+Load to the 8-bit A register, data from the address specified by the 8-bit
+immediate data \texttt{n}. The full 16-bit address is obtained by setting the
+most significant byte to \hex{FF} and the least significant byte to the value
+of \texttt{n}, so the possible range is \hexrange{FF00}{FFFF}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11110000}/\hex{F0}
+  \item[Length]
+    2 bytes
+  \item[Duration]
+    3 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 24D{LD A, (C)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n} 8D{R: A} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{0xFF00+n} ; [opacity=0.4] 8D{PC+2} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xF0:
+  n = read(PC++)
+  A = read(unsigned_16(lsb=n, msb=0xFF))
+\end{verbatim}
+\end{description}
+
+\subsection{LDH (n), A}
+\label{inst:LDH_n_a}
+
+Load to the address specified by the 8-bit immediate data \texttt{n}, data from
+the 8-bit A register. The full 16-bit address is obtained by setting the most
+significant byte to \hex{FF} and the least significant byte to the value of
+\texttt{n}, so the possible range is \hexrange{FF00}{FFFF}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11100000}/\hex{E0}
+  \item[Length]
+    2 bytes
+  \item[Duration]
+    3 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 24D{LDH (n), A} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n} 8D{W: A} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{0xFF00+n} ; [opacity=0.4] 8D{PC+2} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xE0:
+  n = read(PC++)
+  write(unsigned_16(lsb=n, msb=0xFF), A)
+\end{verbatim}
+\end{description}
+
 \section{16-bit load instructions}
 
 \section{8-bit arithmetic instructions}
