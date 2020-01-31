@@ -1,6 +1,6 @@
 # File: UseLATEX.cmake
 # CMAKE commands to actually use the LaTeX compiler
-# Version: 2.6.1
+# Version: 2.7.0
 # Author: Kenneth Moreland <kmorel@sandia.gov>
 #
 # Copyright 2004, 2015 Sandia Corporation.
@@ -42,17 +42,18 @@
 # add_latex_document(<tex_file>
 #                    [BIBFILES <bib_files>]
 #                    [INPUTS <input_tex_files>]
-#                    [IMAGE_DIRS] <image_directories>
-#                    [IMAGES] <image_files>
-#                    [CONFIGURE] <tex_files>
-#                    [DEPENDS] <tex_files>
-#                    [MULTIBIB_NEWCITES] <suffix_list>
+#                    [IMAGE_DIRS <image_directories>]
+#                    [IMAGES <image_files>]
+#                    [CONFIGURE <tex_files>]
+#                    [DEPENDS <tex_files>]
+#                    [MULTIBIB_NEWCITES <suffix_list>]
 #                    [USE_BIBLATEX]
 #                    [USE_INDEX]
 #                    [INDEX_NAMES <index_names>]
 #                    [USE_GLOSSARY] [USE_NOMENCL]
 #                    [FORCE_PDF] [FORCE_DVI] [FORCE_HTML]
-#                    [TARGET_NAME] <name>
+#                    [TARGET_NAME <name>]
+#                    [INCLUDE_DIRECTORIES <directories>]
 #                    [EXCLUDE_FROM_ALL]
 #                    [EXCLUDE_FROM_DEFAULTS])
 #       Adds targets that compile <tex_file>.  The latex output is placed
@@ -113,7 +114,13 @@
 #       support the extra auxiliary files created with the \newcite command
 #       in the multibib package.
 #
+#       INCLUDE_DIRECTORIES provides a list of directories in which LaTeX
+#       should look for input files. It accepts both files relative to the
+#       binary directory and absolute paths.
+#
 # History:
+#
+# 2.7.0 Add INCLUDE_DIRECTORIES parameters. (Thanks to Eric Dönges.)
 #
 # 2.6.1 Fix issue with detecting long undefined reference warnings that
 #       LaTeX "helpfully" split across lines (and which fowled up our
@@ -1425,6 +1432,7 @@ function(parse_add_latex_arguments command latex_main_input)
     CONFIGURE
     DEPENDS
     INDEX_NAMES
+    INCLUDE_DIRECTORIES
     )
   cmake_parse_arguments(
     LATEX "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -1505,6 +1513,31 @@ function(add_latex_targets_internal)
         -D LATEX_LOG_FILE="${LATEX_TARGET}.log"
         -P "${LATEX_USE_LATEX_LOCATION}"
       )
+  endif()
+
+  if(LATEX_INCLUDE_DIRECTORIES)
+    # The include directories needs to start with the build directory so
+    # that the copied files can be found. It also needs to end with an
+    # empty directory so that the standard system directories are included
+    # after any specified.
+    set(LATEX_INCLUDE_DIRECTORIES . ${LATEX_INCLUDE_DIRECTORIES} "")
+
+    # CMake separates items in a list with a semicolon. Lists of
+    # directories on most systems are separated by colons, so we can do a
+    # simple text replace. On Windows, directories are separated by
+    # semicolons, but we replace them with the $<SEMICOLON> generator
+    # expression to make sure CMake treats it as a single string.
+    if(CMAKE_HOST_WIN32)
+      string(REPLACE ";" "$<SEMICOLON>" TEXINPUTS "${LATEX_INCLUDE_DIRECTORIES}")
+    else()
+      string(REPLACE ";" ":" TEXINPUTS "${LATEX_INCLUDE_DIRECTORIES}")
+    endif()
+
+    # Set the TEXINPUTS environment variable
+    set(latex_build_command
+      ${CMAKE_COMMAND} -E env TEXINPUTS=${TEXINPUTS} ${latex_build_command})
+    set(pdflatex_build_command
+      ${CMAKE_COMMAND} -E env TEXINPUTS=${TEXINPUTS} ${pdflatex_build_command})
   endif()
 
   if(NOT LATEX_TARGET_NAME)
