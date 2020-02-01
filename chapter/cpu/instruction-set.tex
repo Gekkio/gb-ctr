@@ -8,6 +8,9 @@
 
 \section{8-bit load instructions}
 
+8-bit load instructions transfer one byte of data between two 8-bit registers,
+or between one 8-bit register and location in memory.
+
 \subsection{LD r, r'}
 \label{inst:LD_r_r}
 
@@ -338,9 +341,9 @@ if opcode == 0xFA:
 \label{inst:LDH_a_c}
 
 Load to the 8-bit A register, data from the address specified by the 8-bit C
-register. The full 16-bit address is obtained by setting the most significant
-byte to \hex{FF} and the least significant byte to the value of C, so the
-possible range is \hexrange{FF00}{FFFF}.
+register. The full 16-bit absolute address is obtained by setting the most
+significant byte to \hex{FF} and the least significant byte to the value of C,
+so the possible range is \hexrange{FF00}{FFFF}.
 
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode]
@@ -370,9 +373,9 @@ if opcode == 0xF2:
 \label{inst:LDH_c_a}
 
 Load to the address specified by the 8-bit C register, data from the 8-bit A
-register. The full 16-bit address is obtained by setting the most significant
-byte to \hex{FF} and the least significant byte to the value of C, so the
-possible range is \hexrange{FF00}{FFFF}.
+register. The full 16-bit absolute address is obtained by setting the most
+significant byte to \hex{FF} and the least significant byte to the value of C,
+so the possible range is \hexrange{FF00}{FFFF}.
 
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode]
@@ -402,9 +405,9 @@ if opcode == 0xE2:
 \label{inst:LDH_a_n}
 
 Load to the 8-bit A register, data from the address specified by the 8-bit
-immediate data \texttt{n}. The full 16-bit address is obtained by setting the
-most significant byte to \hex{FF} and the least significant byte to the value
-of \texttt{n}, so the possible range is \hexrange{FF00}{FFFF}.
+immediate data \texttt{n}. The full 16-bit absolute address is obtained by
+setting the most significant byte to \hex{FF} and the least significant byte to
+the value of \texttt{n}, so the possible range is \hexrange{FF00}{FFFF}.
 
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode]
@@ -435,9 +438,9 @@ if opcode == 0xF0:
 \label{inst:LDH_n_a}
 
 Load to the address specified by the 8-bit immediate data \texttt{n}, data from
-the 8-bit A register. The full 16-bit address is obtained by setting the most
-significant byte to \hex{FF} and the least significant byte to the value of
-\texttt{n}, so the possible range is \hexrange{FF00}{FFFF}.
+the 8-bit A register. The full 16-bit absolute address is obtained by setting
+the most significant byte to \hex{FF} and the least significant byte to the
+value of \texttt{n}, so the possible range is \hexrange{FF00}{FFFF}.
 
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode]
@@ -461,6 +464,126 @@ opcode = read(PC++)
 if opcode == 0xE0:
   n = read(PC++)
   write(unsigned_16(lsb=n, msb=0xFF), A)
+\end{verbatim}
+\end{description}
+
+\subsection{LD A, (HL-)}
+\label{inst:LD_a_hld}
+
+Load to the 8-bit A register, data from the absolute address specified by the
+16-bit register HL. The value of HL is decremented after the memory read.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00111010}/\hex{3A}
+  \item[Length]
+    1 bytes
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD A, (HL-)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: A} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x3A:
+  A = read(HL--)
+\end{verbatim}
+\end{description}
+
+\subsection{LD (HL-), A}
+\label{inst:LD_hld_a}
+
+Load to the absolute address specified by the 16-bit register HL, data from the
+8-bit A register. The value of HL is decremented after the memory write.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00110010}/\hex{32}
+  \item[Length]
+    1 bytes
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD (HL-), A} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{W: A} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x32:
+  write(HL--, A)
+\end{verbatim}
+\end{description}
+
+\subsection{LD A, (HL+)}
+\label{inst:LD_a_hli}
+
+Load to the 8-bit A register, data from the absolute address specified by the
+16-bit register HL. The value of HL is incremented after the memory read.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00101010}/\hex{2A}
+  \item[Length]
+    1 bytes
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD A, (HL+)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: A} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x2A:
+  A = read(HL++)
+\end{verbatim}
+\end{description}
+
+\subsection{LD (HL+), A}
+\label{inst:LD_hli_a}
+
+Load to the absolute address specified by the 16-bit register HL, data from the
+8-bit A register. The value of HL is incremented after the memory write.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00100010}/\hex{22}
+  \item[Length]
+    1 bytes
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD (HL+), A} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{W: A} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x22:
+  write(HL++, A)
 \end{verbatim}
 \end{description}
 
