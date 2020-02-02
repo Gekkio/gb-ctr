@@ -589,6 +589,167 @@ if opcode == 0x22:
 
 \section{16-bit load instructions}
 
+16-bit load instructions transfer two bytes of data between two 16-bit
+registers, or between one 16-bit register and two sequential locations in
+memory.
+
+\subsection{LD rr, nn}
+\label{inst:LD_rr_nn}
+
+Load to the 16-bit register \texttt{rr}, the immediate 16-bit data \texttt{nn}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00xx0001}/various + LSB of \texttt{nn} + MSB of \texttt{nn}
+  \item[Length]
+    3 byte
+  \item[Duration]
+    3 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 24D{LD rr, nn} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: lsb(nn)} 8D{R: msb(nn)} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{PC+2} ; [opacity=0.4] 8D{PC+3} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: LD BC, nn
+if opcode == 0x01:
+  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  BC = nn
+\end{verbatim}
+\end{description}
+
+\subsection{LD (nn), SP}
+\label{inst:LD_nn_sp}
+
+Load to the absolute address specified by the 16-bit operand \texttt{nn}, data from the 16-bit SP register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00001000}/\hex{08} + LSB of \texttt{nn} + MSB of \texttt{nn}
+  \item[Length]
+    3 byte
+  \item[Duration]
+    5 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4} 8D{M5} 8D{M6/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 40D{LD (nn), SP} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: lsb(nn)} 8D{R: msb(nn)} 8D{W: lsb(SP)} 8D{W: msb(SP)} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{PC+2} 8D{nn} 8D{nn+1} ; [opacity=0.4] 8D{PC+3} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x08:
+  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  write(nn, lsb(SP))
+  write(nn+1, msb(SP))
+\end{verbatim}
+\end{description}
+
+\subsection{LD SP, HL}
+\label{inst:LD_sp_hl}
+
+Load to the 16-bit SP register, data from the 16-bit HL register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11111001}/\hex{F9}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LD SP, HL} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8U ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8U ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xF9:
+  SP = HL
+\end{verbatim}
+\end{description}
+
+\subsection{PUSH rr}
+\label{inst:PUSH_rr}
+
+Push to the stack memory, data from the 16-bit register \texttt{rr}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11xx0101}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    4 machine cycles
+  \item[Flags]
+    -
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4} 8D{M5/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 32D{PUSH rr} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8U 8D{W: msb(rr)} 8D{W: lsb(rr)} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{SP} 8D{SP-1} 8D{SP-2} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: PUSH BC
+if opcode == 0xC5:
+  SP--
+  write(SP--, msb(BC))
+  write(SP--, lsb(BC))
+\end{verbatim}
+\end{description}
+
+\subsection{POP rr}
+\label{inst:POP_rr}
+
+Pops to the 16-bit register \texttt{rr}, data from the stack memory.
+
+This instruction does not do calculations that affect flags, but POP AF
+completely replaces the F register value, so all flags are changed based on the
+8-bit data that is read from memory.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11xx0001}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    3 machine cycles
+  \item[Flags]
+    see the instruction description
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 24D{POP rr} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: lsb(rr)} 8D{R: msb(rr)} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{SP} 8D{SP+1} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: POP BC
+if opcode == 0xC1:
+  BC = unsigned_16(lsb=read(SP++), msb=read(SP++))
+\end{verbatim}
+\end{description}
+
 \section{8-bit arithmetic instructions}
 
 \section{16-bit arithmetic instructions}
@@ -628,7 +789,7 @@ if opcode == 0xC3:
 \end{description}
 
 \subsection{JP HL}
-\label{inst:JP_HL}
+\label{inst:JP_hl}
 
 Unconditional jump to the absolute address specified by the 16-bit register HL.
 
