@@ -1,0 +1,84 @@
+%!TEX root = ../../gbctr.tex
+%!TEX program = xelatex
+\providecommand{\main}{../..}
+\documentclass[\main/gbctr.tex]{subfiles}
+\begin{document}
+
+\chapter{CPU core timing}
+
+\section{Fetch/execute overlap}
+
+Sharp SM83 uses a microprocessor design technique known as \emph{fetch/execute
+overlap} to improve CPU performance by doing opcode fetches in parallel with
+instruction execution whenever possible. Since the CPU can only perform one
+memory access per M-cycle, it is worth it to try to do memory operations as
+soon as possible. Also, when doing a memory read, the CPU cannot use the data
+during the same M-cycle so the true minimum effective duration of instructions
+is 2 machine cycles, not 1 machine cycle.
+
+Every instruction needs one machine cycle for the fetch stage, and at least one
+machine cycle for the decode/execute stage. However, the fetch stage of an
+instruction always overlaps with the last machine cycle of the execute stage of
+the previous instruction. The overlapping execute stage cycle may still do some
+work (e.g. ALU operation and/or register writeback) but memory access is
+reserved for the fetch stage of the next instruction.
+
+Since all instructions effectively last one machine cycle longer, fetch/execute
+overlap is usually ignored in documentation intended for programmers. It is
+much easier to think of a program as a sequence of non-overlapping instructions
+and consider only the execute stages when calculating instruction durations.
+However, when emulating a SM83 CPU core, understanding and emulating the
+overlap can be useful.
+
+\begin{warning}
+  Sharp SM831x is a family of single-chip SoCs from Sharp that use the SM83 CPU
+  core, and their datasheet \cite{sm831x} includes a description of
+  fetch/execute overlap. However, the description is not completely correct and
+  can in fact be misleading.
+
+  For example, the timing diagram includes an instruction that does not involve
+  opcode fetch at all, and memory operations for two instructions are shown to
+  happen at the same time, which is not possible.
+\end{warning}
+
+\subsection{Fetch/execute overlap timing example}
+
+Let's assume the CPU is executing a program that starts from the address
+\hex{1000} and contains the following instructions:\\
+{
+  \ttfamily
+  \hex{1000}:\colorbox{blue!30}{INC A}
+}\\
+{
+  \ttfamily
+  \hex{1001}:\colorbox{yellow!30}{LDH (n), A}
+}\\
+{
+  \ttfamily
+  \hex{1003}:\colorbox{green!30}{RST \hex{08}}
+}\\
+{
+  \ttfamily
+  \hex{0008}:\colorbox{red!30}{NOP}
+}
+
+The following timing diagram shows all memory operations done by the CPU, and
+the fetch and execute stages of each instruction:
+
+\begin{figure}[H]
+  \centering
+  \begin{tikztimingtable}[timing/wscale=0.6]
+    CLK 4MHz & L 10{8{C}} C \\
+    PHI 1MHz & L 20{4C} C \\
+    Mem R/W & X ; [fill=blue!30] 8D{R: opcode} ; [fill=yellow!30] 8D{R: opcode} 8D{R: n} 8D{W: A} ; [fill=green!30] 8D{R: opcode} ; 8X ; [fill=green!30] 8D{W: msb(PC)} 8D{W: lsb(PC)} ; [fill=red!30] 8D{R: opcode} ; [opacity=0.4] 8D{R: opcode} X \\
+    Before \texttt{INC A} & ; [opacity=0.4] 9D{execute} ; 73X \\
+    \texttt{INC A} & X ; [fill=blue!30] 8D{M1: fetch} 8D{M2: execute} ; 65X \\
+    \texttt{LDH (n), A} & X 8X ; [fill=yellow!30] 8D{M1: fetch} 24D{M2-4: execute} ; 41X \\
+    \texttt{RST \hex{08}} & X 32X ; [fill=green!30] 8D{M1: fetch} 32D{M2-5: execute} ; 9X \\
+    \texttt{NOP} & X 64X ; [fill=red!30] 8D{M1: fetch} 8D{M2: execute} ; X \\
+    After \texttt{NOP} & X 72X ; [opacity=0.4] 9D{M1: fetch} \\
+  \end{tikztimingtable}
+\caption{Fetch/execute overlap example}
+\end{figure}
+
+\end{document}
