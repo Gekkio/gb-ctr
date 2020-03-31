@@ -46,6 +46,7 @@ add_latex_document(gbctr.tex
   INPUTS
     config.tex
     chapter/cpu/instruction-set.tex
+    chapter/cpu/timing.tex
     chapter/peripherals/boot-rom.tex
     chapter/peripherals/dma.tex
     chapter/peripherals/ppu.tex
