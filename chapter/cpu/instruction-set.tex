@@ -1125,7 +1125,7 @@ Unconditional function call to the absolute fixed address defined by the opcode.
     \begin{tikztimingtable}[timing/wscale=0.8]
       M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4} 8D{M5/M1} X \\
       Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 32D{RST n} ; [opacity=0.4] X \\
-      Mem R/W  & X 8D{R: opcode} 8U 8D{W: msb(PC+3)} 8D{W: lsb(PC+3)} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem R/W  & X 8D{R: opcode} 8U 8D{W: msb(PC+1)} 8D{W: lsb(PC+1)} ; [opacity=0.4] 8D{R: next op} X \\
       Mem addr & X 8D{PC} 8D{SP} 8D{SP-1} 8D{SP-2} ; [opacity=0.4] 8D{new PC} X \\
     \end{tikztimingtable}
   }
