@@ -710,9 +710,8 @@ Push to the stack memory, data from the 16-bit register \texttt{rr}.
 opcode = read(PC++)
 # example: PUSH BC
 if opcode == 0xC5:
-  SP--
-  write(SP--, msb(BC))
-  write(SP--, lsb(BC))
+  write(--SP, msb(BC))
+  write(--SP, lsb(BC))
 \end{verbatim}
 \end{description}
 
