@@ -331,7 +331,7 @@ Load to the absolute address specified by the 16-bit operand \texttt{nn}, data f
   }
   \item[Pseudocode] \begin{verbatim}
 opcode = read(PC++)
-if opcode == 0xFA:
+if opcode == 0xEA:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
   write(nn, A)
 \end{verbatim}
