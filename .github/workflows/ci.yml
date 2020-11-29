@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
           lfs: true
       - name: Update Ubuntu package lists
-      - run: sudo apt update
+        run: sudo apt update
       - name: Install Ubuntu packages
         run: >          
           sudo apt install
@@ -54,7 +54,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - name: Update Ubuntu package lists
-      - run: sudo apt update
+        run: sudo apt update
       - name: Install Ubuntu packages
         run: sudo apt install awscli
       - name: Configure AWS Credentials
