@@ -710,8 +710,9 @@ Push to the stack memory, data from the 16-bit register \texttt{rr}.
 opcode = read(PC++)
 # example: PUSH BC
 if opcode == 0xC5:
-  write(--SP, msb(BC))
-  write(--SP, lsb(BC))
+  SP--
+  write(SP--, msb(BC))
+  write(SP, lsb(BC))
 \end{verbatim}
 \end{description}
 
@@ -960,8 +961,9 @@ Unconditional function call to the absolute address specified by the 16-bit oper
 opcode = read(PC++)
 if opcode == 0xCD:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
-  write(--SP, msb(PC))
-  write(--SP, lsb(PC))
+  SP--
+  write(SP--, msb(PC))
+  write(SP, lsb(PC))
   PC = nn
 \end{verbatim}
 \end{description}
@@ -1003,8 +1005,9 @@ opcode = read(PC++)
 if opcode in [0xC4, 0xD4, 0xCC, 0xDC]:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
   if F.check_condition(cc):
-    write(--SP, msb(PC))
-    write(--SP, lsb(PC))
+    SP--
+    write(SP--, msb(PC))
+    write(SP, lsb(PC))
     PC = nn
 \end{verbatim}
 \end{description}
@@ -1132,8 +1135,9 @@ Unconditional function call to the absolute fixed address defined by the opcode.
 opcode = read(PC++)
 if opcode in [0xC7, 0xD7, 0xE7, 0xF7, 0xCF, 0xDF, 0xEF, 0xFF]:
   n = rst_address(opcode)
-  write(--SP, msb(PC))
-  write(--SP, lsb(PC))
+  SP--
+  write(SP--, msb(PC))
+  write(SP, lsb(PC))
   PC = unsigned_16(lsb=n, msb=0x00)
 \end{verbatim}
 \end{description}
