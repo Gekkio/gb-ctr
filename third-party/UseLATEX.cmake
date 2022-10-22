@@ -1,6 +1,6 @@
 # File: UseLATEX.cmake
 # CMAKE commands to actually use the LaTeX compiler
-# Version: 2.7.0
+# Version: 2.7.2
 # Author: Kenneth Moreland <kmorel@sandia.gov>
 #
 # Copyright 2004, 2015 Sandia Corporation.
@@ -119,6 +119,15 @@
 #       binary directory and absolute paths.
 #
 # History:
+#
+# 2.7.2 Add CONFIGURE_DEPENDS option when globbing files to better detect
+#       when files in a directory change. This only happens for CMake 3.12
+#       or better.
+#
+# 2.7.1 Fix issues with printing log on errors when there are spaces in the
+#       path. (Thanks to Peter Knowles.)
+#
+#       Ignore LaTeX warning about the font shape series value `mc'.
 #
 # 2.7.0 Add INCLUDE_DIRECTORIES parameters. (Thanks to Eric Dönges.)
 #
@@ -502,12 +511,14 @@ function(latex_execute_latex)
   if(NOT ${execute_result} EQUAL 0)
     # LaTeX tends to write a file when a failure happens. Delete that file so
     # that LaTeX will run again.
-    file(REMOVE "${LATEX_WORKING_DIRECTORY}/${LATEX_OUTPUT_FILE}")
+    separate_arguments(LATEX_OUTPUT_FILE_SEP UNIX_COMMAND "${LATEX_OUTPUT_FILE}")
+    file(REMOVE "${LATEX_WORKING_DIRECTORY_SEP}/${LATEX_OUTPUT_FILE_SEP}")
 
     message("\n\nLaTeX command failed")
     message("${full_command_original}")
     message("Log output:")
-    file(READ "${LATEX_WORKING_DIRECTORY}/${LATEX_LOG_FILE}" log_output)
+    separate_arguments(LATEX_LOG_FILE_SEP UNIX_COMMAND "${LATEX_LOG_FILE}")
+    file(READ "${LATEX_WORKING_DIRECTORY_SEP}/${LATEX_LOG_FILE_SEP}" log_output)
     message("${log_output}")
     message(FATAL_ERROR "Executed LaTeX, but LaTeX returned an error.")
   endif()
@@ -817,6 +828,10 @@ function(latex_check_important_warnings)
     "\nLaTeX Warning:[^\n]*"
     latex_warnings
     "${log}")
+  # Ignore warnings considered harmless
+  list(FILTER latex_warnings EXCLUDE REGEX
+    "LaTeX Warning: Font shape declaration has incorrect series value `mc'."
+    )
   if(latex_warnings)
     set(found_error TRUE)
     message("\nFound declared LaTeX warnings.")
@@ -1346,7 +1361,11 @@ function(latex_process_images dvi_outputs_var pdf_outputs_var)
 endfunction(latex_process_images)
 
 function(latex_copy_globbed_files pattern dest)
-  file(GLOB file_list ${pattern})
+  if(${CMAKE_VERSION} VERSION_LESS "3.12")
+    file(GLOB file_list ${pattern})
+  else()
+    file(GLOB file_list CONFIGURE_DEPENDS ${pattern})
+  endif()
   foreach(in_file ${file_list})
     latex_get_filename_component(out_file ${in_file} NAME)
     configure_file(${in_file} ${dest}/${out_file} COPYONLY)
@@ -1593,7 +1612,13 @@ function(add_latex_targets_internal)
       message(WARNING "Image directory ${CMAKE_CURRENT_SOURCE_DIR}/${dir} does not exist.  Are you sure you gave relative directories to IMAGE_DIRS?")
     endif()
     foreach(extension ${LATEX_IMAGE_EXTENSIONS})
-      file(GLOB files ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*${extension})
+      if(${CMAKE_VERSION} VERSION_LESS "3.12")
+        file(GLOB files ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*${extension})
+      else()
+        file(GLOB files CONFIGURE_DEPENDS
+          ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/*${extension}
+          )
+      endif()
       foreach(file ${files})
         latex_get_filename_component(filename ${file} NAME)
         list(APPEND image_list ${dir}/${filename})
