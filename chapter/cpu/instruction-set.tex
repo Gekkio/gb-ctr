@@ -11,7 +11,7 @@
 8-bit load instructions transfer one byte of data between two 8-bit registers,
 or between one 8-bit register and location in memory.
 
-\subsection{LD r, r'}
+\subsection{LD r, r': Load register (register)}
 \label{inst:LD_r_r}
 
 Load to the 8-bit register \texttt{r}, data from the 8-bit register \texttt{r'}.
@@ -41,7 +41,7 @@ if opcode == 0x41:
 \end{verbatim}
 \end{description}
 
-\subsection{LD r, n}
+\subsection{LD r, n: Load register (immediate)}
 \label{inst:LD_r_n}
 
 Load to the 8-bit register \texttt{r}, the immediate data \texttt{n}.
@@ -71,7 +71,7 @@ if opcode == 0x06:
 \end{verbatim}
 \end{description}
 
-\subsection{LD r, (HL)}
+\subsection{LD r, (HL): Load register (indirect HL)}
 \label{inst:LD_r_hl}
 
 Load to the 8-bit register \texttt{r}, data from the absolute address specified by the 16-bit register HL.
@@ -101,7 +101,7 @@ if opcode == 0x46:
 \end{verbatim}
 \end{description}
 
-\subsection{LD (HL), r}
+\subsection{LD (HL), r: Load from register (indirect HL)}
 \label{inst:LD_hl_r}
 
 Load to the absolute address specified by the 16-bit register HL, data from the 8-bit register \texttt{r}.
@@ -131,7 +131,7 @@ if opcode == 0x70:
 \end{verbatim}
 \end{description}
 
-\subsection{LD (HL), n}
+\subsection{LD (HL), n: Load from immediate data (indirect HL)}
 \label{inst:LD_hl_n}
 
 Load to the absolute address specified by the 16-bit register HL, the immediate data \texttt{n}.
@@ -161,7 +161,7 @@ if opcode == 0x36:
 \end{verbatim}
 \end{description}
 
-\subsection{LD A, (BC)}
+\subsection{LD A, (BC): Load accumulator (indirect BC)}
 \label{inst:LD_a_bc}
 
 Load to the 8-bit A register, data from the absolute address specified by the 16-bit register BC.
@@ -190,7 +190,7 @@ if opcode == 0x0A:
 \end{verbatim}
 \end{description}
 
-\subsection{LD A, (DE)}
+\subsection{LD A, (DE): Load accumulator (indirect DE)}
 \label{inst:LD_a_de}
 
 Load to the 8-bit A register, data from the absolute address specified by the 16-bit register DE.
@@ -219,7 +219,7 @@ if opcode == 0x1A:
 \end{verbatim}
 \end{description}
 
-\subsection{LD (BC), a}
+\subsection{LD (BC), A: Load from accumulator (indirect BC)}
 \label{inst:LD_bc_a}
 
 Load to the absolute address specified by the 16-bit register BC, data from the 8-bit A register.
@@ -248,7 +248,7 @@ if opcode == 0x02:
 \end{verbatim}
 \end{description}
 
-\subsection{LD (DE), a}
+\subsection{LD (DE), A: Load from accumulator (indirect DE)}
 \label{inst:LD_de_a}
 
 Load to the absolute address specified by the 16-bit register DE, data from the 8-bit A register.
@@ -277,7 +277,7 @@ if opcode == 0x12:
 \end{verbatim}
 \end{description}
 
-\subsection{LD A, (nn)}
+\subsection{LD A, (nn): Load accumulator (direct)}
 \label{inst:LD_a_nn}
 
 Load to the 8-bit A register, data from the absolute address specified by the 16-bit operand \texttt{nn}.
@@ -307,7 +307,7 @@ if opcode == 0xFA:
 \end{verbatim}
 \end{description}
 
-\subsection{LD (nn), A}
+\subsection{LD (nn), A: Load from accumulator (direct)}
 \label{inst:LD_nn_a}
 
 Load to the absolute address specified by the 16-bit operand \texttt{nn}, data from the 8-bit A register.
@@ -337,7 +337,7 @@ if opcode == 0xEA:
 \end{verbatim}
 \end{description}
 
-\subsection{LDH A, (C)}
+\subsection{LDH A, (C): Load accumulator (indirect \hex{FF00}+C)}
 \label{inst:LDH_a_c}
 
 Load to the 8-bit A register, data from the address specified by the 8-bit C
@@ -359,7 +359,7 @@ so the possible range is \hexrange{FF00}{FFFF}.
       M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
       Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LDH A, (C)} ; [opacity=0.4] X \\
       Mem R/W  & X 8D{R: opcode} 8D{R: A} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} 8D{0xFF00+C} ; [opacity=0.4] 8D{PC+1} X \\
+      Mem addr & X 8D{PC} 8D{\hex{FF00}+C} ; [opacity=0.4] 8D{PC+1} X \\
     \end{tikztimingtable}
   }
   \item[Pseudocode] \begin{verbatim}
@@ -369,7 +369,7 @@ if opcode == 0xF2:
 \end{verbatim}
 \end{description}
 
-\subsection{LDH (C), A}
+\subsection{LDH (C), A: Load from accumulator (indirect \hex{FF00}+C)}
 \label{inst:LDH_c_a}
 
 Load to the address specified by the 8-bit C register, data from the 8-bit A
@@ -391,7 +391,7 @@ so the possible range is \hexrange{FF00}{FFFF}.
       M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
       Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{LDH (C), A} ; [opacity=0.4] X \\
       Mem R/W  & X 8D{R: opcode} 8D{W: A} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} 8D{0xFF00+C} ; [opacity=0.4] 8D{PC+1} X \\
+      Mem addr & X 8D{PC} 8D{\hex{FF00}+C} ; [opacity=0.4] 8D{PC+1} X \\
     \end{tikztimingtable}
   }
   \item[Pseudocode] \begin{verbatim}
@@ -401,7 +401,7 @@ if opcode == 0xE2:
 \end{verbatim}
 \end{description}
 
-\subsection{LDH A, (n)}
+\subsection{LDH A, (n): Load accumulator (direct \hex{FF00}+n)}
 \label{inst:LDH_a_n}
 
 Load to the 8-bit A register, data from the address specified by the 8-bit
@@ -423,7 +423,7 @@ the value of \texttt{n}, so the possible range is \hexrange{FF00}{FFFF}.
       M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
       Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 24D{LD A, (C)} ; [opacity=0.4] X \\
       Mem R/W  & X 8D{R: opcode} 8D{R: n} 8D{R: A} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} 8D{PC+1} 8D{0xFF00+n} ; [opacity=0.4] 8D{PC+2} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{\hex{FF00}+n} ; [opacity=0.4] 8D{PC+2} X \\
     \end{tikztimingtable}
   }
   \item[Pseudocode] \begin{verbatim}
@@ -434,7 +434,7 @@ if opcode == 0xF0:
 \end{verbatim}
 \end{description}
 
-\subsection{LDH (n), A}
+\subsection{LDH (n), A: Load from accumulator (direct \hex{FF00}+n)}
 \label{inst:LDH_n_a}
 
 Load to the address specified by the 8-bit immediate data \texttt{n}, data from
@@ -456,7 +456,7 @@ value of \texttt{n}, so the possible range is \hexrange{FF00}{FFFF}.
       M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
       Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 24D{LDH (n), A} ; [opacity=0.4] X \\
       Mem R/W  & X 8D{R: opcode} 8D{R: n} 8D{W: A} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} 8D{PC+1} 8D{0xFF00+n} ; [opacity=0.4] 8D{PC+2} X \\
+      Mem addr & X 8D{PC} 8D{PC+1} 8D{\hex{FF00}+n} ; [opacity=0.4] 8D{PC+2} X \\
     \end{tikztimingtable}
   }
   \item[Pseudocode] \begin{verbatim}
@@ -467,7 +467,7 @@ if opcode == 0xE0:
 \end{verbatim}
 \end{description}
 
-\subsection{LD A, (HL-)}
+\subsection{LD A, (HL-): Load accumulator (indirect HL, decrement)}
 \label{inst:LD_a_hld}
 
 Load to the 8-bit A register, data from the absolute address specified by the
@@ -497,7 +497,7 @@ if opcode == 0x3A:
 \end{verbatim}
 \end{description}
 
-\subsection{LD (HL-), A}
+\subsection{LD (HL-), A: Load from accumulator (indirect HL, decrement)}
 \label{inst:LD_hld_a}
 
 Load to the absolute address specified by the 16-bit register HL, data from the
@@ -527,7 +527,7 @@ if opcode == 0x32:
 \end{verbatim}
 \end{description}
 
-\subsection{LD A, (HL+)}
+\subsection{LD A, (HL+): Load accumulator (indirect HL, increment)}
 \label{inst:LD_a_hli}
 
 Load to the 8-bit A register, data from the absolute address specified by the
@@ -557,7 +557,7 @@ if opcode == 0x2A:
 \end{verbatim}
 \end{description}
 
-\subsection{LD (HL+), A}
+\subsection{LD (HL+), A: Load from accumulator (indirect HL, increment)}
 \label{inst:LD_hli_a}
 
 Load to the absolute address specified by the 16-bit register HL, data from the
@@ -593,7 +593,7 @@ if opcode == 0x22:
 registers, or between one 16-bit register and two sequential locations in
 memory.
 
-\subsection{LD rr, nn}
+\subsection{LD rr, nn: Load 16-bit register / register pair}
 \label{inst:LD_rr_nn}
 
 Load to the 16-bit register \texttt{rr}, the immediate 16-bit data \texttt{nn}.
@@ -624,7 +624,7 @@ if opcode == 0x01:
 \end{verbatim}
 \end{description}
 
-\subsection{LD (nn), SP}
+\subsection{LD (nn), SP: Load from stack pointer (direct)}
 \label{inst:LD_nn_sp}
 
 Load to the absolute address specified by the 16-bit operand \texttt{nn}, data from the 16-bit SP register.
@@ -655,7 +655,7 @@ if opcode == 0x08:
 \end{verbatim}
 \end{description}
 
-\subsection{LD SP, HL}
+\subsection{LD SP, HL: Load stack pointer from HL}
 \label{inst:LD_sp_hl}
 
 Load to the 16-bit SP register, data from the 16-bit HL register.
@@ -684,7 +684,7 @@ if opcode == 0xF9:
 \end{verbatim}
 \end{description}
 
-\subsection{PUSH rr}
+\subsection{PUSH rr: Push to stack}
 \label{inst:PUSH_rr}
 
 Push to the stack memory, data from the 16-bit register \texttt{rr}.
@@ -716,7 +716,7 @@ if opcode == 0xC5:
 \end{verbatim}
 \end{description}
 
-\subsection{POP rr}
+\subsection{POP rr: Pop from stack}
 \label{inst:POP_rr}
 
 Pops to the 16-bit register \texttt{rr}, data from the stack memory.
@@ -758,7 +758,7 @@ if opcode == 0xC1:
 
 \section{Control flow instructions}
 
-\subsection{JP nn}
+\subsection{JP nn: Jump}
 \label{inst:JP}
 
 Unconditional jump to the absolute address specified by the 16-bit operand \texttt{nn}.
@@ -788,7 +788,7 @@ if opcode == 0xC3:
 \end{verbatim}
 \end{description}
 
-\subsection{JP HL}
+\subsection{JP HL: Jump to HL}
 \label{inst:JP_hl}
 
 Unconditional jump to the absolute address specified by the 16-bit register HL.
@@ -823,7 +823,7 @@ if opcode == 0xE9:
   read, and this instruction simply copies the value of HL to PC.
 \end{warning}
 
-\subsection{JP cc, nn}
+\subsection{JP cc, nn: Jump (conditional)}
 \label{inst:JP_cc}
 
 Conditional jump to the absolute address specified by the 16-bit operand \texttt{nn}, depending on the condition \texttt{cc}.
@@ -864,7 +864,7 @@ if opcode in [0xC2, 0xD2, 0xCA, 0xDA]:
 \end{verbatim}
 \end{description}
 
-\subsection{JR e}
+\subsection{JR e: Relative jump}
 \label{inst:JR}
 
 Unconditional jump to the relative address specified by the signed 8-bit operand \texttt{e}.
@@ -894,7 +894,7 @@ if opcode == 0x18:
 \end{verbatim}
 \end{description}
 
-\subsection{JR cc, e}
+\subsection{JR cc, e: Relative jump (conditional)}
 \label{inst:JR_cc}
 
 Conditional jump to the relative address specified by the signed 8-bit operand \texttt{e}, depending on the condition \texttt{cc}.
@@ -935,7 +935,7 @@ if opcode in [0x20, 0x30, 0x28, 0x38]:
 \end{verbatim}
 \end{description}
 
-\subsection{CALL nn}
+\subsection{CALL nn: Call function}
 \label{inst:CALL}
 
 Unconditional function call to the absolute address specified by the 16-bit operand \texttt{nn}.
@@ -968,7 +968,7 @@ if opcode == 0xCD:
 \end{verbatim}
 \end{description}
 
-\subsection{CALL cc, nn}
+\subsection{CALL cc, nn: Call function (conditional)}
 \label{inst:CALL_cc}
 
 Conditional function call to the absolute address specified by the 16-bit operand \texttt{nn}, depending on the condition \texttt{cc}.
@@ -1012,7 +1012,7 @@ if opcode in [0xC4, 0xD4, 0xCC, 0xDC]:
 \end{verbatim}
 \end{description}
 
-\subsection{RET}
+\subsection{RET: Return from function}
 \label{inst:RET}
 
 Unconditional return from a function.
@@ -1041,7 +1041,7 @@ if opcode == 0xC9:
 \end{verbatim}
 \end{description}
 
-\subsection{RET cc}
+\subsection{RET cc: Return from function (conditional)}
 \label{inst:RET_cc}
 
 Conditional return from a function, depending on the condition \texttt{cc}.
@@ -1079,7 +1079,7 @@ if opcode in [0xC0, 0xD0, 0xC8, 0xD8]:
 \end{verbatim}
 \end{description}
 
-\subsection{RETI}
+\subsection{RETI: Return from interrupt handler}
 \label{inst:RETI}
 
 Unconditional return from a function. Also enables interrupts by setting IME=1.
@@ -1109,7 +1109,7 @@ if opcode == 0xD9:
 \end{verbatim}
 \end{description}
 
-\subsection{RST n}
+\subsection{RST n: Restart / Call function (implied)}
 \label{inst:RST}
 
 Unconditional function call to the absolute fixed address defined by the opcode.
@@ -1144,13 +1144,13 @@ if opcode in [0xC7, 0xD7, 0xE7, 0xF7, 0xCF, 0xDF, 0xEF, 0xFF]:
 
 \section{Miscellaneous instructions}
 
-\subsection{HALT}
+\subsection{HALT: Halt system clock}
 \label{inst:HALT}
 
-\subsection{STOP}
+\subsection{STOP: Stop system and main clocks}
 \label{inst:STOP}
 
-\subsection{DI}
+\subsection{DI: Disable interrupts}
 \label{inst:DI}
 
 Disables interrupt handling by setting IME=0 and cancelling any scheduled
@@ -1180,7 +1180,7 @@ if opcode == 0xF3:
 \end{verbatim}
 \end{description}
 
-\subsection{EI}
+\subsection{EI: Enable interrupts}
 \label{inst:EI}
 
 Schedules interrupt handling to be enabled after the next machine cycle.
@@ -1209,7 +1209,7 @@ if opcode == 0xFB:
 \end{verbatim}
 \end{description}
 
-\subsection{CCF}
+\subsection{CCF: Complement carry flag}
 \label{inst:CCF}
 
 Flips the carry flag, and clears the N and H flags.
@@ -1240,7 +1240,7 @@ if opcode == 0x3F:
 \end{verbatim}
 \end{description}
 
-\subsection{SCF}
+\subsection{SCF: Set carry flag}
 \label{inst:SCF}
 
 Sets the carry flag, and clears the N and H flags.
@@ -1271,10 +1271,10 @@ if opcode == 0x37:
 \end{verbatim}
 \end{description}
 
-\subsection{NOP}
+\subsection{NOP: No operation}
 \label{inst:NOP}
 
-No-operation. This instruction doesn't do anything, but can be used to add a
+No operation. This instruction doesn't do anything, but can be used to add a
 delay of one machine cycle and increment PC by one.
 
 \begin{description}[leftmargin=9em, style=nextline]
@@ -1301,7 +1301,7 @@ if opcode == 0x00:
 \end{verbatim}
 \end{description}
 
-\subsection{DAA}
+\subsection{DAA: Decimal adjust accumulator}
 \label{inst:DAA}
 
 \begin{description}[leftmargin=9em, style=nextline]
@@ -1323,7 +1323,7 @@ if opcode == 0x00:
   }
 \end{description}
 
-\subsection{CPL}
+\subsection{CPL: Complement accumulator}
 \label{inst:CPL}
 
 Flips all the bits in the 8-bit A register, and sets the N and H flags.
