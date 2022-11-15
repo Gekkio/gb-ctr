@@ -51,7 +51,7 @@ jobs:
     name: Deploy PDF
     needs: [build]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Update Ubuntu package lists
         run: sudo apt update
