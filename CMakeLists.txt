@@ -10,7 +10,7 @@ find_package(Git QUIET REQUIRED)
 
 set(DRAFT 1)
 if(DEFINED ENV{GITHUB_REF})
-  if($ENV{GITHUB_REF} STREQUAL "refs/heads/master")
+  if($ENV{GITHUB_REF} STREQUAL "refs/heads/main")
     set(DRAFT 0)
   endif()
 endif()
@@ -34,7 +34,7 @@ if(${DRAFT} EQUAL 1)
   set(REVISION ${REVISION_SYMBOLIC}-${REVISION_COUNT}[${REVISION_HASH}])
 else()
   execute_process(
-      COMMAND "${GIT_EXECUTABLE}" rev-list --count master
+      COMMAND "${GIT_EXECUTABLE}" rev-list --count main
       WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
       OUTPUT_VARIABLE REVISION
       OUTPUT_STRIP_TRAILING_WHITESPACE)
