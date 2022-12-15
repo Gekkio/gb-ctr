@@ -22,7 +22,7 @@ jobs:
           sudo apt install
           cmake
           lmodern
-          python-pygments
+          python3-pygments
           texlive-base
           texlive-fonts-extra
           texlive-fonts-recommended
