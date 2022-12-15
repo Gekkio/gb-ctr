@@ -750,7 +750,1116 @@ if opcode == 0xC1:
 \end{verbatim}
 \end{description}
 
-\section{8-bit arithmetic instructions}
+\section{8-bit arithmetic and logical instructions}
+
+\subsection{ADD r: Add (register)}
+\label{inst:ADD_r}
+
+Adds to the 8-bit A register, the 8-bit register \texttt{r}, and stores the
+result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10000xxx}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{ADD r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: ADD B
+if opcode == 0x80:
+  result, carry_per_bit = A + B
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{ADD (HL): Add (indirect HL)}
+\label{inst:ADD_hl}
+
+Adds to the 8-bit A register, data from the absolute address specified by the
+16-bit register HL, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10000110}/\hex{86}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{ADD (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x86:
+  data = read(HL)
+  result, carry_per_bit = A + data
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{ADD n: Add (immediate)}
+\label{inst:ADD_n}
+
+Adds to the 8-bit A register, the immediate data \texttt{n}, and stores the
+result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11000110}/\hex{C6} + \texttt{n}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{ADD n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xC6:
+  n = read(PC++)
+  result, carry_per_bit = A + n
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{ADC r: Add with carry (register)}
+\label{inst:ADC_r}
+
+Adds to the 8-bit A register, the carry flag and the 8-bit register \texttt{r},
+and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10001xxx}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{ADC r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: ADC B
+if opcode == 0x88:
+  result, carry_per_bit = A + flags.C + B
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{ADC (HL): Add with carry (indirect HL)}
+\label{inst:ADC_hl}
+
+Adds to the 8-bit A register, the carry flag and data from the absolute address
+specified by the 16-bit register HL, and stores the result back into the A
+register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10001110}/\hex{8E}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{ADC (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x8E:
+  data = read(HL)
+  result, carry_per_bit = A + flags.C + data
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{ADC n: Add with carry (immediate)}
+\label{inst:ADC_n}
+
+Adds to the 8-bit A register, the carry flag and the immediate data \texttt{n},
+and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11001110}/\hex{CE} + \texttt{n}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{ADC n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xCE:
+  n = read(PC++)
+  result, carry_per_bit = A + flags.C + n
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{SUB r: Subtract (register)}
+\label{inst:SUB_r}
+
+Subtracts from the 8-bit A register, the 8-bit register \texttt{r}, and stores
+the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10010xxx}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 1, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{SUB r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: SUB B
+if opcode == 0x90:
+  result, carry_per_bit = A - B
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 1
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{SUB (HL): Subtract (indirect HL)}
+\label{inst:SUB_hl}
+
+Subtracts from the 8-bit A register, data from the absolute address specified
+by the 16-bit register HL, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10010110}/\hex{96}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 1, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{SUB (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x96:
+  data = read(HL)
+  result, carry_per_bit = A - data
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 1
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{SUB n: Subtract (immediate)}
+\label{inst:SUB_n}
+
+Subtracts from the 8-bit A register, the immediate data \texttt{n}, and stores
+the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11010110}/\hex{D6} + \texttt{n}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 1, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{SUB n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xD6:
+  n = read(PC++)
+  result, carry_per_bit = A - n
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 1
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{SBC r: Subtract with carry (register)}
+\label{inst:SBC_r}
+
+Subtracts from the 8-bit A register, the carry flag and the 8-bit register
+\texttt{r}, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10011xxx}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 1, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{SBC r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: SBC B
+if opcode == 0x98:
+  result, carry_per_bit = A - flags.C - B
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 1
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{SBC (HL): Subtract with carry (indirect HL)}
+\label{inst:SBC_hl}
+
+Subtracts from the 8-bit A register, the carry flag and data from the absolute
+address specified by the 16-bit register HL, and stores the result back into
+the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10011110}/\hex{9E}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 1, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{SBC (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x9E:
+  data = read(HL)
+  result, carry_per_bit = A - flags.C - data
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 1
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{SBC n: Subtract with carry (immediate)}
+\label{inst:SBC_n}
+
+Subtracts from the 8-bit A register, the carry flag and the immediate data
+\texttt{n}, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11001110}/\hex{DE} + \texttt{n}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 1, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{SBC n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xDE:
+  n = read(PC++)
+  result, carry_per_bit = A - flags.C - n
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 1
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{CP r: Compare (register)}
+\label{inst:CP_r}
+
+Subtracts from the 8-bit A register, the 8-bit register \texttt{r}, and updates
+flags based on the result. This instruction is basically identical to
+\hyperref[inst:SUB_r]{SUB r}, but does not update the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10111xxx}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 1, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{CP r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: CP B
+if opcode == 0xB8:
+  result, carry_per_bit = A - B
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 1
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{CP (HL): Compare (indirect HL)}
+\label{inst:CP_hl}
+
+Subtracts from the 8-bit A register, data from the absolute address specified
+by the 16-bit register HL, and updates flags based on the result. This
+instruction is basically identical to \hyperref[inst:SUB_hl]{SUB (HL)}, but
+does not update the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10111110}/\hex{BE}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 1, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{CP (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xBE:
+  data = read(HL)
+  result, carry_per_bit = A - data
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 1
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{CP n: Compare (immediate)}
+\label{inst:CP_n}
+
+Subtracts from the 8-bit A register, the immediate data \texttt{n}, and updates
+flags based on the result. This instruction is basically identical to
+\hyperref[inst:SUB_n]{CP n}, but does not update the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11111110}/\hex{FE} + \texttt{n}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 1, H = \faStar, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{CP n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xFE:
+  n = read(PC++)
+  result, carry_per_bit = A - n
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 1
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{INC r: Increment (register)}
+\label{inst:INC_r}
+
+Increments data in the 8-bit register \texttt{r}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00xxx100}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{INC r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: INC B
+if opcode == 0x04:
+  result, carry_per_bit = B + 1
+  B = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{INC (HL): Increment (indirect HL)}
+\label{inst:INC_hl}
+
+Increments data at the absolute address specified by the 16-bit register HL.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00110100}/\hex{34}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    3 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 24D{INC (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data} 8D{W: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x34:
+  data = read(HL)
+  result, carry_per_bit = data + 1
+  write(HL, result)
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{DEC r: Decrement (register)}
+\label{inst:DEC_r}
+
+Decrements data in the 8-bit register \texttt{r}.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00xxx101}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{DEC r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: DEC B
+if opcode == 0x05:
+  result, carry_per_bit = B - 1
+  B = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{DEC (HL): Decrement (indirect HL)}
+\label{inst:DEC_hl}
+
+Decrements data at the absolute address specified by the 16-bit register HL.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00110101}/\hex{35}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    3 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 24D{DEC (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data} 8D{W: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x35:
+  data = read(HL)
+  result, carry_per_bit = data - 1
+  write(HL, result)
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+\end{verbatim}
+\end{description}
+
+\subsection{AND r: Bitwise AND (register)}
+\label{inst:AND_r}
+
+Performs a bitwise AND operation between the 8-bit A register and the 8-bit register \texttt{r}, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10100xxx}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 0, H = 1, C = 0
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{AND r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: AND B
+if opcode == 0xA0:
+  result = A & B
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1
+  flags.C = 0
+\end{verbatim}
+\end{description}
+
+\subsection{AND (HL): Bitwise AND (indirect HL)}
+\label{inst:AND_hl}
+
+Performs a bitwise AND operation between the 8-bit A register and data from the absolute address specified by the 16-bit register HL, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10100110}/\hex{A6}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = 1, C = 0
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{AND (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xA6:
+  data = read(HL)
+  result = A & data
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1
+  flags.C = 0
+\end{verbatim}
+\end{description}
+
+\subsection{AND n: Bitwise AND (immediate)}
+\label{inst:AND_n}
+
+Performs a bitwise AND operation between the 8-bit A register and immediate data \texttt{n}, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11100110}/\hex{E6} + \texttt{n}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = 1, C = 0
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{AND n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xE6:
+  n = read(PC++)
+  result = A & n
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 1
+  flags.C = 0
+\end{verbatim}
+\end{description}
+
+\subsection{OR r: Bitwise OR (register)}
+\label{inst:OR_r}
+
+Performs a bitwise OR operation between the 8-bit A register and the 8-bit register \texttt{r}, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10100xxx}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 0, H = 0, C = 0
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{OR r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: OR B
+if opcode == 0xB0:
+  result = A | B
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 0
+\end{verbatim}
+\end{description}
+
+\subsection{OR (HL): Bitwise OR (indirect HL)}
+\label{inst:OR_hl}
+
+Performs a bitwise OR operation between the 8-bit A register and data from the absolute address specified by the 16-bit register HL, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10100110}/\hex{B6}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = 1, C = 0
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{OR (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xB6:
+  data = read(HL)
+  result = A | data
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 0
+\end{verbatim}
+\end{description}
+
+\subsection{OR n: Bitwise OR (immediate)}
+\label{inst:OR_n}
+
+Performs a bitwise OR operation between the 8-bit A register and immediate data \texttt{n}, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11110110}/\hex{F6} + \texttt{n}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = 1, C = 0
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{OR n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xF6:
+  n = read(PC++)
+  result = A | n
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 0
+\end{verbatim}
+\end{description}
+
+\subsection{XOR r: Bitwise XOR (register)}
+\label{inst:XOR_r}
+
+Performs a bitwise XOR operation between the 8-bit A register and the 8-bit register \texttt{r}, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10101xxx}/various
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, N = 0, H = 0, C = 0
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{XOR r} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+# example: XOR B
+if opcode == 0xB8:
+  result = A ^ B
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 0
+\end{verbatim}
+\end{description}
+
+\subsection{XOR (HL): Bitwise XOR (indirect HL)}
+\label{inst:XOR_hl}
+
+Performs a bitwise XOR operation between the 8-bit A register and data from the absolute address specified by the 16-bit register HL, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{10101110}/\hex{BE}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = 1, C = 0
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{XOR (HL)} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: data}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{HL}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xBE:
+  data = read(HL)
+  result = A ^ data
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 0
+\end{verbatim}
+\end{description}
+
+\subsection{XOR n: Bitwise XOR (immediate)}
+\label{inst:XOR_n}
+
+Performs a bitwise XOR operation between the 8-bit A register and immediate data \texttt{n}, and stores the result back into the A register.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{11100110}/\hex{EE} + \texttt{n}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    2 machine cycles
+  \item[Flags]
+    Z = \faStar, N = 0, H = 1, C = 0
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 16D{XOR n} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} 8D{R: n}; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} 8D{PC+1}; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+  \item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0xEE:
+  n = read(PC++)
+  result = A ^ n
+  A = result
+  flags.Z = 1 if result == 0 else 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 0
+\end{verbatim}
+\end{description}
+
+\subsection{CCF: Complement carry flag}
+\label{inst:CCF}
+
+Flips the carry flag, and clears the N and H flags.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00111111}/\hex{3F}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    N = 0, H = 0, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{CCF} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x3F:
+  flags.N = 0
+  flags.H = 0
+  flags.C = ~flags.C
+\end{verbatim}
+\end{description}
+
+\subsection{SCF: Set carry flag}
+\label{inst:SCF}
+
+Sets the carry flag, and clears the N and H flags.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00110111}/\hex{37}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    N = 0, H = 0, C = 1
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{SCF} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x37:
+  flags.N = 0
+  flags.H = 0
+  flags.C = 1
+\end{verbatim}
+\end{description}
+
+\subsection{DAA: Decimal adjust accumulator}
+\label{inst:DAA}
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00100111}/\hex{27}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    Z = \faStar, H = 0, C = \faStar
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{DAA} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+\end{description}
+
+\subsection{CPL: Complement accumulator}
+\label{inst:CPL}
+
+Flips all the bits in the 8-bit A register, and sets the N and H flags.
+
+\begin{description}[leftmargin=9em, style=nextline]
+  \item[Opcode]
+    \bin{00101111}/\hex{2F}
+  \item[Length]
+    1 byte
+  \item[Duration]
+    1 machine cycle
+  \item[Flags]
+    N = 1, H = 1
+  \item[Timing] \parbox{\linewidth}{
+    \begin{tikztimingtable}[timing/wscale=0.8]
+      M-cycle & X 8D{M1} 8D{M2/M1} X \\
+      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{CPL} ; [opacity=0.4] X \\
+      Mem R/W  & X 8D{R: opcode} ; [opacity=0.4] 8D{R: next op} X \\
+      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
+    \end{tikztimingtable}
+  }
+\item[Pseudocode] \begin{verbatim}
+opcode = read(PC++)
+if opcode == 0x2F:
+  A = ~A
+  flags.N = 1
+  flags.H = 1
+\end{verbatim}
+\end{description}
 
 \section{16-bit arithmetic instructions}
 
@@ -1209,68 +2318,6 @@ if opcode == 0xFB:
 \end{verbatim}
 \end{description}
 
-\subsection{CCF: Complement carry flag}
-\label{inst:CCF}
-
-Flips the carry flag, and clears the N and H flags.
-
-\begin{description}[leftmargin=9em, style=nextline]
-  \item[Opcode]
-    \bin{00111111}/\hex{3F}
-  \item[Length]
-    1 byte
-  \item[Duration]
-    1 machine cycle
-  \item[Flags]
-    N = 0, H = 0, C = \faStar
-  \item[Timing] \parbox{\linewidth}{
-    \begin{tikztimingtable}[timing/wscale=0.8]
-      M-cycle & X 8D{M1} 8D{M2/M1} X \\
-      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{CCF} ; [opacity=0.4] X \\
-      Mem R/W  & X 8D{R: opcode} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
-    \end{tikztimingtable}
-  }
-\item[Pseudocode] \begin{verbatim}
-opcode = read(PC++)
-if opcode == 0x3F:
-  flags.N = 0
-  flags.H = 0
-  flags.C = ~flags.C
-\end{verbatim}
-\end{description}
-
-\subsection{SCF: Set carry flag}
-\label{inst:SCF}
-
-Sets the carry flag, and clears the N and H flags.
-
-\begin{description}[leftmargin=9em, style=nextline]
-  \item[Opcode]
-    \bin{00110111}/\hex{37}
-  \item[Length]
-    1 byte
-  \item[Duration]
-    1 machine cycle
-  \item[Flags]
-    N = 0, H = 0, C = 1
-  \item[Timing] \parbox{\linewidth}{
-    \begin{tikztimingtable}[timing/wscale=0.8]
-      M-cycle & X 8D{M1} 8D{M2/M1} X \\
-      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{SCF} ; [opacity=0.4] X \\
-      Mem R/W  & X 8D{R: opcode} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
-    \end{tikztimingtable}
-  }
-\item[Pseudocode] \begin{verbatim}
-opcode = read(PC++)
-if opcode == 0x37:
-  flags.N = 0
-  flags.H = 0
-  flags.C = 1
-\end{verbatim}
-\end{description}
-
 \subsection{NOP: No operation}
 \label{inst:NOP}
 
@@ -1298,59 +2345,6 @@ delay of one machine cycle and increment PC by one.
 opcode = read(PC++)
 if opcode == 0x00:
   // nothing
-\end{verbatim}
-\end{description}
-
-\subsection{DAA: Decimal adjust accumulator}
-\label{inst:DAA}
-
-\begin{description}[leftmargin=9em, style=nextline]
-  \item[Opcode]
-    \bin{00100111}/\hex{27}
-  \item[Length]
-    1 byte
-  \item[Duration]
-    1 machine cycle
-  \item[Flags]
-    Z = \faStar, H = 0, C = \faStar
-  \item[Timing] \parbox{\linewidth}{
-    \begin{tikztimingtable}[timing/wscale=0.8]
-      M-cycle & X 8D{M1} 8D{M2/M1} X \\
-      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{DAA} ; [opacity=0.4] X \\
-      Mem R/W  & X 8D{R: opcode} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
-    \end{tikztimingtable}
-  }
-\end{description}
-
-\subsection{CPL: Complement accumulator}
-\label{inst:CPL}
-
-Flips all the bits in the 8-bit A register, and sets the N and H flags.
-
-\begin{description}[leftmargin=9em, style=nextline]
-  \item[Opcode]
-    \bin{00101111}/\hex{2F}
-  \item[Length]
-    1 byte
-  \item[Duration]
-    1 machine cycle
-  \item[Flags]
-    N = 1, H = 1
-  \item[Timing] \parbox{\linewidth}{
-    \begin{tikztimingtable}[timing/wscale=0.8]
-      M-cycle & X 8D{M1} 8D{M2/M1} X \\
-      Instruction & ; [opacity=0.4] 9D{Previous} ; [opacity=1.0] 8D{CPL} ; [opacity=0.4] X \\
-      Mem R/W  & X 8D{R: opcode} ; [opacity=0.4] 8D{R: next op} X \\
-      Mem addr & X 8D{PC} ; [opacity=0.4] 8D{PC+1} X \\
-    \end{tikztimingtable}
-  }
-\item[Pseudocode] \begin{verbatim}
-opcode = read(PC++)
-if opcode == 0x2F:
-  A = ~A
-  flags.N = 1
-  flags.H = 1
 \end{verbatim}
 \end{description}
 
