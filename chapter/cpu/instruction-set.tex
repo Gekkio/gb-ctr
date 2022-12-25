@@ -1158,7 +1158,7 @@ Subtracts from the 8-bit A register, the carry flag and the immediate data
 
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode]
-    \bin{11001110}/\hex{DE} + \texttt{n}
+    \bin{11011110}/\hex{DE} + \texttt{n}
   \item[Length]
     1 byte
   \item[Duration]
@@ -1264,7 +1264,7 @@ if opcode == 0xBE:
 
 Subtracts from the 8-bit A register, the immediate data \texttt{n}, and updates
 flags based on the result. This instruction is basically identical to
-\hyperref[inst:SUB_n]{CP n}, but does not update the A register.
+\hyperref[inst:SUB_n]{SUB n}, but does not update the A register.
 
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode]
@@ -1376,7 +1376,7 @@ Decrements data in the 8-bit register \texttt{r}.
   \item[Duration]
     1 machine cycle
   \item[Flags]
-    Z = \faStar, N = 0, H = \faStar
+    Z = \faStar, N = 1, H = \faStar
   \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       M-cycle & X 8D{M1} 8D{M2/M1} X \\
@@ -1392,7 +1392,7 @@ if opcode == 0x05:
   result, carry_per_bit = B - 1
   B = result
   flags.Z = 1 if result == 0 else 0
-  flags.N = 0
+  flags.N = 1
   flags.H = 1 if carry_per_bit[3] else 0
 \end{verbatim}
 \end{description}
@@ -1410,7 +1410,7 @@ Decrements data at the absolute address specified by the 16-bit register HL.
   \item[Duration]
     3 machine cycles
   \item[Flags]
-    Z = \faStar, N = 0, H = \faStar
+    Z = \faStar, N = 1, H = \faStar
   \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       M-cycle & X 8D{M1} 8D{M2} 8D{M3} 8D{M4/M1} X \\
@@ -1426,7 +1426,7 @@ if opcode == 0x35:
   result, carry_per_bit = data - 1
   write(HL, result)
   flags.Z = 1 if result == 0 else 0
-  flags.N = 0
+  flags.N = 1
   flags.H = 1 if carry_per_bit[3] else 0
 \end{verbatim}
 \end{description}
