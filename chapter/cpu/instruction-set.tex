@@ -1543,7 +1543,7 @@ Performs a bitwise OR operation between the 8-bit A register and the 8-bit regis
 
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode]
-    \bin{10100xxx}/various
+    \bin{10110xxx}/various
   \item[Length]
     1 byte
   \item[Duration]
@@ -1578,13 +1578,13 @@ Performs a bitwise OR operation between the 8-bit A register and data from the a
 
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode]
-    \bin{10100110}/\hex{B6}
+    \bin{10110110}/\hex{B6}
   \item[Length]
     1 byte
   \item[Duration]
     2 machine cycles
   \item[Flags]
-    Z = \faStar, N = 0, H = 1, C = 0
+    Z = \faStar, N = 0, H = 0, C = 0
   \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
@@ -1619,7 +1619,7 @@ Performs a bitwise OR operation between the 8-bit A register and immediate data 
   \item[Duration]
     2 machine cycles
   \item[Flags]
-    Z = \faStar, N = 0, H = 1, C = 0
+    Z = \faStar, N = 0, H = 0, C = 0
   \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
@@ -1689,7 +1689,7 @@ Performs a bitwise XOR operation between the 8-bit A register and data from the 
   \item[Duration]
     2 machine cycles
   \item[Flags]
-    Z = \faStar, N = 0, H = 1, C = 0
+    Z = \faStar, N = 0, H = 0, C = 0
   \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
@@ -1718,13 +1718,13 @@ Performs a bitwise XOR operation between the 8-bit A register and immediate data
 
 \begin{description}[leftmargin=9em, style=nextline]
   \item[Opcode]
-    \bin{11100110}/\hex{EE} + \texttt{n}
+    \bin{11101110}/\hex{EE} + \texttt{n}
   \item[Length]
     1 byte
   \item[Duration]
     2 machine cycles
   \item[Flags]
-    Z = \faStar, N = 0, H = 1, C = 0
+    Z = \faStar, N = 0, H = 0, C = 0
   \item[Timing] \parbox{\linewidth}{
     \begin{tikztimingtable}[timing/wscale=0.8]
       M-cycle & X 8D{M1} 8D{M2} 8D{M3/M1} X \\
