@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.4)
 project(gbctr)
 
 set(LATEX_OUTPUT_PATH build)
-set(PDFLATEX_COMPILER xelatex)
+set(PDFLATEX_COMPILER lualatex)
 set(LATEX_COMPILER_FLAGS "-interaction=batchmode -file-line-error -shell-escape" CACHE STRING "Flags passed to latex")
 
 find_package(Git QUIET REQUIRED)

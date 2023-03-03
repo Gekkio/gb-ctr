@@ -34,8 +34,8 @@ jobs:
           texlive-latex-base
           texlive-latex-extra
           texlive-latex-recommended
+          texlive-luatex
           texlive-pictures
-          texlive-xetex
       - name: Run cmake
         run: cmake .
       - name: Run make
