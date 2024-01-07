@@ -1,9 +1,6 @@
 name: ci
 on:
-  pull_request:
-  push:
-    branches:
-    - main
+  - push
 
 concurrency: 
   group: ${{ github.ref }}
@@ -22,35 +19,29 @@ jobs:
       - name: Update Ubuntu package lists
         run: sudo apt update
       - name: Install Ubuntu packages
-        run: >          
+        run: >
           sudo apt install
-          cmake
-          lmodern
-          python3-pygments
-          texlive-base
-          texlive-fonts-extra
-          texlive-fonts-recommended
-          texlive-lang-english
-          texlive-latex-base
-          texlive-latex-extra
-          texlive-latex-recommended
-          texlive-luatex
-          texlive-pictures
-      - name: Run cmake
-        run: cmake .
-      - name: Run make
-        run: make
-      - name: Upload log
-        uses: actions/upload-artifact@v3
-        if: failure()
-        with:
-          name: log
-          path: build/gbctr.log
+          fonts-anonymous-pro
+          fonts-noto-core
+      - name: Install tools
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          cd "$HOME/.local/bin"
+          curl -L https://github.com/typst/typst/releases/download/v0.10.0/typst-x86_64-unknown-linux-musl.tar.xz | tar -xJ --strip-components=1 typst-x86_64-unknown-linux-musl/typst
+          curl -L https://github.com/casey/just/releases/download/1.22.0/just-1.22.0-x86_64-unknown-linux-musl.tar.gz | tar -xz just
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Install Font Awesome
+        run: |
+          mkdir -p "$HOME/.fonts"
+          curl -L https://github.com/FortAwesome/Font-Awesome/releases/download/6.5.1/fontawesome-free-6.5.1-desktop.zip -o fontawesome.zip
+          unzip -j fontawesome.zip 'fontawesome-free-6.5.1-desktop/otfs/*' -d "$HOME/.fonts"
+          fc-cache
+      - run: just build
       - name: Upload built PDF
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pdf
-          path: build/gbctr.pdf
+          path: gbctr.pdf
   deploy:
     name: Deploy PDF
     needs: [build]
@@ -68,10 +59,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
       - name: Download built PDF
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: pdf
-          path: build
+          path: gbctr.pdf
       - name: Upload to S3
         run: |
-          aws s3 cp build/gbctr.pdf s3://gbdocs.gekkio.fi/gbctr.pdf
+          aws s3 cp gbctr.pdf s3://gbdocs.gekkio.fi/gbctr.pdf

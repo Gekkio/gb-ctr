@@ -1,0 +1,38 @@
+pastraiser:
+  type: web
+  title: Gameboy CPU (LR35902) instruction set
+  url: http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
+tauwasser_mbc1:
+  type: web
+  title: MBC1 - Tauwasser's Wiki
+  author: Tauwasser
+  url: https://wiki.tauwasser.eu/view/MBC1
+tauwasser_mbc2:
+  type: web
+  title: MBC2 - Tauwasser's Wiki
+  author: Tauwasser
+  url: https://wiki.tauwasser.eu/view/MBC2
+pandocs:
+  type: web
+  title: Pan Docs - Everything You Always Wanted To Know About GAMEBOY
+  author: ["Pan of ATX", "Fayzullin, Marat", "Felber, Pascal", "Robson, Paul", "Korth, Martin"]
+  url: http://bgb.bircd.org/pandocs.htm
+tcagbd:
+  type: web
+  title: The Cycle-Accurate Game Boy Docs
+  author: Antonio Niño Díaz (AntonioND)
+  url: https://github.com/AntonioND/giibiiadvance/tree/master/docs
+costis_sgb:
+  type: blog
+  title: The quest for dumping GameBoy Boot ROMs!
+  author: Costis Sideris
+  url: http://www.its.caltech.edu/~costis/sgb_hack/
+gekkio_sgb2:
+  type: blog
+  title: Dumping the Super Game Boy 2 boot ROM
+  author: gekkio
+  url: https://gekkio.fi/blog/2015/dumping-the-super-game-boy-2-boot-rom/
+sm831x:
+  type: reference
+  title: SM8311/SM8313/SM8314/SM8315 - 8-Bit Single-Chip Microcomputers (Controllers For Home Appliances)
+  publisher: Sharp Corporation
