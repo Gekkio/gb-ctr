@@ -82,7 +82,7 @@
   opcode: [#bin("01xxxyyy")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: LD B, C
 if opcode == 0x41:
@@ -102,7 +102,7 @@ if opcode == 0x41:
   opcode: [#bin("00xxx110")/various + `n`],
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: LD B, n
 if opcode == 0x06:
@@ -122,7 +122,7 @@ if opcode == 0x06:
   opcode: [#bin("01xxx110")/various],
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: LD B, (HL)
 if opcode == 0x46:
@@ -142,7 +142,7 @@ if opcode == 0x46:
   opcode: [#bin("01110xxx")/various],
   mem_rw: ([W: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: LD (HL), B
 if opcode == 0x70:
@@ -162,7 +162,7 @@ if opcode == 0x70:
   opcode: [#bin("00110110")/#hex("36") + `n`],
   mem_rw: ([R: `n`], [W: `n`],),
   mem_addr: ([PC#sub[0]+1], [HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x36:
   n = read(PC++)
@@ -182,7 +182,7 @@ if opcode == 0x36:
   opcode: [#bin("00001010")/#hex("0A")],
   mem_rw: ([R: data],),
   mem_addr: ([BC],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x0A:
   A = read(BC)
@@ -201,7 +201,7 @@ if opcode == 0x0A:
   opcode: [#bin("00011010")/#hex("1A")],
   mem_rw: ([R: data],),
   mem_addr: ([DE],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x1A:
   A = read(DE)
@@ -220,7 +220,7 @@ if opcode == 0x1A:
   opcode: [#bin("00000010")/#hex("02")],
   mem_rw: ([W: data],),
   mem_addr: ([BC],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x02:
   write(BC, A)
@@ -239,7 +239,7 @@ if opcode == 0x02:
   opcode: [#bin("00010010")/#hex("12")],
   mem_rw: ([W: data],),
   mem_addr: ([DE],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x12:
   write(DE, A)
@@ -258,7 +258,7 @@ if opcode == 0x12:
   opcode: [#bin("11111010")/#hex("FA") + LSB of `n` + MSB of `n`],
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], [R: data],),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], [`nn`]),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xFA:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
@@ -278,7 +278,7 @@ if opcode == 0xFA:
   opcode: [#bin("11101010")/#hex("EA") + LSB of `n` + MSB of `n`],
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], [W: data],),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], [`nn`]),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xEA:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
@@ -298,7 +298,7 @@ if opcode == 0xEA:
   opcode: [#bin("11110010")/#hex("F2")],
   mem_rw: ([R: A],),
   mem_addr: ([#hex("FF00")+C],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xE2:
   A = read(unsigned_16(lsb=C, msb=0xFF))
@@ -317,7 +317,7 @@ if opcode == 0xE2:
   opcode: [#bin("11100010")/#hex("E2")],
   mem_rw: ([W: A],),
   mem_addr: ([#hex("FF00")+C],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xE2:
   write(unsigned_16(lsb=C, msb=0xFF), A)
@@ -336,7 +336,7 @@ if opcode == 0xE2:
   opcode: [#bin("11110000")/#hex("F0")],
   mem_rw: ([R: `n`], [R: A],),
   mem_addr: ([PC#sub[0]+1], [#hex("FF00")+`n`],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xF0:
   n = read(PC++)
@@ -356,7 +356,7 @@ if opcode == 0xF0:
   opcode: [#bin("11100000")/#hex("E0")],
   mem_rw: ([R: `n`], [W: A],),
   mem_addr: ([PC#sub[0]+1], [#hex("FF00")+C],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xE0:
   n = read(PC++)
@@ -376,7 +376,7 @@ if opcode == 0xE0:
   opcode: [#bin("00111010")/#hex("3A")],
   mem_rw: ([R: A],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x3A:
   A = read(HL--)
@@ -395,7 +395,7 @@ if opcode == 0x3A:
   opcode: [#bin("00110010")/#hex("32")],
   mem_rw: ([W: A],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x32:
   write(HL--, A)
@@ -414,7 +414,7 @@ if opcode == 0x32:
   opcode: [#bin("00101010")/#hex("2A")],
   mem_rw: ([R: A],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x2A:
   A = read(HL++)
@@ -433,7 +433,7 @@ if opcode == 0x2A:
   opcode: [#bin("00100010")/#hex("22")],
   mem_rw: ([W: A],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x32:
   write(HL++, A)
@@ -454,7 +454,7 @@ if opcode == 0x32:
   opcode: [#bin("00xx0001")/various + LSB of `nn` + MSB of `nn`],
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)],),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: LD BC, nn
 if opcode == 0x01:
@@ -475,7 +475,7 @@ if opcode == 0x01:
   opcode: [#bin("00001000")/#hex("08") + LSB of `nn` + MSB of `nn`],
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], [W: lsb(SP)], [W: msb(SP)],),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], [`nn`], [`nn`+1]),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x08:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
@@ -496,7 +496,7 @@ if opcode == 0x08:
   opcode: [#bin("11111001")/#hex("F9")],
   mem_rw: ("U",),
   mem_addr: ("U",),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xF9:
   SP = HL
@@ -515,7 +515,7 @@ if opcode == 0xF9:
   opcode: [#bin("11xx0101")/various],
   mem_rw: ("U", [W: msb(`rr`)], [W: lsb(`rr`)],),
   mem_addr: ([SP#sub[0]], [SP#sub[0]-1], [SP#sub[0]-2],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: PUSH BC
 if opcode == 0xC5:
@@ -540,7 +540,7 @@ if opcode == 0xC5:
   opcode: [#bin("11xx0001")/various],
   mem_rw: ([R: lsb(`rr`)], [R: msb(`rr`)],),
   mem_addr: ([SP#sub[0]], [SP#sub[0]-1], [SP#sub[0]-2],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: POP BC
 if opcode == 0xC1:
@@ -567,7 +567,7 @@ TODO
   opcode: [#bin("10000xxx")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: ADD B
 if opcode == 0x80:
@@ -593,7 +593,7 @@ if opcode == 0x80:
   opcode: [#bin("10000110")/#hex("86")],
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x86:
   data = read(HL)
@@ -619,7 +619,7 @@ if opcode == 0x86:
   opcode: [#bin("11000110")/#hex("C6")],
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xC6:
   n = read(PC++)
@@ -646,7 +646,7 @@ if opcode == 0xC6:
   opcode: [#bin("10001xxx")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: ADC B
 if opcode == 0x88:
@@ -672,7 +672,7 @@ if opcode == 0x88:
   opcode: [#bin("10001110")/#hex("8E")],
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x8E:
   data = read(HL)
@@ -698,7 +698,7 @@ if opcode == 0x8E:
   opcode: [#bin("11001110")/#hex("CE") + `n`],
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xCE:
   n = read(PC++)
@@ -724,7 +724,7 @@ if opcode == 0xCE:
   opcode: [#bin("10010xxx")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: SUB B
 if opcode == 0x90:
@@ -750,7 +750,7 @@ if opcode == 0x90:
   opcode: [#bin("10010110")/#hex("96")],
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x96:
   data = read(HL)
@@ -776,7 +776,7 @@ if opcode == 0x96:
   opcode: [#bin("11010110")/#hex("D6") + `n`],
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xD6:
   n = read(PC++)
@@ -802,7 +802,7 @@ if opcode == 0xD6:
   opcode: [#bin("10011xxx")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: SBC B
 if opcode == 0x98:
@@ -828,7 +828,7 @@ if opcode == 0x98:
   opcode: [#bin("10011110")/#hex("9E")],
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x9E:
   data = read(HL)
@@ -854,7 +854,7 @@ if opcode == 0x9E:
   opcode: [#bin("11011110")/#hex("DE") + `n`],
   mem_rw: ([R: `n`],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xDE:
   n = read(PC++)
@@ -880,7 +880,7 @@ if opcode == 0xDE:
   opcode: [#bin("10111xxx")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: CP B
 if opcode == 0xB8:
@@ -905,7 +905,7 @@ if opcode == 0xB8:
   opcode: [#bin("10011110")/#hex("9E")],
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xBE:
   data = read(HL)
@@ -930,7 +930,7 @@ if opcode == 0xBE:
   opcode: [#bin("11111110")/#hex("FE") + `n`],
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xFE:
   n = read(PC++)
@@ -955,7 +955,7 @@ if opcode == 0xFE:
   opcode: [#bin("00xxx100")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: INC B
 if opcode == 0x04:
@@ -980,7 +980,7 @@ if opcode == 0x04:
   opcode: [#bin("00110100")/#hex("34")],
   mem_rw: ([R: data], [W: data],),
   mem_addr: ([HL], [HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x34:
   data = read(HL)
@@ -1005,7 +1005,7 @@ if opcode == 0x34:
   opcode: [#bin("00xxx101")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: DEC B
 if opcode == 0x05:
@@ -1030,7 +1030,7 @@ if opcode == 0x05:
   opcode: [#bin("00110101")/#hex("35")],
   mem_rw: ([R: data], [W: data],),
   mem_addr: ([HL], [HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x35:
   data = read(HL)
@@ -1055,7 +1055,7 @@ if opcode == 0x35:
   opcode: [#bin("10100xxx")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: AND B
 if opcode == 0xA0:
@@ -1081,7 +1081,7 @@ if opcode == 0xA0:
   opcode: [#bin("10100110")/#hex("A6")],
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xA6:
   data = read(HL)
@@ -1107,7 +1107,7 @@ if opcode == 0xA6:
   opcode: [#bin("11100110")/#hex("E6") + `n`],
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xE6:
   n = read(PC++)
@@ -1133,7 +1133,7 @@ if opcode == 0xE6:
   opcode: [#bin("10110xxx")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: OR B
 if opcode == 0xB0:
@@ -1159,7 +1159,7 @@ if opcode == 0xB0:
   opcode: [#bin("10110110")/#hex("B6")],
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xB6:
   data = read(HL)
@@ -1185,7 +1185,7 @@ if opcode == 0xB6:
   opcode: [#bin("11110110")/#hex("F6") + `n`],
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xF6:
   n = read(PC++)
@@ -1211,7 +1211,7 @@ if opcode == 0xF6:
   opcode: [#bin("10101xxx")/various],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 # example: XOR B
 if opcode == 0xB8:
@@ -1237,7 +1237,7 @@ if opcode == 0xB8:
   opcode: [#bin("10101110")/#hex("AE")],
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xBE:
   data = read(HL)
@@ -1263,7 +1263,7 @@ if opcode == 0xBE:
   opcode: [#bin("11101110")/#hex("EE") + `n`],
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xEE:
   n = read(PC++)
@@ -1289,7 +1289,7 @@ if opcode == 0xEE:
   opcode: [#bin("00111111")/#hex("3F")],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x3F:
   flags.N = 0
@@ -1311,7 +1311,7 @@ if opcode == 0x3F:
   opcode: [#bin("00110111")/#hex("37")],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x37:
   flags.N = 0
@@ -1333,7 +1333,7 @@ if opcode == 0x37:
   opcode: [#bin("00100111")/#hex("27")],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 TODO
   ```
 )
@@ -1351,7 +1351,7 @@ TODO
   opcode: [#bin("00101111")/#hex("2F")],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x2F:
   A = ~A
@@ -1499,7 +1499,7 @@ TODO
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], "U",),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], "U",),
   next_addr: [`nn`],
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xC3:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
@@ -1520,7 +1520,7 @@ if opcode == 0xC3:
   mem_rw: (),
   mem_addr: (),
   next_addr: [HL],
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xE9:
   PC = HL
@@ -1557,7 +1557,7 @@ if opcode == 0xE9:
     mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], "U",),
     next_addr: [`nn`],
   ),
-  [*Pseudocode*], ```
+  [*Pseudocode*], ```python
 opcode = read(PC++)
 if opcode in [0xC2, 0xD2, 0xCA, 0xDA]:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
@@ -1579,7 +1579,7 @@ if opcode in [0xC2, 0xD2, 0xCA, 0xDA]:
   mem_rw: ([R: `e`], "U",),
   mem_addr: ([PC#sub[0]+1], "U",),
   next_addr: [PC#sub[0]+2+`e`],
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x18:
   e = signed_8(read(PC++))
@@ -1613,7 +1613,7 @@ if opcode == 0x18:
     mem_addr: ([PC#sub[0]+1], "U",),
     next_addr: [PC#sub[0]+2+`e`],
   ),
-  [*Pseudocode*], ```
+  [*Pseudocode*], ```python
 opcode = read(PC++)
 if opcode in [0x20, 0x30, 0x28, 0x38]:
   e = signed_8(read(PC++))
@@ -1635,7 +1635,7 @@ if opcode in [0x20, 0x30, 0x28, 0x38]:
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], "U", [W: msb(PC#sub[0]+3)], [W: lsb(PC#sub[0]+3)],),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], [SP#sub[0]], [SP#sub[0]-1], [SP#sub[0]-2],),
   next_addr: [`nn`],
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xCD:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
@@ -1672,7 +1672,7 @@ if opcode == 0xCD:
     mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], [SP#sub[0]], [SP#sub[0]-1], [SP#sub[0]-2],),
     next_addr: [`nn`],
   ),
-  [*Pseudocode*], ```
+  [*Pseudocode*], ```python
 opcode = read(PC++)
 if opcode in [0xC4, 0xD4, 0xCC, 0xDC]:
   nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
@@ -1697,7 +1697,7 @@ if opcode in [0xC4, 0xD4, 0xCC, 0xDC]:
   mem_rw: ([R: lsb(PC)], [R: msb(PC)], "U",),
   mem_addr: ([SP#sub[0]], [SP#sub[0]+1], "U",),
   next_addr: [PC from stack],
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xC9:
   PC = unsigned_16(lsb=read(SP++), msb=read(SP++))
@@ -1728,7 +1728,7 @@ if opcode == 0xC9:
     mem_addr: ("U", [SP#sub[0]], [SP#sub[0]+1], "U",),
     next_addr: [PC from stack],
   ),
-  [*Pseudocode*], ```
+  [*Pseudocode*], ```python
 opcode = read(PC++)
 if opcode in [0xC0, 0xD0, 0xC8, 0xD8]:
   if F.check_condition(cc):
@@ -1749,7 +1749,7 @@ if opcode in [0xC0, 0xD0, 0xC8, 0xD8]:
   mem_rw: ([R: lsb(PC)], [R: msb(PC)], "U",),
   mem_addr: ([SP#sub[0]], [SP#sub[0]+1], "U",),
   next_addr: [PC from stack],
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xD9:
   PC = unsigned_16(lsb=read(SP++), msb=read(SP++))
@@ -1770,7 +1770,7 @@ if opcode == 0xD9:
   mem_rw: ("U", [W: msb(PC#sub[0]+1)], [W: lsb(PC#sub[0]+1)],),
   mem_addr: ([SP#sub[0]], [SP#sub[0]-1], [SP#sub[0]-2],),
   next_addr: [`n`],
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode in [0xC7, 0xD7, 0xE7, 0xF7, 0xCF, 0xDF, 0xEF, 0xFF]:
   n = rst_address(opcode)
@@ -1803,7 +1803,7 @@ TODO
   opcode: [#bin("11110011")/#hex("F3")],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0xF3:
   IME = 0
@@ -1827,7 +1827,7 @@ if opcode == 0xF3:
     mem_addr: (),
     next_addr: [PC#sub[0]+1],
   ),
-  [*Pseudocode*], ```
+  [*Pseudocode*], ```python
 opcode = read(PC++)
 if opcode == 0xFB:
   IME_scheduled = true
@@ -1846,7 +1846,7 @@ if opcode == 0xFB:
   opcode: [#bin("00000000")/#hex("00")],
   mem_rw: (),
   mem_addr: (),
-  pseudocode: ```
+  pseudocode: ```python
 opcode = read(PC++)
 if opcode == 0x00:
   // nothing
