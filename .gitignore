@@ -3,8 +3,5 @@
 *.log
 *.swp
 
-build/
-CMakeCache.txt
-CMakeFiles
-Makefile
-cmake_install.cmake
+/gbctr.pdf
+/config.json
