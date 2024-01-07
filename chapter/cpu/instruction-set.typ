@@ -83,7 +83,7 @@
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: LD B, C
 if opcode == 0x41:
   B = C
@@ -103,10 +103,10 @@ if opcode == 0x41:
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: LD B, n
 if opcode == 0x06:
-  B = read(PC++)
+  B = read_memory(addr=PC); PC = PC + 1
   ```
 )
 
@@ -123,10 +123,10 @@ if opcode == 0x06:
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: LD B, (HL)
 if opcode == 0x46:
-  B = read(HL)
+  B = read_memory(addr=HL)
   ```
 )
 
@@ -143,10 +143,10 @@ if opcode == 0x46:
   mem_rw: ([W: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: LD (HL), B
 if opcode == 0x70:
-  write(HL, B)
+  write_memory(addr=HL, data=B)
   ```
 )
 
@@ -163,10 +163,10 @@ if opcode == 0x70:
   mem_rw: ([R: `n`], [W: `n`],),
   mem_addr: ([PC#sub[0]+1], [HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x36:
-  n = read(PC++)
-  write(HL, n)
+  n = read_memory(addr=PC); PC = PC + 1
+  write_memory(addr=HL, data=n)
   ```
 )
 
@@ -183,9 +183,9 @@ if opcode == 0x36:
   mem_rw: ([R: data],),
   mem_addr: ([BC],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x0A:
-  A = read(BC)
+  A = read_memory(addr=BC)
   ```
 )
 
@@ -202,9 +202,9 @@ if opcode == 0x0A:
   mem_rw: ([R: data],),
   mem_addr: ([DE],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x1A:
-  A = read(DE)
+  A = read_memory(addr=DE)
   ```
 )
 
@@ -221,9 +221,9 @@ if opcode == 0x1A:
   mem_rw: ([W: data],),
   mem_addr: ([BC],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x02:
-  write(BC, A)
+  write_memory(addr=BC, data=A)
   ```
 )
 
@@ -240,9 +240,9 @@ if opcode == 0x02:
   mem_rw: ([W: data],),
   mem_addr: ([DE],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x12:
-  write(DE, A)
+  write_memory(addr=DE, data=A)
   ```
 )
 
@@ -259,10 +259,12 @@ if opcode == 0x12:
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], [R: data],),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], [`nn`]),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xFA:
-  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
-  A = read(nn)
+  nn_lsb = read_memory(addr=PC); PC = PC + 1
+  nn_msb = read_memory(addr=PC); PC = PC + 1
+  nn = unsigned_16(lsb=nn_lsb, msb=nn_msb)
+  A = read_memory(addr=nn)
   ```
 )
 
@@ -279,10 +281,12 @@ if opcode == 0xFA:
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], [W: data],),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], [`nn`]),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xEA:
-  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
-  write(nn, A)
+  nn_lsb = read_memory(addr=PC); PC = PC + 1
+  nn_msb = read_memory(addr=PC); PC = PC + 1
+  nn = unsigned_16(lsb=nn_lsb, msb=nn_msb)
+  write_memory(addr=nn, data=A)
   ```
 )
 
@@ -299,9 +303,9 @@ if opcode == 0xEA:
   mem_rw: ([R: A],),
   mem_addr: ([#hex("FF00")+C],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xE2:
-  A = read(unsigned_16(lsb=C, msb=0xFF))
+  A = read_memory(addr=unsigned_16(lsb=C, msb=0xFF))
   ```
 )
 
@@ -318,9 +322,9 @@ if opcode == 0xE2:
   mem_rw: ([W: A],),
   mem_addr: ([#hex("FF00")+C],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xE2:
-  write(unsigned_16(lsb=C, msb=0xFF), A)
+  write_memory(addr=unsigned_16(lsb=C, data=msb=0xFF), A)
   ```
 )
 
@@ -337,10 +341,10 @@ if opcode == 0xE2:
   mem_rw: ([R: `n`], [R: A],),
   mem_addr: ([PC#sub[0]+1], [#hex("FF00")+`n`],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xF0:
-  n = read(PC++)
-  A = read(unsigned_16(lsb=n, msb=0xFF))
+  n = read_memory(addr=PC); PC = PC + 1
+  A = read_memory(addr=unsigned_16(lsb=n, msb=0xFF))
   ```
 )
 
@@ -357,10 +361,10 @@ if opcode == 0xF0:
   mem_rw: ([R: `n`], [W: A],),
   mem_addr: ([PC#sub[0]+1], [#hex("FF00")+C],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xE0:
-  n = read(PC++)
-  write(unsigned_16(lsb=n, msb=0xFF), A)
+  n = read_memory(addr=PC); PC = PC + 1
+  write_memory(addr=unsigned_16(lsb=n, data=msb=0xFF), A)
   ```
 )
 
@@ -377,9 +381,9 @@ if opcode == 0xE0:
   mem_rw: ([R: A],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x3A:
-  A = read(HL--)
+  A = read_memory(addr=HL); HL = HL - 1
   ```
 )
 
@@ -396,9 +400,9 @@ if opcode == 0x3A:
   mem_rw: ([W: A],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x32:
-  write(HL--, A)
+  write_memory(addr=HL, data=A); HL = HL - 1
   ```
 )
 
@@ -415,9 +419,9 @@ if opcode == 0x32:
   mem_rw: ([R: A],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x2A:
-  A = read(HL++)
+  A = read_memory(addr=HL); HL = HL + 1
   ```
 )
 
@@ -434,9 +438,9 @@ if opcode == 0x2A:
   mem_rw: ([W: A],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x32:
-  write(HL++, A)
+  write_memory(addr=HL, data=A); HL = HL + 1
   ```
 )
 
@@ -455,10 +459,12 @@ if opcode == 0x32:
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)],),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: LD BC, nn
 if opcode == 0x01:
-  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  nn_lsb = read_memory(addr=PC); PC = PC + 1
+  nn_msb = read_memory(addr=PC); PC = PC + 1
+  nn = unsigned_16(lsb=nn_lsb, msb=nn_msb)
   BC = nn
   ```
 )
@@ -476,11 +482,13 @@ if opcode == 0x01:
   mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], [W: lsb(SP)], [W: msb(SP)],),
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], [`nn`], [`nn`+1]),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x08:
-  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
-  write(nn, lsb(SP))
-  write(nn+1, msb(SP))
+  nn_lsb = read_memory(addr=PC); PC = PC + 1
+  nn_msb = read_memory(addr=PC); PC = PC + 1
+  nn = unsigned_16(lsb=nn_lsb, msb=nn_msb)
+  write_memory(addr=nn, data=lsb(SP))
+  write_memory(addr=nn+1, data=msb(SP))
   ```
 )
 
@@ -497,7 +505,7 @@ if opcode == 0x08:
   mem_rw: ("U",),
   mem_addr: ("U",),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xF9:
   SP = HL
   ```
@@ -516,12 +524,12 @@ if opcode == 0xF9:
   mem_rw: ("U", [W: msb(`rr`)], [W: lsb(`rr`)],),
   mem_addr: ([SP#sub[0]], [SP#sub[0]-1], [SP#sub[0]-2],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: PUSH BC
 if opcode == 0xC5:
-  SP--
-  write(SP--, msb(BC))
-  write(SP, lsb(BC))
+  SP = SP - 1
+  write_memory(addr=SP, data=msb(BC)); SP = SP - 1
+  write_memory(addr=SP, data=lsb(BC))
   ```
 )
 
@@ -541,10 +549,12 @@ if opcode == 0xC5:
   mem_rw: ([R: lsb(`rr`)], [R: msb(`rr`)],),
   mem_addr: ([SP#sub[0]], [SP#sub[0]-1], [SP#sub[0]-2],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: POP BC
 if opcode == 0xC1:
-  BC = unsigned_16(lsb=read(SP++), msb=read(SP++))
+  lsb = read_memory(addr=SP); SP = SP + 1
+  msb = read_memory(addr=SP); SP = SP + 1
+  BC = unsigned_16(lsb=lsb, msb=msb)
   ```
 )
 
@@ -568,7 +578,7 @@ TODO
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: ADD B
 if opcode == 0x80:
   result, carry_per_bit = A + B
@@ -594,9 +604,9 @@ if opcode == 0x80:
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x86:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result, carry_per_bit = A + data
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -620,9 +630,9 @@ if opcode == 0x86:
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xC6:
-  n = read(PC++)
+  n = read_memory(addr=PC); PC = PC + 1
   result, carry_per_bit = A + n
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -647,7 +657,7 @@ if opcode == 0xC6:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: ADC B
 if opcode == 0x88:
   result, carry_per_bit = A + flags.C + B
@@ -673,9 +683,9 @@ if opcode == 0x88:
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x8E:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result, carry_per_bit = A + flags.C + data
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -699,9 +709,9 @@ if opcode == 0x8E:
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xCE:
-  n = read(PC++)
+  n = read_memory(addr=PC); PC = PC + 1
   result, carry_per_bit = A + flags.C + n
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -725,7 +735,7 @@ if opcode == 0xCE:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: SUB B
 if opcode == 0x90:
   result, carry_per_bit = A - B
@@ -751,9 +761,9 @@ if opcode == 0x90:
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x96:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result, carry_per_bit = A - data
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -777,9 +787,9 @@ if opcode == 0x96:
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xD6:
-  n = read(PC++)
+  n = read_memory(addr=PC); PC = PC + 1
   result, carry_per_bit = A - n
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -803,7 +813,7 @@ if opcode == 0xD6:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: SBC B
 if opcode == 0x98:
   result, carry_per_bit = A - flags.C - B
@@ -829,9 +839,9 @@ if opcode == 0x98:
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x9E:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result, carry_per_bit = A - flags.C - data
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -855,9 +865,9 @@ if opcode == 0x9E:
   mem_rw: ([R: `n`],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xDE:
-  n = read(PC++)
+  n = read_memory(addr=PC); PC = PC + 1
   result, carry_per_bit = A - flags.C - n
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -881,7 +891,7 @@ if opcode == 0xDE:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: CP B
 if opcode == 0xB8:
   result, carry_per_bit = A - B
@@ -906,9 +916,9 @@ if opcode == 0xB8:
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xBE:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result, carry_per_bit = A - data
   flags.Z = 1 if result == 0 else 0
   flags.N = 1
@@ -931,9 +941,9 @@ if opcode == 0xBE:
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xFE:
-  n = read(PC++)
+  n = read_memory(addr=PC); PC = PC + 1
   result, carry_per_bit = A - n
   flags.Z = 1 if result == 0 else 0
   flags.N = 1
@@ -956,7 +966,7 @@ if opcode == 0xFE:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: INC B
 if opcode == 0x04:
   result, carry_per_bit = B + 1
@@ -981,11 +991,11 @@ if opcode == 0x04:
   mem_rw: ([R: data], [W: data],),
   mem_addr: ([HL], [HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x34:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result, carry_per_bit = data + 1
-  write(HL, result)
+  write_memory(addr=HL, data=result)
   flags.Z = 1 if result == 0 else 0
   flags.N = 0
   flags.H = 1 if carry_per_bit[3] else 0
@@ -1006,7 +1016,7 @@ if opcode == 0x34:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: DEC B
 if opcode == 0x05:
   result, carry_per_bit = B - 1
@@ -1031,11 +1041,11 @@ if opcode == 0x05:
   mem_rw: ([R: data], [W: data],),
   mem_addr: ([HL], [HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x35:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result, carry_per_bit = data - 1
-  write(HL, result)
+  write_memory(addr=HL, data=result)
   flags.Z = 1 if result == 0 else 0
   flags.N = 1
   flags.H = 1 if carry_per_bit[3] else 0
@@ -1056,7 +1066,7 @@ if opcode == 0x35:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: AND B
 if opcode == 0xA0:
   result = A & B
@@ -1082,9 +1092,9 @@ if opcode == 0xA0:
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xA6:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result = A & data
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -1108,9 +1118,9 @@ if opcode == 0xA6:
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xE6:
-  n = read(PC++)
+  n = read_memory(addr=PC); PC = PC + 1
   result = A & n
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -1134,7 +1144,7 @@ if opcode == 0xE6:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: OR B
 if opcode == 0xB0:
   result = A | B
@@ -1160,9 +1170,9 @@ if opcode == 0xB0:
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xB6:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result = A | data
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -1186,9 +1196,9 @@ if opcode == 0xB6:
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xF6:
-  n = read(PC++)
+  n = read_memory(addr=PC); PC = PC + 1
   result = A | n
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -1212,7 +1222,7 @@ if opcode == 0xF6:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 # example: XOR B
 if opcode == 0xB8:
   result = A ^ B
@@ -1238,9 +1248,9 @@ if opcode == 0xB8:
   mem_rw: ([R: data],),
   mem_addr: ([HL],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xBE:
-  data = read(HL)
+  data = read_memory(addr=HL)
   result = A ^ data
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -1264,9 +1274,9 @@ if opcode == 0xBE:
   mem_rw: ([R: `n`],),
   mem_addr: ([PC#sub[0]+1],),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xEE:
-  n = read(PC++)
+  n = read_memory(addr=PC); PC = PC + 1
   result = A ^ n
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -1290,7 +1300,7 @@ if opcode == 0xEE:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x3F:
   flags.N = 0
   flags.H = 0
@@ -1312,7 +1322,7 @@ if opcode == 0x3F:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x37:
   flags.N = 0
   flags.H = 0
@@ -1352,7 +1362,7 @@ TODO
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x2F:
   A = ~A
   flags.N = 1
@@ -1500,9 +1510,11 @@ TODO
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], "U",),
   next_addr: [`nn`],
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xC3:
-  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  nn_lsb = read_memory(addr=PC); PC = PC + 1
+  nn_msb = read_memory(addr=PC); PC = PC + 1
+  nn = unsigned_16(lsb=nn_lsb, msb=nn_msb)
   PC = nn
   ```
 )
@@ -1521,7 +1533,7 @@ if opcode == 0xC3:
   mem_addr: (),
   next_addr: [HL],
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xE9:
   PC = HL
   ```
@@ -1558,9 +1570,11 @@ if opcode == 0xE9:
     next_addr: [`nn`],
   ),
   [*Pseudocode*], ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode in [0xC2, 0xD2, 0xCA, 0xDA]:
-  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  nn_lsb = read_memory(addr=PC); PC = PC + 1
+  nn_msb = read_memory(addr=PC); PC = PC + 1
+  nn = unsigned_16(lsb=nn_lsb, msb=nn_msb)
   if F.check_condition(cc):
     PC = nn
   ```,
@@ -1580,9 +1594,9 @@ if opcode in [0xC2, 0xD2, 0xCA, 0xDA]:
   mem_addr: ([PC#sub[0]+1], "U",),
   next_addr: [PC#sub[0]+2+`e`],
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x18:
-  e = signed_8(read(PC++))
+  e = signed_8(read_memory(addr=PC); PC = PC + 1)
   PC = PC + e
   ```
 )
@@ -1614,9 +1628,9 @@ if opcode == 0x18:
     next_addr: [PC#sub[0]+2+`e`],
   ),
   [*Pseudocode*], ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode in [0x20, 0x30, 0x28, 0x38]:
-  e = signed_8(read(PC++))
+  e = signed_8(read_memory(addr=PC); PC = PC + 1)
   if F.check_condition(cc):
     PC = PC + e
   ```,
@@ -1636,12 +1650,14 @@ if opcode in [0x20, 0x30, 0x28, 0x38]:
   mem_addr: ([PC#sub[0]+1], [PC#sub[0]+2], [SP#sub[0]], [SP#sub[0]-1], [SP#sub[0]-2],),
   next_addr: [`nn`],
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xCD:
-  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
-  SP--
-  write(SP--, msb(PC))
-  write(SP, lsb(PC))
+  nn_lsb = read_memory(addr=PC); PC = PC + 1
+  nn_msb = read_memory(addr=PC); PC = PC + 1
+  nn = unsigned_16(lsb=nn_lsb, msb=nn_msb)
+  SP = SP - 1
+  write_memory(addr=SP, data=msb(PC)); SP = SP - 1
+  write_memory(addr=SP, data=lsb(PC))
   PC = nn
   ```
 )
@@ -1673,13 +1689,15 @@ if opcode == 0xCD:
     next_addr: [`nn`],
   ),
   [*Pseudocode*], ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode in [0xC4, 0xD4, 0xCC, 0xDC]:
-  nn = unsigned_16(lsb=read(PC++), msb=read(PC++))
+  nn_lsb = read_memory(addr=PC); PC = PC + 1
+  nn_msb = read_memory(addr=PC); PC = PC + 1
+  nn = unsigned_16(lsb=nn_lsb, msb=nn_msb)
   if F.check_condition(cc):
-    SP--
-    write(SP--, msb(PC))
-    write(SP, lsb(PC))
+    SP = SP - 1
+    write_memory(addr=SP, data=msb(PC)); SP = SP - 1
+    write_memory(addr=SP, data=lsb(PC))
     PC = nn
   ```,
 )
@@ -1698,9 +1716,11 @@ if opcode in [0xC4, 0xD4, 0xCC, 0xDC]:
   mem_addr: ([SP#sub[0]], [SP#sub[0]+1], "U",),
   next_addr: [PC from stack],
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xC9:
-  PC = unsigned_16(lsb=read(SP++), msb=read(SP++))
+  lsb = read_memory(addr=SP); SP = SP + 1
+  msb = read_memory(addr=SP); SP = SP + 1
+  PC = unsigned_16(lsb=lsb, msb=msb)
   ```
 )
 
@@ -1729,10 +1749,12 @@ if opcode == 0xC9:
     next_addr: [PC from stack],
   ),
   [*Pseudocode*], ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode in [0xC0, 0xD0, 0xC8, 0xD8]:
   if F.check_condition(cc):
-    PC = unsigned_16(lsb=read(SP++), msb=read(SP++))
+    lsb = read_memory(addr=SP); SP = SP + 1
+    msb = read_memory(addr=SP); SP = SP + 1
+    PC = unsigned_16(lsb=lsb, msb=msb)
   ```,
 )
 
@@ -1750,9 +1772,11 @@ if opcode in [0xC0, 0xD0, 0xC8, 0xD8]:
   mem_addr: ([SP#sub[0]], [SP#sub[0]+1], "U",),
   next_addr: [PC from stack],
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xD9:
-  PC = unsigned_16(lsb=read(SP++), msb=read(SP++))
+  lsb = read_memory(addr=SP); SP = SP + 1
+  msb = read_memory(addr=SP); SP = SP + 1
+  PC = unsigned_16(lsb=lsb, msb=msb)
   IME = 1
   ```
 )
@@ -1771,12 +1795,12 @@ if opcode == 0xD9:
   mem_addr: ([SP#sub[0]], [SP#sub[0]-1], [SP#sub[0]-2],),
   next_addr: [`n`],
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode in [0xC7, 0xD7, 0xE7, 0xF7, 0xCF, 0xDF, 0xEF, 0xFF]:
   n = rst_address(opcode)
-  SP--
-  write(SP--, msb(PC))
-  write(SP, lsb(PC))
+  SP = SP - 1
+  write_memory(addr=SP, data=msb(PC)); SP = SP - 1
+  write_memory(addr=SP, data=lsb(PC))
   PC = unsigned_16(lsb=n, msb=0x00)
   ```
 )
@@ -1804,7 +1828,7 @@ TODO
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xF3:
   IME = 0
   ```
@@ -1828,7 +1852,7 @@ if opcode == 0xF3:
     next_addr: [PC#sub[0]+1],
   ),
   [*Pseudocode*], ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xFB:
   IME_scheduled = true
   ```,
@@ -1847,7 +1871,7 @@ if opcode == 0xFB:
   mem_rw: (),
   mem_addr: (),
   pseudocode: ```python
-opcode = read(PC++)
+opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x00:
   // nothing
   ```
