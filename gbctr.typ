@@ -42,10 +42,9 @@
     #set text(10pt)
     #block(width: 100%)[
       #set align(center)
-      #place(left, text(style: "italic")[
-        #if config.draft [DRAFT!]
-        #config.revision
-      ])
+      #if config.draft [
+        #place(left, text(style: "italic", [DRAFT! #config.revision]))
+      ]
       #box(counter(page).display())
     ]
   ]
