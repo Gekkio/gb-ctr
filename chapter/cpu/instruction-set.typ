@@ -1711,7 +1711,7 @@ if opcode == 0xC9:
     Conditional return from a function, depending on the condition `cc`.
   ],
   [*Opcode*], [#bin("110xx000")/various],
-  [*Length*], [1 bytes],
+  [*Length*], [1 byte],
   [*Duration*], [2 machine cycles (cc=false), or 5 machine cycles (cc=true)],
   [*Flags*], [-],
   [*Timing\ _cc=false_*], instruction-timing(
