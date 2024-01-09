@@ -558,9 +558,31 @@ if opcode == 0xC1:
   ```
 )
 
-==== LD HL,SP+e <op:LD_hl_sp_e>
+#instruction(
+  [
+    ==== LD HL, SP+e: Load HL from adjusted stack pointer <op:LD_hl_sp_e>
 
-TODO
+    Load to the HL register, 16-bit data calculated by adding the signed 8-bit operand `e` to the 16-bit value of the SP register.
+  ],
+  mnemonic: "LD HL, SP+e",
+  length: 2,
+  duration: 3,
+  flags: [Z = 0, N = 0, H = #flag-update, C = #flag-update],
+  opcode: [#bin("11111000")/#hex("F8")],
+  mem_rw: ([R: `e`], "U",),
+  mem_addr: ([PC#sub[0]+1], "U",),
+  pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xF8:
+  e = signed_8(read_memory(addr=PC)); PC = PC + 1
+  result, carry_per_bit = SP + e
+  HL = result
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+  ```
+)
 
 === 8-bit arithmetic and logical instructions
 
@@ -1372,21 +1394,96 @@ if opcode == 0x2F:
 
 === 16-bit arithmetic instructions
 
-==== INC rr <op:INC_rr>
+#instruction(
+  [
+    ==== INC rr: Increment 16-bit register <op:INC_rr>
 
-TODO
+    Increments data in the 16-bit register `rr`.
+  ],
+  mnemonic: "INC rr",
+  length: 1,
+  duration: 2,
+  opcode: [#bin("00xx0011")/various],
+  mem_rw: ("U",),
+  mem_addr: ([`rr`],),
+  pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+# Example: INC BC
+if opcode == 0x03:
+  BC = BC + 1
+  ```
+)
 
-==== DEC rr <op:DEC_rr>
+#instruction(
+  [
+    ==== DEC rr: Decrement 16-bit register <op:DEC_rr>
 
-TODO
+    Decrements data in the 16-bit register `rr`.
+  ],
+  mnemonic: "DEC rr",
+  length: 1,
+  duration: 2,
+  opcode: [#bin("00xx1011")/various],
+  mem_rw: ("U",),
+  mem_addr: ([`rr`],),
+  pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+# Example: DEC BC
+if opcode == 0x0B:
+  BC = BC - 1
+  ```
+)
 
-==== ADD HL,rr <op:ADD_hl_rr>
+#instruction(
+  [
+    ==== ADD HL, rr: Add (16-bit register) <op:ADD_hl_rr>
 
-TODO
+    Adds to the 16-bit HL register pair, the 16-bit register `rr`, and stores the result back into the HL register pair.
+  ],
+  mnemonic: "ADD HL, rr",
+  length: 1,
+  duration: 2,
+  flags: [N = 0, H = #flag-update, C = #flag-update],
+  opcode: [#bin("00xx1001")/various],
+  mem_rw: ("U",),
+  mem_addr: ("U",),
+  pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+# Example: ADD HL, BC
+if opcode == 0x09:
+  result, carry_per_bit = HL + BC
+  HL = result
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[11] else 0
+  flags.C = 1 if carry_per_bit[15] else 0
+  ```
+)
 
-==== ADD SP, e <op:ADD_sp_e>
+#instruction(
+  [
+    ==== ADD SP, e: Add to stack pointer (relative) <op:ADD_sp_e>
 
-TODO
+    Loads to the 16-bit SP register, 16-bit data calculated by adding the signed 8-bit operand `e` to the 16-bit value of the SP register.
+  ],
+  mnemonic: "ADD SP, e",
+  length: 2,
+  duration: 4,
+  flags: [Z = 0, N = 0, H = #flag-update, C = #flag-update],
+  opcode: [#bin("11101000")/#hex("E8")],
+  mem_rw: ([R: `e`], "U", "U",),
+  mem_addr: ([PC#sub[0]+1], "U", "U",),
+  pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xE8:
+  e = signed_8(read_memory(addr=PC)); PC = PC + 1
+  result, carry_per_bit = SP + e
+  SP = result
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 1 if carry_per_bit[3] else 0
+  flags.C = 1 if carry_per_bit[7] else 0
+  ```
+)
 
 === Rotate, shift, and bit operation instructions
 
@@ -1596,7 +1693,7 @@ if opcode in [0xC2, 0xD2, 0xCA, 0xDA]:
   pseudocode: ```python
 opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0x18:
-  e = signed_8(read_memory(addr=PC); PC = PC + 1)
+  e = signed_8(read_memory(addr=PC)); PC = PC + 1
   PC = PC + e
   ```
 )
@@ -1630,7 +1727,7 @@ if opcode == 0x18:
   [*Pseudocode*], ```python
 opcode = read_memory(addr=PC); PC = PC + 1
 if opcode in [0x20, 0x30, 0x28, 0x38]:
-  e = signed_8(read_memory(addr=PC); PC = PC + 1)
+  e = signed_8(read_memory(addr=PC)); PC = PC + 1
   if F.check_condition(cc):
     PC = PC + e
   ```,
