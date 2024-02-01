@@ -1,5 +1,5 @@
-#import "@preview/cetz:0.1.2"
-#import "@preview/tablex:0.0.7": tablex, cellx, colspanx, hlinex
+#import "@preview/cetz:0.2.0"
+#import "@preview/tablex:0.0.8": tablex, cellx, colspanx, hlinex
 
 #let monotext(..args) = text(font: "Anonymous Pro", fallback: false, ..args)
 

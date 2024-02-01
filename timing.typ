@@ -135,17 +135,18 @@
     draw.group(name: "labels", {
       for i in range(0, lanes.len()) {
         let lane = lanes.at(i)
-        draw.content((0, i * y_step + 0.5), anchor: "right", lane.label)
+        draw.content((0, i * y_step + 0.5), anchor: "east", lane.label)
       }
     })
     draw.group(name: "diagram", ctx => {
-      let (x, _, _) = cetz.coordinate.resolve(ctx, "labels.right")
+      let (ctx, east) = cetz.coordinate.resolve(ctx, "labels.east")
+      let (x, _, _) = east;
       draw.translate((x + 1, 0))
       draw.group(ctx => {
         for i in range(0, lanes.len()) {
           let lane = lanes.at(i)
           draw.group(ctx => {
-            draw.anchor("left", (0.0, y_l))
+            draw.anchor("west", (0.0, y_l))
             let prev_state = (level: "", type: "")
             for i in range(lane.wave.len()) {
               let event = lane.wave.at(i)
@@ -154,10 +155,10 @@
               prev_state.level = resolve_level(prev_state, event)
               prev_state.type = event.type
             }
-            draw.anchor("right", (0.0, y_h))
+            draw.anchor("east", (0.0, y_h))
             if grid {
               draw.on-layer(-1, {
-                draw.grid("left", "right", step: (x: 0.5 * w_scale, y: 0.5 * y_scale), stroke: (paint: gray.lighten(60%), thickness: 0.01em))
+                draw.grid("west", "east", step: (x: 0.5 * w_scale, y: 0.5 * y_scale), stroke: (paint: gray.lighten(60%), thickness: 0.01em))
               })
             }
           })
