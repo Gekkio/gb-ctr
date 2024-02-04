@@ -304,7 +304,7 @@ if opcode == 0xEA:
   mem_addr: ([#hex("FF00")+C],),
   pseudocode: ```python
 opcode = read_memory(addr=PC); PC = PC + 1
-if opcode == 0xE2:
+if opcode == 0xF2:
   A = read_memory(addr=unsigned_16(lsb=C, msb=0xFF))
   ```
 )
