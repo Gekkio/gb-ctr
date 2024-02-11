@@ -27,7 +27,6 @@
     )),
     (label: "Mem R/W", wave: (
       x(1),
-      timing.d(8, [R: opcode]),
       ..timing_data.mem_rw.enumerate().map(((idx, label)) => {
         let m_cycle = idx + 2
         if label == "U" { timing.u(8) } else { timing.d(8, label) }
@@ -94,7 +93,7 @@
   )
 })
 
-#let instruction = (body, mnemonic: str, opcode: content, operand_bytes: array, flags: [-], timing: dictionary, simple-pseudocode: [], pseudocode: content) => instruction-block(
+#let instruction = (body, mnemonic: str, opcode: content, operand_bytes: array, cb: false, flags: [-], timing: dictionary, simple-pseudocode: [], pseudocode: content) => instruction-block(
   body,
   grid(columns: (auto, 1fr, auto, 1fr),  gutter: 6pt,
     [*Opcode*], opcode,
@@ -108,8 +107,14 @@
       #if duration > 1 [ #duration machine cycles ] else [ 1 machine cycle ]
     ],
     [*Length*], {
-      let length = 1 + operand_bytes.len()
-      if length > 1 { str(length) + " bytes: opcode + " + operand_bytes.join(" + ") } else { "1 byte: opcode" }
+      let length = if cb { 2 } else { 1 } + operand_bytes.len()
+      if cb {
+        "2 bytes: CB prefix + opcode"
+      } else if operand_bytes.len() > 0 {
+        str(length) + " bytes: opcode + " + operand_bytes.join(" + ")
+      } else {
+        "1 byte: opcode"
+      }
     },
     [*Flags*], flags,
   ),
@@ -155,6 +160,7 @@
 === Overview
 
 ==== CB opcode prefix <op:CB>
+
 ==== Undefined opcodes <op:undefined>
 
 #pagebreak()
@@ -172,7 +178,7 @@
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -202,7 +208,7 @@ if IR == 0x41: # example: LD B, C
   operand_bytes: ([`n`],),
   timing: (
     duration: 2,
-    mem_rw: ([R: `n`],),
+    mem_rw: ([opcode], [R: `n`],),
     addr: ([PC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -234,7 +240,7 @@ if IR == 0x06: # example: LD B, n
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -266,7 +272,7 @@ if IR == 0x46: # example: LD B, (HL)
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([W: data],),
+    mem_rw: ([opcode], [W: data],),
     addr: ([HL], [PC],),
     data: ([mem ← `r`], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -298,7 +304,7 @@ if IR == 0x70: # example: LD (HL), B
   operand_bytes: ([`n`],),
   timing: (
     duration: 3,
-    mem_rw: ([R: `n`], [W: `n`],),
+    mem_rw: ([opcode], [R: `n`], [W: `n`],),
     addr: ([PC], [HL], [PC],),
     data: ([Z ← mem], [mem ← Z], [IR ← mem],),
     idu_op: ([PC ← PC + 1], "U", [PC ← PC + 1],),
@@ -333,7 +339,7 @@ if IR == 0x36:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([BC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -365,7 +371,7 @@ if IR == 0x0A:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([DE], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -397,7 +403,7 @@ if IR == 0x1A:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([W: data],),
+    mem_rw: ([opcode], [W: data],),
     addr: ([BC], [PC],),
     data: ([mem ← A], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -429,7 +435,7 @@ if IR == 0x02:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([W: data],),
+    mem_rw: ([opcode], [W: data],),
     addr: ([DE], [PC],),
     data: ([mem ← A], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -461,7 +467,7 @@ if IR == 0x12:
   operand_bytes: ([LSB(`nn`)], [MSB(`nn`)]),
   timing: (
     duration: 4,
-    mem_rw: ([R: lsb `nn`], [R: msb `nn`], [R: data],),
+    mem_rw: ([opcode], [R: lsb `nn`], [R: msb `nn`], [R: data],),
     addr: ([PC], [PC], [WZ], [PC],),
     data: ([Z ← mem], [W ← mem], [Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1], "U", [PC ← PC + 1],),
@@ -500,7 +506,7 @@ if IR == 0xFA:
   operand_bytes: ([LSB(`nn`)], [MSB(`nn`)]),
   timing: (
     duration: 4,
-    mem_rw: ([R: lsb `nn`], [R: msb `nn`], [W: data],),
+    mem_rw: ([opcode], [R: lsb `nn`], [R: msb `nn`], [W: data],),
     addr: ([PC], [PC], [WZ], [PC],),
     data: ([Z ← mem], [W ← mem], [mem ← A], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1], "U", [PC ← PC + 1],),
@@ -539,7 +545,7 @@ if IR == 0xEA:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([#hex("FF00")+C], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -571,7 +577,7 @@ if IR == 0xF2:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([W: data],),
+    mem_rw: ([opcode], [W: data],),
     addr: ([#hex("FF00")+C], [PC],),
     data: ([mem ← A], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -603,7 +609,7 @@ if IR == 0xE2:
   operand_bytes: ([`n`],),
   timing: (
     duration: 3,
-    mem_rw: ([R: `n`], [R: data],),
+    mem_rw: ([opcode], [R: `n`], [R: data],),
     addr: ([PC], [#hex("FF00")+Z], [PC],),
     data: ([Z ← mem], [Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], "U", [PC ← PC + 1],),
@@ -638,7 +644,7 @@ if IR == 0xF0:
   operand_bytes: ([`n`],),
   timing: (
     duration: 3,
-    mem_rw: ([R: `n`], [W: data],),
+    mem_rw: ([opcode], [R: `n`], [W: data],),
     addr: ([PC], [#hex("FF00")+Z], [PC],),
     data: ([Z ← mem], [mem ← A], [IR ← mem],),
     idu_op: ([PC ← PC + 1], "U", [PC ← PC + 1],),
@@ -673,7 +679,7 @@ if IR == 0xE0:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([HL ← HL - 1], [PC ← PC + 1],),
@@ -705,7 +711,7 @@ if IR == 0x3A:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([W: data],),
+    mem_rw: ([opcode], [W: data],),
     addr: ([HL], [PC],),
     data: ([mem ← A], [IR ← mem],),
     idu_op: ([HL ← HL - 1], [PC ← PC + 1],),
@@ -737,7 +743,7 @@ if IR == 0x32:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([HL ← HL + 1], [PC ← PC + 1],),
@@ -769,7 +775,7 @@ if IR == 0x2A:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([W: data],),
+    mem_rw: ([opcode], [W: data],),
     addr: ([HL], [PC],),
     data: ([mem ← A], [IR ← mem],),
     idu_op: ([HL ← HL + 1], [PC ← PC + 1],),
@@ -803,7 +809,7 @@ if IR == 0x22:
   operand_bytes: ([LSB(`nn`)], [MSB(`nn`)]),
   timing: (
     duration: 3,
-    mem_rw: ([R: lsb `nn`], [R: msb `nn`],),
+    mem_rw: ([opcode], [R: lsb `nn`], [R: msb `nn`],),
     addr: ([PC], [PC], [PC],),
     data: ([Z ← mem], [W ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1], [PC ← PC + 1],),
@@ -840,7 +846,7 @@ if IR == 0x01: # example: LD BC, nn
   operand_bytes: ([LSB(`nn`)], [MSB(`nn`)]),
   timing: (
     duration: 5,
-    mem_rw: ([R: Z], [R: W], [W: SPH], [W: SPL],),
+    mem_rw: ([opcode], [R: Z], [R: W], [W: SPH], [W: SPL],),
     addr: ([PC], [PC], [WZ], [WZ], [PC],),
     data: ([Z ← mem], [W ← mem], [mem ← SPL], [mem ← SPH], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1], [WZ ← WZ + 1], "U", [PC ← PC + 1],),
@@ -882,7 +888,7 @@ if IR == 0x08:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ("U",),
+    mem_rw: ([opcode], "U",),
     addr: ([HL], [PC],),
     data: ("U", [IR ← mem],),
     idu_op: ([SP ← HL], [PC ← PC + 1],),
@@ -914,7 +920,7 @@ if IR == 0xF9:
   operand_bytes: (),
   timing: (
     duration: 4,
-    mem_rw: ("U", [W: msb `rr`], [W: lsb `rr`],),
+    mem_rw: ([opcode], "U", [W: msb `rr`], [W: lsb `rr`],),
     addr: ([SP], [SP], [SP], [PC],),
     data: ("U", [mem ← msb `rr`], [mem ← lsb `rr`], [IR ← mem],),
     idu_op: ([SP ← SP - 1], [SP ← SP - 1], [SP ← SP], [PC ← PC + 1],),
@@ -955,7 +961,7 @@ if IR == 0xC5: # example: PUSH BC
   operand_bytes: (),
   timing: (
     duration: 3,
-    mem_rw: ([R: lsb `rr`], [R: msb `rr`],),
+    mem_rw: ([opcode], [R: lsb `rr`], [R: msb `rr`],),
     addr: ([SP], [SP], [PC],),
     data: ([Z ← mem], [W ← mem], [IR ← mem],),
     idu_op: ([SP ← SP + 1], [SP ← SP + 1], [PC ← PC + 1],),
@@ -992,7 +998,7 @@ if IR == 0xC1: # example: POP BC
   operand_bytes: ([`e`],),
   timing: (
     duration: 3,
-    mem_rw: ([R: `e`], "U",),
+    mem_rw: ([opcode], [R: `e`], "U",),
     addr: ([PC], [#hex("0000")], [PC],),
     data: ([Z ← mem], "U", [IR ← mem],),
     idu_op: ([PC ← PC + 1], "U", [PC ← PC + 1],),
@@ -1044,7 +1050,7 @@ if IR == 0xF8:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -1086,7 +1092,7 @@ if IR == 0x80: # example: ADD B
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -1131,7 +1137,7 @@ if IR == 0x86:
   operand_bytes: ([`n`],),
   timing: (
     duration: 2,
-    mem_rw: ([R: `n`],),
+    mem_rw: ([opcode], [R: `n`],),
     addr: ([PC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -1177,7 +1183,7 @@ if IR == 0xC6:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -1219,7 +1225,7 @@ if IR == 0x88: # example: ADC B
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -1264,7 +1270,7 @@ if IR == 0x8E:
   operand_bytes: ([`n`],),
   timing: (
     duration: 2,
-    mem_rw: ([R: `n`],),
+    mem_rw: ([opcode], [R: `n`],),
     addr: ([PC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -1309,7 +1315,7 @@ if IR == 0xCE:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -1351,7 +1357,7 @@ if IR == 0x90: # example: SUB B
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -1396,7 +1402,7 @@ if IR == 0x96:
   operand_bytes: ([`n`],),
   timing: (
     duration: 2,
-    mem_rw: ([R: `n`],),
+    mem_rw: ([opcode], [R: `n`],),
     addr: ([PC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -1441,7 +1447,7 @@ if IR == 0xD6:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -1483,7 +1489,7 @@ if IR == 0x98: # example: SBC B
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -1528,7 +1534,7 @@ if IR == 0x9E:
   operand_bytes: ([`n`],),
   timing: (
     duration: 2,
-    mem_rw: ([R: `n`],),
+    mem_rw: ([opcode], [R: `n`],),
     addr: ([PC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -1573,7 +1579,7 @@ if IR == 0xDE:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -1613,7 +1619,7 @@ if IR == 0xB8: # example: CP B
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -1656,7 +1662,7 @@ if IR == 0xBE:
   operand_bytes: ([`n`],),
   timing: (
     duration: 2,
-    mem_rw: ([R: `n`],),
+    mem_rw: ([opcode], [R: `n`],),
     addr: ([PC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -1698,7 +1704,7 @@ if IR == 0xFE:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -1738,7 +1744,7 @@ if opcode == 0x04: # example: INC B
   operand_bytes: (),
   timing: (
     duration: 3,
-    mem_rw: ([R: data], [W: data],),
+    mem_rw: ([opcode], [R: data], [W: data],),
     addr: ([HL], [HL], [PC],),
     data: ([Z ← mem], [mem ← ALU], [IR ← mem],),
     idu_op: ("U", "U", [PC ← PC + 1],),
@@ -1782,7 +1788,7 @@ if IR == 0x34:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -1823,7 +1829,7 @@ if IR == 0x05: # example: DEC B
   operand_bytes: (),
   timing: (
     duration: 3,
-    mem_rw: ([R: data], [W: data],),
+    mem_rw: ([opcode], [R: data], [W: data],),
     addr: ([HL], [HL], [PC],),
     data: ([Z ← mem], [mem ← ALU], [IR ← mem],),
     idu_op: ("U", "U", [PC ← PC + 1],),
@@ -1867,7 +1873,7 @@ if IR == 0x35:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -1909,7 +1915,7 @@ if IR == 0xA0: # example: AND B
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -1954,7 +1960,7 @@ if IR == 0xA6:
   operand_bytes: ([`n`],),
   timing: (
     duration: 2,
-    mem_rw: ([R: `n`],),
+    mem_rw: ([opcode], [R: `n`],),
     addr: ([PC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -1999,7 +2005,7 @@ if IR == 0xE6:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -2041,7 +2047,7 @@ if IR == 0xB0: # example: OR B
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -2086,7 +2092,7 @@ if IR == 0xB6:
   operand_bytes: ([`n`],),
   timing: (
     duration: 2,
-    mem_rw: ([R: `n`],),
+    mem_rw: ([opcode], [R: `n`],),
     addr: ([PC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -2131,7 +2137,7 @@ if IR == 0xF6:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -2174,7 +2180,7 @@ if opcode == 0xA8: # example: XOR B
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ([R: data],),
+    mem_rw: ([opcode], [R: data],),
     addr: ([HL], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -2219,7 +2225,7 @@ if IR == 0xAE:
   operand_bytes: ([`n`],),
   timing: (
     duration: 2,
-    mem_rw: ([R: `n`],),
+    mem_rw: ([opcode], [R: `n`],),
     addr: ([PC], [PC],),
     data: ([Z ← mem], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -2264,7 +2270,7 @@ if IR == 0xEE:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -2300,7 +2306,7 @@ if IR == 0x3F:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -2336,7 +2342,7 @@ if IR == 0x37:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -2360,7 +2366,7 @@ TODO
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -2397,7 +2403,7 @@ if IR == 0x2F:
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ("U",),
+    mem_rw: ([opcode], "U",),
     addr: ([`rr`], [PC],),
     data: ("U", [IR ← mem],),
     idu_op: ([`rr` ← `rr` + 1], [PC ← PC + 1],),
@@ -2429,7 +2435,7 @@ if IR == 0x03: # example: INC BC
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ("U",),
+    mem_rw: ([opcode], "U",),
     addr: ([`rr`], [PC],),
     data: ("U", [IR ← mem],),
     idu_op: ([`rr` ← `rr` - 1], [PC ← PC + 1],),
@@ -2462,7 +2468,7 @@ if IR == 0x0B: # example: DEC BC
   operand_bytes: (),
   timing: (
     duration: 2,
-    mem_rw: ("U",),
+    mem_rw: ([opcode], "U",),
     addr: ([#hex("0000")], [PC],),
     data: ("U", [IR ← mem],),
     idu_op: ("U", [PC ← PC + 1],),
@@ -2508,7 +2514,7 @@ if IR == 0x09: # example: ADD HL, BC
   operand_bytes: ([`e`],),
   timing: (
     duration: 4,
-    mem_rw: ([R: `e`], "U", "U",),
+    mem_rw: ([opcode], [R: `e`], "U", "U",),
     addr: ([PC], [#hex("0000")], [#hex("0000")], [PC],),
     data: ([Z ← mem], [ALU], [ALU], [IR ← mem],),
     idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
@@ -2549,109 +2555,647 @@ if IR == 0xE8:
 
 === Rotate, shift, and bit operation instructions
 
-==== RLCA <op:RLCA>
+#instruction(
+  [
+    ==== RLCA: Rotate left circular (accumulator) <op:RLCA>
 
+    TODO
+  ],
+  mnemonic: "RLCA",
+  flags: [Z = 0, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00000111")/#hex("07")],
+  operand_bytes: (),
+  timing: (
+    duration: 1,
+    mem_rw: ([opcode],),
+    addr: ([PC],),
+    data: ([IR ← mem],),
+    idu_op: ([PC ← PC + 1],),
+    alu_op: ([A ← rlc A],),
+    misc_op: ("U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RRCA <op:RRCA>
+#instruction(
+  [
+    ==== RRCA: Rotate right circular (accumulator) <op:RRCA>
 
+    TODO
+  ],
+  mnemonic: "RRCA",
+  flags: [Z = 0, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00001111")/#hex("0F")],
+  operand_bytes: (),
+  timing: (
+    duration: 1,
+    mem_rw: ([opcode],),
+    addr: ([PC],),
+    data: ([IR ← mem],),
+    idu_op: ([PC ← PC + 1],),
+    alu_op: ([A ← rrc A],),
+    misc_op: ("U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RLA <op:RLA>
+#instruction(
+  [
+    ==== RLA: Rotate left (accumulator) <op:RLA>
 
+    TODO
+  ],
+  mnemonic: "RLA",
+  flags: [Z = 0, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00010111")/#hex("17")],
+  operand_bytes: (),
+  timing: (
+    duration: 1,
+    mem_rw: ([opcode],),
+    addr: ([PC],),
+    data: ([IR ← mem],),
+    idu_op: ([PC ← PC + 1],),
+    alu_op: ([A ← rl A],),
+    misc_op: ("U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RRA <op:RRA>
+#instruction(
+  [
+    ==== RRA: Rotate right (accumulator) <op:RRA>
 
+    TODO
+  ],
+  mnemonic: "RRA",
+  flags: [Z = 0, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00011111")/#hex("1F")],
+  operand_bytes: (),
+  timing: (
+    duration: 1,
+    mem_rw: ([opcode],),
+    addr: ([PC],),
+    data: ([IR ← mem],),
+    idu_op: ([PC ← PC + 1],),
+    alu_op: ([A ← rr A],),
+    misc_op: ("U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RLC r <op:RLC_r>
+#instruction(
+  [
+    ==== RLC r: Rotate left circular (register) <op:RLC_r>
 
+    TODO
+  ],
+  mnemonic: "RLC r",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00000xxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← rlc `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RLC (HL) <op:RLC_hl>
+#instruction(
+  [
+    ==== RLC (HL): Rotate left circular (indirect HL) <op:RLC_hl>
 
+    TODO
+  ],
+  mnemonic: "RLC (HL)",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#hex("06")],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← rlc Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RRC r <op:RRC_r>
+#instruction(
+  [
+    ==== RRC r: Rotate right circular (register) <op:RRC_r>
 
+    TODO
+  ],
+  mnemonic: "RRC r",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00001xxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← rrc `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RRC (HL) <op:RRC_hl>
+#instruction(
+  [
+    ==== RRC (HL): Rotate right circular (indirect HL) <op:RRC_hl>
 
+    TODO
+  ],
+  mnemonic: "RRC (HL)",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#hex("0E")],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← rrc Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RL r <op:RL_r>
+#instruction(
+  [
+    ==== RL r: Rotate left (register) <op:RL_r>
 
+    TODO
+  ],
+  mnemonic: "RL r",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00010xxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← rl `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RL (HL) <op:RL_hl>
+#instruction(
+  [
+    ==== RL (HL): Rotate left (indirect HL) <op:RL_hl>
 
+    TODO
+  ],
+  mnemonic: "RL (HL)",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#hex("16")],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← rl Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RR r <op:RR_r>
+#instruction(
+  [
+    ==== RR r: Rotate right (register) <op:RR_r>
 
+    TODO
+  ],
+  mnemonic: "RR r",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00011xxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← rr `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RR (HL) <op:RR_hl>
+#instruction(
+  [
+    ==== RR (HL): Rotate right (indirect HL) <op:RR_hl>
 
+    TODO
+  ],
+  mnemonic: "RR (HL)",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#hex("1E")],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← rr Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SLA r <op:SLA_r>
+#instruction(
+  [
+    ==== SLA r: Shift left arithmetic (register) <op:SLA_r>
 
+    TODO
+  ],
+  mnemonic: "SLA r",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00100xxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← sla `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SLA (HL) <op:SLA_hl>
+#instruction(
+  [
+    ==== SLA (HL): Shift left arithmetic (indirect HL) <op:SLA_hl>
 
+    TODO
+  ],
+  mnemonic: "SLA (HL)",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#hex("26")],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← sla Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SRA r <op:SRA_r>
+#instruction(
+  [
+    ==== SRA r: Shift right arithmetic (register) <op:SRA_r>
 
+    TODO
+  ],
+  mnemonic: "SRA r",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00101xxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← sra `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SRA (HL) <op:SRA_hl>
+#instruction(
+  [
+    ==== SRA (HL): Shift right arithmetic (indirect HL) <op:SRA_hl>
 
+    TODO
+  ],
+  mnemonic: "SRA (HL)",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#hex("2E")],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← sra Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SWAP r <op:SWAP_r>
+#instruction(
+  [
+    ==== SWAP r: Swap nibbles (register) <op:SWAP_r>
 
+    TODO
+  ],
+  mnemonic: "SWAP r",
+  flags: [Z = #flag-update, N = 0, H = 0, C = 0],
+  opcode: [#bin("00110xxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← swap `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SWAP (HL) <op:SWAP_hl>
+#instruction(
+  [
+    ==== SWAP (HL): Swap nibbles (indirect HL) <op:SWAP_hl>
 
+    TODO
+  ],
+  mnemonic: "SWAP (HL)",
+  flags: [Z = #flag-update, N = 0, H = 0, C = 0],
+  opcode: [#hex("36")],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← swap Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SRL r <op:SRL_r>
+#instruction(
+  [
+    ==== SRL r: Shift right logical (register) <op:SRL_r>
 
+    TODO
+  ],
+  mnemonic: "SRL r",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#bin("00101xxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← srl `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SRL (HL) <op:SRL_hl>
+#instruction(
+  [
+    ==== SRL (HL): Shift right logical (indirect HL) <op:SRL_hl>
 
+    TODO
+  ],
+  mnemonic: "SRL (HL)",
+  flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
+  opcode: [#hex("3E")],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← srl Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== BIT b, r <op:BIT_b_r>
+#instruction(
+  [
+    ==== BIT b, r: Test bit (register) <op:BIT_b_r>
 
+    TODO
+  ],
+  mnemonic: "BIT b, r",
+  flags: [Z = #flag-update, N = 0, H = 1],
+  opcode: [#bin("01xxxxxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [bit `b`, `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== BIT b, (HL) <op:BIT_b_hl>
+#instruction(
+  [
+    ==== BIT b, (HL): Test bit (indirect HL) <op:BIT_b_hl>
 
+    TODO
+  ],
+  mnemonic: "BIT b, (HL)",
+  flags: [Z = #flag-update, N = 0, H = 1],
+  opcode: [#bin("01xxx110")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 3,
+    mem_rw: ([CB prefix], [opcode], [R: data]),
+    addr: ([PC], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [bit `b`, Z],),
+    misc_op: ("U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RES b, r <op:RES_b_r>
+#instruction(
+  [
+    ==== RES b, r: Reset bit (register) <op:RES_b_r>
 
+    TODO
+  ],
+  mnemonic: "RES b, r",
+  opcode: [#bin("10xxxxxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← res `b`, `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== RES b, (HL) <op:RES_b_hl>
+#instruction(
+  [
+    ==== RES b, (HL): Reset bit (indirect HL) <op:RES_b_hl>
 
+    TODO
+  ],
+  mnemonic: "RES b, (HL)",
+  opcode: [#bin("10xxx110")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← res `b`, Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SET b, r <op:SET_b_r>
+#instruction(
+  [
+    ==== SET b, r: Set bit (register) <op:SET_b_r>
 
+    TODO
+  ],
+  mnemonic: "SET b, r",
+  opcode: [#bin("11xxxxxx")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 2,
+    mem_rw: ([CB prefix], [opcode],),
+    addr: ([PC], [PC],),
+    data: ([IR ← mem], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
+    alu_op: ("U", [`r` ← set `b`, `r`],),
+    misc_op: ("U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
-==== SET b, (HL) <op:SET_b_hl>
+#instruction(
+  [
+    ==== SET b, (HL): Set bit (indirect HL) <op:SET_b_hl>
 
+    TODO
+  ],
+  mnemonic: "SET b, (HL)",
+  opcode: [#bin("11xxx110")/various],
+  operand_bytes: (),
+  cb: true,
+  timing: (
+    duration: 4,
+    mem_rw: ([CB prefix], [opcode], [R: data], [W: data]),
+    addr: ([PC], [HL], [HL], [PC],),
+    data: ([IR ← mem], [Z ← mem], [mem ← ALU], [IR ← mem],),
+    idu_op: ([PC ← PC + 1], "U", "U", [PC ← PC + 1],),
+    alu_op: ("U", "U", [mem ← set `b`, Z], "U",),
+    misc_op: ("U", "U", "U", "U",),
+  ),
+  pseudocode: ```python
 TODO
+  ```
+)
 
 #pagebreak()
 
@@ -2668,7 +3212,7 @@ TODO
   operand_bytes: ([LSB(`nn`)], [MSB(`nn`)]),
   timing: (
     duration: 4,
-    mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], "U",),
+    mem_rw: ([opcode], [R: lsb(`nn`)], [R: msb(`nn`)], "U",),
     addr: ([PC], [PC], [#hex("0000")], [PC],),
     data: ([Z ← mem], [W ← mem], "U", [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1], "U", [PC ← PC + 1],),
@@ -2707,7 +3251,7 @@ if IR == 0xC3:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([HL],),
     data: ([IR ← mem],),
     idu_op: ([PC ← HL + 1],),
@@ -2744,7 +3288,7 @@ if IR == 0xE9:
   timing: (
     cc_true: (
       duration: 4,
-      mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], "U",),
+      mem_rw: ([opcode], [R: lsb(`nn`)], [R: msb(`nn`)], "U",),
       addr: ([PC], [PC], [#hex("0000")], [PC],),
       data: ([Z ← mem], [W ← mem], "U", [IR ← mem],),
       idu_op: ([PC ← PC + 1], [PC ← PC + 1], "U", [PC ← PC + 1],),
@@ -2753,7 +3297,7 @@ if IR == 0xE9:
     ),
     cc_false: (
       duration: 3,
-      mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)],),
+      mem_rw: ([opcode], [R: lsb(`nn`)], [R: msb(`nn`)],),
       addr: ([PC], [PC], [PC],),
       data: ([Z ← mem], [W ← mem], [IR ← mem],),
       idu_op: ([PC ← PC + 1], [PC ← PC + 1], [PC ← PC + 1],),
@@ -2798,7 +3342,7 @@ if IR == 0xC2: # example: JP NZ, nn
   operand_bytes: ([`e`],),
   timing: (
     duration: 3,
-    mem_rw: ([R: `e`], "U",),
+    mem_rw: ([opcode], [R: `e`], "U",),
     addr: ([PC], [PCH], [WZ],),
     data: ([Z ← mem], [ALU], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [W ← adj PCH], [PC ← WZ + 1],),
@@ -2842,7 +3386,7 @@ if IR == 0x18:
   timing: (
     cc_true: (
       duration: 3,
-      mem_rw: ([R: `e`], "U",),
+      mem_rw: ([opcode], [R: `e`], "U",),
       addr: ([PC], [PCH], [WZ],),
       data: ([Z ← mem], [ALU], [IR ← mem],),
       idu_op: ([PC ← PC + 1], [W ← adj PCH], [PC ← WZ + 1],),
@@ -2851,7 +3395,7 @@ if IR == 0x18:
     ),
     cc_false: (
       duration: 2,
-      mem_rw: ([R: `e`],),
+      mem_rw: ([opcode], [R: `e`],),
       addr: ([PC], [PC],),
       data: ([Z ← mem], [IR ← mem],),
       idu_op: ([PC ← PC + 1], [PC ← PC + 1],),
@@ -2898,7 +3442,7 @@ if IR == 0x20:
   operand_bytes: ([LSB(`nn`)], [MSB(`nn`)]),
   timing: (
     duration: 6,
-    mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], "U", [W: msb(PC#sub[0]+3)], [W: lsb(PC#sub[0]+3)],),
+    mem_rw: ([opcode], [R: lsb(`nn`)], [R: msb(`nn`)], "U", [W: msb(PC#sub[0]+3)], [W: lsb(PC#sub[0]+3)],),
     addr: ([PC], [PC], [SP], [SP], [SP], [PC],),
     data: ([Z ← mem], [W ← mem], "U", [mem ← PCH], [mem ← PCL], [IR ← mem],),
     idu_op: ([PC ← PC + 1], [PC ← PC + 1], [SP ← SP - 1], [SP ← SP - 1], [SP ← SP], [PC ← PC + 1],),
@@ -2947,7 +3491,7 @@ if IR == 0xCD:
   timing: (
     cc_true: (
       duration: 6,
-      mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)], "U", [W: msb(PC#sub[0]+3)], [W: lsb(PC#sub[0]+3)],),
+      mem_rw: ([opcode], [R: lsb(`nn`)], [R: msb(`nn`)], "U", [W: msb(PC#sub[0]+3)], [W: lsb(PC#sub[0]+3)],),
       addr: ([PC], [PC], [SP], [SP], [SP], [PC],),
       data: ([Z ← mem], [W ← mem], "U", [mem ← PCH], [mem ← PCL], [IR ← mem],),
       idu_op: ([PC ← PC + 1], [PC ← PC + 1], [SP ← SP - 1], [SP ← SP - 1], [SP ← SP], [PC ← PC + 1],),
@@ -2956,7 +3500,7 @@ if IR == 0xCD:
     ),
     cc_false: (
       duration: 3,
-      mem_rw: ([R: lsb(`nn`)], [R: msb(`nn`)]),
+      mem_rw: ([opcode], [R: lsb(`nn`)], [R: msb(`nn`)]),
       addr: ([PC], [PC], [PC],),
       data: ([Z ← mem], [W ← mem], [IR ← mem],),
       idu_op: ([PC ← PC + 1], [PC ← PC + 1], [PC ← PC + 1],),
@@ -3008,7 +3552,7 @@ if IR == 0xC4: # example: CALL NZ, nn
   operand_bytes: (),
   timing: (
     duration: 4,
-    mem_rw: ([R: lsb(PC)], [R: msb(PC)], "U",),
+    mem_rw: ([opcode], [R: lsb(PC)], [R: msb(PC)], "U",),
     addr: ([SP], [SP], [#hex("0000")], [PC],),
     data: ([Z ← mem], [W ← mem], "U", [IR ← mem],),
     idu_op: ([SP ← SP + 1], [SP ← SP + 1], "U", [PC ← PC + 1],),
@@ -3047,7 +3591,7 @@ if IR == 0xC9:
   timing: (
     cc_true: (
       duration: 4,
-      mem_rw: ([R: lsb(PC)], [R: msb(PC)], "U",),
+      mem_rw: ([opcode], [R: lsb(PC)], [R: msb(PC)], "U",),
       addr: ([SP], [SP], [#hex("0000")], [PC],),
       data: ([Z ← mem], [W ← mem], "U", [IR ← mem],),
       idu_op: ([SP ← SP + 1], [SP ← SP + 1], "U", [PC ← PC + 1],),
@@ -3056,7 +3600,7 @@ if IR == 0xC9:
     ),
     cc_false: (
       duration: 2,
-      mem_rw: ("U",),
+      mem_rw: ([opcode], "U",),
       addr: ([#hex("0000")], [PC],),
       data: ("U", [IR ← mem],),
       idu_op: ("U", [PC ← PC + 1],),
@@ -3100,7 +3644,7 @@ if IR == 0xC0: # example: RET NZ
   operand_bytes: (),
   timing: (
     duration: 4,
-    mem_rw: ([R: lsb(PC)], [R: msb(PC)], "U",),
+    mem_rw: ([opcode], [R: lsb(PC)], [R: msb(PC)], "U",),
     addr: ([SP], [SP], [#hex("0000")], [PC],),
     data: ([Z ← mem], [W ← mem], "U", [IR ← mem],),
     idu_op: ([SP ← SP + 1], [SP ← SP + 1], "U", [PC ← PC + 1],),
@@ -3139,7 +3683,7 @@ if IR == 0xD9:
   operand_bytes: (),
   timing: (
     duration: 4,
-    mem_rw: ("U", [W: msb PC], [W: lsb PC],),
+    mem_rw: ([opcode], "U", [W: msb PC], [W: lsb PC],),
     addr: ([SP], [SP], [SP], [PC],),
     data: ("U", [mem ← PCH], [mem ← PCL], [IR ← mem],),
     idu_op: ([SP ← SP - 1], [SP ← SP - 1], [SP ← SP], [PC ← PC + 1],),
@@ -3189,7 +3733,7 @@ TODO
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -3220,7 +3764,7 @@ if IR == 0xF3:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),
@@ -3250,7 +3794,7 @@ if IR == 0xFB:
   operand_bytes: (),
   timing: (
     duration: 1,
-    mem_rw: (),
+    mem_rw: ([opcode],),
     addr: ([PC],),
     data: ([IR ← mem],),
     idu_op: ([PC ← PC + 1],),

@@ -10,7 +10,7 @@ build: write-config
   typst compile {{justfile_directory()}}/gbctr.typ
 
 watch: write-config
-  typst watch {{justfile_directory()}}/gbctr.typ
+  typst watch --open xdg-open {{justfile_directory()}}/gbctr.typ
 
 write-config:
   echo '{"draft": {{draft}}, "revision": "{{revision}}"}' > {{justfile_directory()}}/config.json
