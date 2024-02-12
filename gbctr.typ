@@ -119,6 +119,9 @@
   ]
 
   = Sharp SM83 CPU core
+
+  #include "chapter/cpu/intro.typ"
+  #include "chapter/cpu/simple.typ"
   #include "chapter/cpu/timing.typ"
   #include "chapter/cpu/instruction-set.typ"
 
