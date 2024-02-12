@@ -86,6 +86,7 @@
 })
 
 #counter(heading).update(0)
+<maincontent>
 #[
   #show heading.where(level: 1): it => [
     #pagebreak()
@@ -99,11 +100,10 @@
     #locate(loc => {
       // Don't reset heading numbering when a new part starts
       let cnt = counter(heading)
-      let elems = query(selector(heading).before(loc), loc)
-      elems.pop()
       let part = cnt.at(loc).at(0)
-      let rest = cnt.at(elems.last().location()).slice(1)
-      return cnt.update((part, ..rest))
+      let elems = query(selector(heading.where(level: 2)).after(<maincontent>).before(loc), loc)
+      let chapter = elems.len()
+      return cnt.update((part, chapter))
     })
   ]
   #show heading.where(level: 2): it => [
