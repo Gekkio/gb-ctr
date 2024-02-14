@@ -3590,13 +3590,13 @@ if IR == 0xC9:
   operand_bytes: (),
   timing: (
     cc_true: (
-      duration: 4,
-      mem_rw: ([opcode], [R: lsb(PC)], [R: msb(PC)], "U",),
-      addr: ([SP], [SP], [#hex("0000")], [PC],),
-      data: ([Z ← mem], [W ← mem], "U", [IR ← mem],),
-      idu_op: ([SP ← SP + 1], [SP ← SP + 1], "U", [PC ← PC + 1],),
-      alu_op: ("U", "U", "U", "U",),
-      misc_op: ([cc check], "U", [PC ← WZ], "U",),
+      duration: 5,
+      mem_rw: ([opcode], "U", [R: lsb(PC)], [R: msb(PC)], "U",),
+      addr: ([#hex("0000")], [SP], [SP], [#hex("0000")], [PC],),
+      data: ("U", [Z ← mem], [W ← mem], "U", [IR ← mem],),
+      idu_op: ("U", [SP ← SP + 1], [SP ← SP + 1], "U", [PC ← PC + 1],),
+      alu_op: ("U", "U", "U", "U", "U",),
+      misc_op: ([cc check], "U", "U", [PC ← WZ], "U",),
     ),
     cc_false: (
       duration: 2,
@@ -3620,12 +3620,13 @@ if opcode == 0xC0: # example: RET NZ
 # M2
 if IR == 0xC0: # example: RET NZ
   if !flags.Z: # cc=true
-    Z = read_memory(addr=SP); SP = SP + 1
     # M3
-    W = read_memory(addr=SP); SP = SP + 1
+    Z = read_memory(addr=SP); SP = SP + 1
     # M4
+    W = read_memory(addr=SP); SP = SP + 1
+    # M5
     PC = WZ
-    # M5/M1
+    # M6/M1
     IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   else: # cc=false
     # M3
