@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           lfs: true
@@ -27,8 +27,8 @@ jobs:
         run: |
           mkdir -p "$HOME/.local/bin"
           cd "$HOME/.local/bin"
-          curl -L https://github.com/typst/typst/releases/download/v0.10.0/typst-x86_64-unknown-linux-musl.tar.xz | tar -xJ --strip-components=1 typst-x86_64-unknown-linux-musl/typst
-          curl -L https://github.com/casey/just/releases/download/1.22.0/just-1.22.0-x86_64-unknown-linux-musl.tar.gz | tar -xz just
+          curl -L https://github.com/typst/typst/releases/download/v0.11.0/typst-x86_64-unknown-linux-musl.tar.xz | tar -xJ --strip-components=1 typst-x86_64-unknown-linux-musl/typst
+          curl -L https://github.com/casey/just/releases/download/1.25.2/just-1.25.2-x86_64-unknown-linux-musl.tar.gz | tar -xz just
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install Font Awesome
         run: |
@@ -53,7 +53,7 @@ jobs:
       - name: Install Ubuntu packages
         run: sudo apt install awscli
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

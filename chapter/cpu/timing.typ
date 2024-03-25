@@ -85,7 +85,7 @@ the fetch and execute stages of each instruction:
       d(8, hex("0009"), opacity: 60%),
       x(1, opacity: 60%),
     )),
-    ([Before #monotext[INC A]], wave: (
+    (label: [Before #monotext[INC A]], wave: (
       d(9, [execute], opacity: 60% ),
       x(73),
     )),
@@ -113,7 +113,7 @@ the fetch and execute stages of each instruction:
       d(8, [M2: execute], fill: colors.nop),
       x(1),
     )),
-    ([After #monotext[NOP]], wave: (
+    (label: [After #monotext[NOP]], wave: (
       x(73),
       d(8, [M1: fetch], opacity: 60%),
       x(1, opacity: 60%),
