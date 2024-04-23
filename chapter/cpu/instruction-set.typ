@@ -3009,7 +3009,7 @@ TODO
   ],
   mnemonic: "SRL r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
-  opcode: [#bin("00101xxx")/various],
+  opcode: [#bin("00111xxx")/various],
   operand_bytes: (),
   cb: true,
   timing: (
