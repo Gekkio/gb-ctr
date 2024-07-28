@@ -5,10 +5,6 @@
 
 === Bus timings
 
-#let bootrom-footnote = footnote[
-  Does not apply to #hex-range("0000", "00FF") reads while the boot ROM is enabled. Boot ROM accesses do not affect the external bus, so it is in the idle state.
-]
-
 #let bus-diagram = (addr: array, rd: array, wr: array, a15: array, cs: array, data: array, sampling-edge: false) => {
   import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z
   text(13pt,
@@ -73,8 +69,9 @@
               sampling-edge: true
             )
             #align(right, [
-              a) #hex-range("0000", "7FFF")
-              #bootrom-footnote
+              a) #hex-range("0000", "7FFF") #footnote[
+                Does not apply to #hex-range("0000", "00FF") accesses while the boot ROM is enabled. Boot ROM accesses do not affect the external bus, so it is in the idle state.
+              ] <bootrom>
             ])
           ]
         )
@@ -135,8 +132,7 @@
               data: (x(1), z(4), d(4, "data"), z(1)),
             )
             #align(right, [
-              a) #hex-range("0000", "7FFF")
-              #bootrom-footnote
+              a) #hex-range("0000", "7FFF") #footnote(<bootrom>)
             ])
           ]
         )
@@ -197,8 +193,7 @@
               data: (x(1), d(8, "data"), z(1)),
             )
             #align(right, [
-              a) #hex-range("0000", "7FFF")
-              #bootrom-footnote
+              a) #hex-range("0000", "7FFF") #footnote(<bootrom>)
             ])
           ]
         )
