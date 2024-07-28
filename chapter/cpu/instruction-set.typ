@@ -14,7 +14,7 @@
 ]
 
 #let simple-instruction-timing(mnemonic: str, timing_data: dictionary) = timing.diagram(w_scale: 0.9, ..{
-  import timing: *
+  import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z
   let duration = timing_data.duration
   (
     (label: "M-cycle", wave: (
@@ -29,7 +29,7 @@
       x(1),
       ..timing_data.mem_rw.enumerate().map(((idx, label)) => {
         let m_cycle = idx + 2
-        if label == "U" { timing.u(8) } else { timing.d(8, label) }
+        if label == "U" { timing.unknown(8) } else { timing.data(8, label) }
       }),
       x(1, opacity: 40%),
     )),
@@ -37,14 +37,14 @@
 })
 
 #let instruction-timing(mnemonic: str, timing_data: dictionary) = timing.diagram(w_scale: 0.9, ..{
-  import timing: *
+  import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z
   let duration = timing_data.duration
   let map_cycle_labels(data) = data.enumerate().map(((idx, label)) => {
     let m_cycle = idx + 2
     if label == "U" {
-      timing.u(8)
+      timing.unknown(8)
     } else {
-      timing.d(8, label)
+      timing.data(8, label)
     }
   })
   (
@@ -62,31 +62,31 @@
     )),
     (label: "Addr bus", wave: (
       x(1),
-      timing.d(8, [Previous], opacity: 40%),
+      timing.data(8, [Previous], opacity: 40%),
       ..map_cycle_labels(timing_data.addr),
       x(1, opacity: 40%),
     )),
     (label: "Data bus", wave: (
       x(1),
-      timing.d(8, [IR ← mem], opacity: 40%),
+      timing.data(8, [IR ← mem], opacity: 40%),
       ..map_cycle_labels(timing_data.data),
       x(1, opacity: 40%),
     )),
     (label: "IDU op", wave: (
       x(1),
-      timing.d(8, [Previous], opacity: 40%),
+      timing.data(8, [Previous], opacity: 40%),
       ..map_cycle_labels(timing_data.idu_op),
       x(1, opacity: 40%),
     )),
     (label: "ALU op", wave: (
       x(1),
-      timing.d(8, [Previous], opacity: 40%),
+      timing.data(8, [Previous], opacity: 40%),
       ..map_cycle_labels(timing_data.alu_op),
       x(1, opacity: 40%),
     )),
     (label: "Misc op", wave: (
       x(1),
-      timing.d(8, [Previous], opacity: 40%),
+      timing.data(8, [Previous], opacity: 40%),
       ..map_cycle_labels(timing_data.misc_op),
       x(1, opacity: 40%),
     )),

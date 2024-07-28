@@ -10,7 +10,7 @@
 ]
 
 #let bus-diagram = (addr: array, rd: array, wr: array, a15: array, cs: array, data: array, sampling-edge: false) => {
-  import timing: *
+  import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z
   text(13pt,
     diagram(
       grid: true,
@@ -40,7 +40,7 @@
 
 #figure(
   {
-    import timing: *
+    import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z
     bus-diagram(
       addr: (u(10),),
       rd: (e(1), l(9),),
@@ -57,7 +57,7 @@
 
 #figure(
   {
-    import timing: *
+    import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z
     [
       #columns(2, [
         #block(
@@ -120,7 +120,7 @@
 )
 #figure(
   {
-    import timing: *
+    import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z
     [
       #columns(2, [
         #block(
@@ -182,7 +182,7 @@
 
 #figure(
   {
-    import timing: *
+    import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z
     [
       #columns(2, [
         #block(

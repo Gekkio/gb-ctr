@@ -44,7 +44,7 @@ The following timing diagram shows all memory operations done by the CPU, and
 the fetch and execute stages of each instruction:
 
 #figure({
-  import timing: *
+  import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z
   diagram(
     w_scale: 0.6, 
     (label: "CLK 4 MiHz", wave: (
