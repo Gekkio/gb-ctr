@@ -133,10 +133,10 @@
           }
           draw.line(..points, ..fg_opts, fill: fill)
         }
-        draw.anchor("center", ((x_end - x_start) / 2.0 + x_start, y_level.M))
-        if "label" in event {
-          draw.content("center", text(0.5em, fill: black.lighten(opacity), event.label))
-        }
+      }
+      draw.anchor("center", ((x_end - x_start) / 2.0 + x_start, y_level.M))
+      if "label" in event {
+        draw.content("center", text(0.5em, fill: black.lighten(opacity), event.label))
       }
       draw.translate((event.len * w_scale, 0))
     }
