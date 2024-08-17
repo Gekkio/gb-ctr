@@ -144,7 +144,7 @@
     draw.group(name: "labels", {
       for i in range(0, lanes.len()) {
         let lane = lanes.at(i)
-        draw.content((0, i * y_step + 0.5), anchor: "east", lane.label)
+        draw.content((0, i * y_step + 0.5 * y_scale), anchor: "east", lane.label)
       }
     })
     draw.group(name: "diagram", ctx => {
