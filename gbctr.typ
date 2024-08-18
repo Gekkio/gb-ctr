@@ -85,6 +85,8 @@
   }
 })
 
+#let total-chapters = counter("total-chapters")
+
 #counter(heading).update(0)
 <maincontent>
 #[
@@ -97,14 +99,10 @@
       #block(it.body)
       #v(1fr)
     ]
-    #locate(loc => {
-      // Don't reset heading numbering when a new part starts
-      let cnt = counter(heading)
-      let part = cnt.at(loc).at(0)
-      let elems = query(selector(heading.where(level: 2)).after(<maincontent>).before(loc), loc)
-      let chapter = elems.len()
-      return cnt.update((part, chapter))
-    })
+    #context {
+      let chapters = total-chapters.get().at(0)
+      return counter(heading).update((part) => (part, chapters))
+    }
   ]
   #show heading.where(level: 2): it => [
     #pagebreak()
@@ -113,6 +111,7 @@
     ]
     #text(21pt, it.body)
     #v(1em)
+    #total-chapters.step()
     #counter(figure).update(0)
     #counter(figure.where(kind: table)).update(0)
     #counter(figure.where(kind: "register")).update(0)
