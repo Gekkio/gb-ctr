@@ -117,6 +117,11 @@
     #counter(figure.where(kind: "register")).update(0)
   ]
 
+  = Game Boy console architecture
+
+  #include "chapter/console/intro.typ"
+  #include "chapter/console/clocks.typ"
+
   = Sharp SM83 CPU core
 
   #include "chapter/cpu/intro.typ"
