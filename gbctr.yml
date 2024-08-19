@@ -36,3 +36,15 @@ sm831x:
   type: reference
   title: SM8311/SM8313/SM8314/SM8315 - 8-Bit Single-Chip Microcomputers (Controllers For Home Appliances)
   publisher: Sharp Corporation
+sharp_microcomputers_1990:
+  type: reference
+  title: Microcomputers Data Book (1990)
+  year: 1990
+  publisher: Sharp Corporation
+  url: https://archive.org/details/bitsavers_sharpdataBomputersDataBook_31076011
+sharp_microcomputers_1996:
+  type: reference
+  title: Microcomputer Data Book (1996)
+  year: 1996
+  publisher: Sharp Corporation
+  url: https://archive.org/details/bitsavers_sharpdataBomputerDataBook_13840187
