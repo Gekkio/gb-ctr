@@ -25,6 +25,8 @@
     This work is licensed under a #link("http://creativecommons.org/licenses/by-sa/4.0/")[Creative Commons Attribution-ShareAlike 4.0 International License].
   ])
 
+  #image("images/gbctr.svg", width: 5cm)
+
   #text(17pt)[#title]
 
   gekkio\
