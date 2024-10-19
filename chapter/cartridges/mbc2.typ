@@ -21,7 +21,7 @@ The MBC2 chip includes two registers that affect the behaviour of the chip. The 
 )[
   #reg-table(
     [U], [U], [U], [U], [W-0], [W-0], [W-0], [W-0],
-    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), colspanx(4)[RAMG\<3:0\>],
+    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), table.cell(colspan: 4)[RAMG\<3:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)
@@ -50,7 +50,7 @@ When RAM access is disabled, all writes to the external RAM area #hex-range("A00
 )[
   #reg-table(
     [U], [U], [U], [U], [W-0], [W-0], [W-0], [W-1],
-    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), colspanx(4)[ROMB\<3:0\>],
+    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), table.cell(colspan: 4)[ROMB\<3:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)
@@ -78,20 +78,20 @@ When the #hex-range("0000", "3FFF") address range is accessed, the effective ban
 When the #hex-range("4000", "7FFF") address range is accessed, the effective bank number is the current ROMB register value.
 
 #figure(
-  tablex(
+  table(
     columns: 3,
-    auto-hlines: false,
+    stroke: (y: none),
     align: center,
-    hlinex(),
-    [], colspanx(2)[ROM address bits],
+    table.hline(),
+    [], table.cell(colspan: 2)[ROM address bits],
     [Accessed address], [Bank number], [Address within bank],
-    hlinex(),
+    table.hline(),
     [], [17-14], [13-0],
-    hlinex(),
+    table.hline(),
     hex-range("0000", "3FFF"), bin("0000"), [A\<13:0\>],
-    hlinex(),
+    table.hline(),
     hex-range("4000", "7FFF"), [ROMB], [A\<13:0\>],
-    hlinex(),
+    table.hline(),
   ),
   kind: table,
   caption: "Mapping of physical ROM address bits in MBC2 carts"
@@ -106,18 +106,18 @@ MBC2 RAM is only 4-bit RAM, so the upper 4 bits of data do not physically exist 
 MBC2 RAM consists of 512 addresses, so only A0-A8 matter when accessing the RAM region. There is no banking, and the #hex-range("A000", "BFFF") area is larger than the RAM, so the addresses wrap around. For example, accessing #hex("A000") is the same as accessing #hex("A200"), so it is possible to write to the former address and later read the written data using the latter address.
 
 #figure(
-  tablex(
+  table(
     columns: 2,
-    auto-hlines: false,
+    stroke: (y: none),
     align: center + bottom,
-    hlinex(),
+    table.hline(),
     [], [RAM address bits],
     [Accessed address], [],
-    hlinex(),
+    table.hline(),
     [], [8-0],
-    hlinex(),
+    table.hline(),
     hex-range("A000", "BFFF"), [A\<8:0\>],
-    hlinex(),
+    table.hline(),
   ),
   kind: table,
   caption: "Mapping of physical RAM address bits in MBC2 carts"

@@ -1,5 +1,4 @@
-#import "@preview/cetz:0.2.2"
-#import "@preview/tablex:0.0.8": tablex, cellx, colspanx, hlinex
+#import "@preview/cetz:0.3.0"
 
 #let monotext(..args) = text(font: "Anonymous Pro", fallback: false, ..args)
 
@@ -33,10 +32,10 @@
 #let hex(content) = monotext("0x" + content)
 #let hex-range(start, end) = monotext({"0x" + start + "-0x" + end})
 
-#let unimpl-bit() = cellx(fill: rgb("#D3D3D3ff"))[]
+#let unimpl-bit() = table.cell(fill: rgb("#D3D3D3ff"))[]
 
 #let reg-table(..args) = monotext(9pt)[
-  #tablex(
+  #table(
     columns: (1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
     inset: 5pt,
     align: center + horizon,

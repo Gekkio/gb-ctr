@@ -11,7 +11,7 @@ The majority of games for Game Boy Color use the MBC5 chip. MBC5 supports ROM si
 )[
   #reg-table(
     [W-0], [W-0], [W-0], [W-0], [W-0], [W-0], [W-0], [W-0],
-    colspanx(8)[RAMG\<7:0\>],
+    table.cell(colspan: 8)[RAMG\<7:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)
@@ -39,7 +39,7 @@ When RAM access is disabled, all writes to the external RAM area #hex-range("A00
 )[
   #reg-table(
     [W-0], [W-0], [W-0], [W-0], [W-0], [W-0], [W-0], [W-1],
-    colspanx(8)[ROMB0\<7:0\>],
+    table.cell(colspan: 8)[ROMB0\<7:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)
@@ -78,7 +78,7 @@ The 1-bit ROMB1 register is used as the most significant bit (bit 9) of the ROM 
 )[
   #reg-table(
     [U], [U], [U], [U], [W-0], [W-0], [W-0], [W-0],
-    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), colspanx(4)[RAMB\<3:0\>],
+    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), table.cell(colspan: 4)[RAMB\<3:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)

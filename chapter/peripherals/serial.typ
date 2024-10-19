@@ -7,7 +7,7 @@
 )[
   #reg-table(
     [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0],
-    colspanx(8)[SB\<7:0\>],
+    table.cell(colspan: 8)[SB\<7:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)

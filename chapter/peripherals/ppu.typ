@@ -17,7 +17,7 @@
 )[
   #reg-table(
     [U], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R-0], [R-0], [R-0],
-    unimpl-bit(), [INTR_LYC], [INTR_M2], [INTR_M1], [INTR_M0], [LYC_STAT], colspanx(2)[LCD_MODE\<1:0\>],
+    unimpl-bit(), [INTR_LYC], [INTR_M2], [INTR_M1], [INTR_M0], [LYC_STAT], table.cell(colspan: 2)[LCD_MODE\<1:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
 ]
@@ -27,7 +27,7 @@
 )[
   #reg-table(
     [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0],
-    colspanx(8)[SCY\<7:0\>],
+    table.cell(colspan: 8)[SCY\<7:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
 ]
@@ -37,7 +37,7 @@
 )[
   #reg-table(
     [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0],
-    colspanx(8)[SCX\<7:0\>],
+    table.cell(colspan: 8)[SCX\<7:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
 ]
@@ -47,7 +47,7 @@
 )[
   #reg-table(
     [R-0], [R-0], [R-0], [R-0], [R-0], [R-0], [R-0], [R-0],
-    colspanx(8)[LY\<7:0\>],
+    table.cell(colspan: 8)[LY\<7:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
 ]
@@ -57,7 +57,7 @@
 )[
   #reg-table(
     [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R/W-0],
-    colspanx(8)[LYC\<7:0\>],
+    table.cell(colspan: 8)[LYC\<7:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
 ]

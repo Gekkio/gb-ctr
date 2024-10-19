@@ -60,7 +60,7 @@ Examples:
 )[
   #reg-table(
     [R/W-0], [R/W-1], [U-1], [R-0], [R-1], [R-x], [W-1], [U-0],
-    colspanx(2)[VALUE\<1:0\>], unimpl-bit(), colspanx(3)[BIGVAL\<7:5\>], [FLAG], unimpl-bit(),
+    table.cell(colspan: 2)[VALUE\<1:0\>], unimpl-bit(), table.cell(colspan: 3)[BIGVAL\<7:5\>], [FLAG], unimpl-bit(),
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)
@@ -82,7 +82,7 @@ Examples:
 
   #v(1em)
   *Middle row legend:*
-  #tablex(
+  #table(
     columns: 2,
     align: center + horizon,
     `VALUE<1:0>`, [Bits 1 and 0 of VALUE],

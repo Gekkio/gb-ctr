@@ -2,12 +2,12 @@
 
 #let detail(..args) = text(7pt, ..args)
 
-#let gbc-bit(content) = cellx(fill: rgb("#FFFFED"), content)
-#let gbc-bits(length, content) = colspanx(length, fill: rgb("#FFFFED"), content)
+#let gbc-bit(content) = table.cell(fill: rgb("#FFFFED"), content)
+#let gbc-bits(length, content) = table.cell(colspan: length, fill: rgb("#FFFFED"), content)
 
-#let unmapped-bit = cellx(fill: rgb("#D3D3D3"))[]
+#let unmapped-bit = table.cell(fill: rgb("#D3D3D3"))[]
 #let unmapped-bits(length) = range(length).map((_) => unmapped-bit)
-#let unmapped-byte = colspanx(8, fill: rgb("D3D3D3"))[]
+#let unmapped-byte = table.cell(colspan: 8, fill: rgb("D3D3D3"))[]
 #let todo(length) = range(length).map((_) => [])
 #set text(9pt)
 
@@ -16,19 +16,19 @@
 #set page(flipped: true)
 
 #figure(
-  tablex(
+  table(
     columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
     inset: (x: 5pt, y: 3.5pt),
     align: (left, center, center, center, center, center, center, center, center),
     [], [bit 7], [6], [5], [4], [3], [2], [1], [bit 0],
     [#hex("FF00") P1], ..unmapped-bits(2), [P15 #detail[buttons]], [P14 #detail[d-pad]], [P13 #detail[#awesome("\u{f358}") start]], [P12 #detail[#awesome("\u{f35b}") select]], [P11 #detail[#awesome("\u{f359}") B]], [P10 #detail[#awesome("\u{f35a}") A]],
-    [#hex("FF01") SB], colspanx(8)[SB\<7:0\>],
+    [#hex("FF01") SB], table.cell(colspan: 8)[SB\<7:0\>],
     [#hex("FF02") SC], [SIO_EN], ..unmapped-bits(5), gbc-bit[SIO_FAST], [SIO_CLK],
     hex("FF03"), unmapped-byte,
-    [#hex("FF04") DIV], colspanx(8)[DIVH\<7:0\>],
-    [#hex("FF05") TIMA], colspanx(8)[TIMA\<7:0\>],
-    [#hex("FF06") TMA], colspanx(8)[TMA\<7:0\>],
-    [#hex("FF07") TAC], ..unmapped-bits(5), [TAC_EN], colspanx(2)[TAC_CLK\<1:0\>],
+    [#hex("FF04") DIV], table.cell(colspan: 8)[DIVH\<7:0\>],
+    [#hex("FF05") TIMA], table.cell(colspan: 8)[TIMA\<7:0\>],
+    [#hex("FF06") TMA], table.cell(colspan: 8)[TMA\<7:0\>],
+    [#hex("FF07") TAC], ..unmapped-bits(5), [TAC_EN], table.cell(colspan: 2)[TAC_CLK\<1:0\>],
     hex("FF08"), unmapped-byte,
     hex("FF09"), unmapped-byte,
     hex("FF0A"), unmapped-byte,
@@ -62,7 +62,7 @@
 #pagebreak()
 
 #figure(
-  tablex(
+  table(
     columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
     inset: (x: 5pt, y: 3.5pt),
     align: (left, center, center, center, center, center, center, center, center),
@@ -108,18 +108,18 @@
 #pagebreak()
 
 #figure(
-  tablex(
+  table(
     columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
     inset: (x: 5pt, y: 3.5pt),
     align: (left, center, center, center, center, center, center, center, center),
     [], [bit 7], [6], [5], [4], [3], [2], [1], [bit 0],
     [#hex("FF40") LCDC], [LCD_EN], [WIN_MAP], [WIN_EN], [TILE_SEL], [BG_MAP], [OBJ_SIZE], [OBJ_EN], [BG_EN],
-    [#hex("FF41") STAT], unmapped-bit, [INTR_LYC], [INTR_M2], [INTR_M1], [INTR_M0], [LYC_STAT], colspanx(2)[LCD_MODE\<1:0\>],
+    [#hex("FF41") STAT], unmapped-bit, [INTR_LYC], [INTR_M2], [INTR_M1], [INTR_M0], [LYC_STAT], table.cell(colspan: 2)[LCD_MODE\<1:0\>],
     [#hex("FF42") SCY], ..todo(8),
     [#hex("FF43") SCX], ..todo(8),
     [#hex("FF44") LY], ..todo(8),
     [#hex("FF45") LYC], ..todo(8),
-    [#hex("FF46") DMA], colspanx(8)[DMA\<7:0\>],
+    [#hex("FF46") DMA], table.cell(colspan: 8)[DMA\<7:0\>],
     [#hex("FF47") BGP], ..todo(8),
     [#hex("FF48") OBP0], ..todo(8),
     [#hex("FF49") OBP1], ..todo(8),
@@ -154,7 +154,7 @@
 #pagebreak()
 
 #figure(
-  tablex(
+  table(
     columns: (auto, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr, 1fr),
     inset: (x: 5pt, y: 3.5pt),
     align: (left, center, center, center, center, center, center, center, center),
@@ -191,7 +191,7 @@
     hex("FF7D"), unmapped-byte,
     hex("FF7E"), unmapped-byte,
     hex("FF7F"), unmapped-byte,
-    [#hex("FFFF") IE], colspanx(3)[IE_UNUSED\<2:0\>], [IE_JOYPAD], [IE_SERIAL], [IE_TIMER], [IE_STAT], [IE_VBLANK],
+    [#hex("FFFF") IE], table.cell(colspan: 3)[IE_UNUSED\<2:0\>], [IE_JOYPAD], [IE_SERIAL], [IE_TIMER], [IE_STAT], [IE_VBLANK],
     [], [bit 7], [6], [5], [4], [3], [2], [1], [bit 0],
   ),
   kind: table,

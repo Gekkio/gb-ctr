@@ -31,14 +31,14 @@ jobs:
         run: |
           mkdir -p "$HOME/.local/bin"
           cd "$HOME/.local/bin"
-          curl -L https://github.com/typst/typst/releases/download/v0.11.1/typst-x86_64-unknown-linux-musl.tar.xz | tar -xJ --strip-components=1 typst-x86_64-unknown-linux-musl/typst
-          curl -L https://github.com/casey/just/releases/download/1.28.0/just-1.28.0-x86_64-unknown-linux-musl.tar.gz | tar -xz just
+          curl -L https://github.com/typst/typst/releases/download/v0.12.0/typst-x86_64-unknown-linux-musl.tar.xz | tar -xJ --strip-components=1 typst-x86_64-unknown-linux-musl/typst
+          curl -L https://github.com/casey/just/releases/download/1.36.0/just-1.36.0-x86_64-unknown-linux-musl.tar.gz | tar -xz just
           echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install Font Awesome
         run: |
           mkdir -p "$HOME/.fonts"
-          curl -L https://github.com/FortAwesome/Font-Awesome/releases/download/6.5.2/fontawesome-free-6.5.2-desktop.zip -o fontawesome.zip
-          unzip -j fontawesome.zip 'fontawesome-free-6.5.2-desktop/otfs/*' -d "$HOME/.fonts"
+          curl -L https://github.com/FortAwesome/Font-Awesome/releases/download/6.6.0/fontawesome-free-6.6.0-desktop.zip -o fontawesome.zip
+          unzip -j fontawesome.zip 'fontawesome-free-6.6.0-desktop/otfs/*' -d "$HOME/.fonts"
           fc-cache
       - run: just build
       - name: Upload built PDF

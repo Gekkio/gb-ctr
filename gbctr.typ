@@ -45,7 +45,9 @@
       #if config.draft [
         #place(left, text(style: "italic", [DRAFT! #config.revision]))
       ]
-      #box(counter(page).display())
+      #context {
+        box(counter(page).display())
+      }
     ]
   ]
 )

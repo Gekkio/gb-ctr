@@ -17,7 +17,7 @@ The MBC1 chip includes four registers that affect the behaviour of the chip. Of 
 )[
   #reg-table(
     [U], [U], [U], [U], [W-0], [W-0], [W-0], [W-0],
-    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), colspanx(4)[RAMG\<3:0\>],
+    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), table.cell(colspan: 4)[RAMG\<3:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)
@@ -46,7 +46,7 @@ When RAM access is disabled, all writes to the external RAM area #hex-range("A00
 )[
   #reg-table(
     [U], [U], [U], [W-0], [W-0], [W-0], [W-0], [W-1],
-    unimpl-bit(), unimpl-bit(), unimpl-bit(), colspanx(5)[BANK1\<4:0\>],
+    unimpl-bit(), unimpl-bit(), unimpl-bit(), table.cell(colspan: 5)[BANK1\<4:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)
@@ -71,7 +71,7 @@ MBC1 doesn't allow the BANK1 register to contain zero (bit pattern #bin("00000")
 )[
   #reg-table(
     [U], [U], [U], [U], [U], [U], [W-0], [W-0],
-    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), colspanx(2)[BANK2\<1:0\>],
+    unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), table.cell(colspan: 2)[BANK2\<1:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)
@@ -125,22 +125,22 @@ When the #hex-range("4000", "7FFF") addess range is accessed, the effective bank
 If the cartridge ROM is smaller than 16 Mbit, there are less ROM address pins to connect to and therefore some bank number bits are ignored. For example, 4 Mbit ROMs only need a 5-bit bank number, so the BANK2 register value is always ignored because those bits are simply not connected to the ROM.
 
 #figure(
-  tablex(
+  table(
     columns: 4,
-    auto-hlines: false,
+    stroke: (y: none),
     align: center,
-    hlinex(),
-    [], colspanx(3)[ROM address bits],
-    [Accessed address], colspanx(2)[Bank number], [Address within bank],
-    hlinex(),
+    table.hline(),
+    [], table.cell(colspan: 3)[ROM address bits],
+    [Accessed address], table.cell(colspan: 2)[Bank number], [Address within bank],
+    table.hline(),
     [], [20-19], [18-14], [13-0],
-    hlinex(),
+    table.hline(),
     [#hex-range("0000", "3FFF"), MODE = #bin("0")], bin("00"), bin("00000"), [A\<13:0\>],
-    hlinex(),
+    table.hline(),
     [#hex-range("0000", "3FFF"), MODE = #bin("1")], [BANK2], bin("00000"), [A\<13:0\>],
-    hlinex(),
+    table.hline(),
     hex-range("4000", "7FFF"), [BANK2], [BANK1], [A\<13:0\>],
-    hlinex(),
+    table.hline(),
   ),
   kind: table,
   caption: "Mapping of physical ROM address bits in MBC1 carts"
@@ -155,11 +155,10 @@ Let's assume we have previously written #hex("12") to the BANK1 register and #bi
   let bank2 = box(inset: (y: 2pt), fill: rgb("#ff00004c"))[01]
   let prefix = box(inset: (y: 2pt))[0b]
   let pass(text) = box(inset: (y: 2pt), fill: rgb("#00000019"), text)
-  tablex(
+  table(
     columns: 3,
     align: (left + horizon, right + horizon, left + horizon),
-    auto-vlines: false,
-    auto-hlines: false,
+    stroke: none,
     [*Value of the BANK 1 register*],
     monotext[#prefix#bank1], [],
     [*Value of the BANK 2 register*],
@@ -183,11 +182,10 @@ Let's assume we have previously requested ROM bank number 68, MBC1 mode is #bin(
   let addr(content) = box(inset: (y: 2pt), fill: rgb("#00ff004c"), content)
   let prefix = box(inset: (y: 2pt))[0b]
   let pass(content) = box(inset: (y: 2pt), fill: rgb("#00000019"), content)
-  tablex(
+  table(
     columns: 3,
     align: (left + horizon, right + horizon, left + horizon),
-    auto-vlines: false,
-    auto-hlines: false,
+    stroke: none,
     [*Value of the BANK 1 register*],
     monotext[#prefix#bank1("00100")], [],
     [*Value of the BANK 2 register*],
@@ -210,20 +208,20 @@ On boards that have RAM, the A0-A12 cartridge bus signals are connected directly
 In MODE #bin("0") the BANK2 register value is not used, so the first RAM bank is always mapped to the #hex-range("A000", "BFFF") area. In MODE #bin("1") the BANK2 register value is used as the bank number.
 
 #figure(
-  tablex(
+  table(
     columns: 3,
-    auto-hlines: false,
+    stroke: (y: none),
     align: center + bottom,
-    hlinex(),
-    [], colspanx(2)[RAM address bits],
+    table.hline(),
+    [], table.cell(colspan: 2)[RAM address bits],
     [Accessed address], [Bank number], [Address within bank],
-    hlinex(),
+    table.hline(),
     [], [14-13], [12-0],
-    hlinex(),
+    table.hline(),
     [#hex-range("A000", "BFFF"), MODE = #bin("0")], bin("00"), [A\<12:0\>],
-    hlinex(),
+    table.hline(),
     [#hex-range("A000", "BFFF"), MODE = #bin("1")], [BANK2], [A\<12:0\>],
-    hlinex(),
+    table.hline(),
   ),
   kind: table,
   caption: "Mapping of physical RAM address bits in MBC1 carts"
@@ -238,11 +236,10 @@ Let's assume we have previously written #bin("10") to the BANK2 register, MODE i
   let addr(content) = box(inset: (y: 2pt), fill: rgb("#00ff004c"), content)
   let prefix = box(inset: (y: 2pt))[0b]
   let pass(content) = box(inset: (y: 2pt), fill: rgb("#00000019"), content)
-  tablex(
+  table(
     columns: 3,
     align: (left + horizon, right + horizon, left + horizon),
-    auto-vlines: false,
-    auto-hlines: false,
+    stroke: none,
     [*Value of the BANK 2 register*],
     monotext[#prefix#bank2("10")], [],
     [*Address being read*],
@@ -261,22 +258,22 @@ In MBC1 multicarts bit 4 of the BANK1 register is not physically connected to an
 From a ROM banking point of view, multicarts simply skip bit 4 of the BANK1 register, but otherwise the behaviour is the same. MODE #bin("1") guarantees that all ROM accesses, including accesses to #hex-range("0000", "3FFF"), use the BANK2 register value.
 
 #figure(
-  tablex(
+  table(
     columns: 4,
-    auto-hlines: false,
+    stroke: (y: none),
     align: center,
-    hlinex(),
-    [], colspanx(3)[ROM address bits],
-    [Accessed address], colspanx(2)[Bank number], [Address within bank],
-    hlinex(),
+    table.hline(),
+    [], table.cell(colspan: 3)[ROM address bits],
+    [Accessed address], table.cell(colspan: 2)[Bank number], [Address within bank],
+    table.hline(),
     [], [19-18], [17-14], [13-0],
-    hlinex(),
+    table.hline(),
     [#hex-range("0000", "3FFF"), MODE = #bin("0")], bin("00"), bin("0000"), [A\<13:0\>],
-    hlinex(),
+    table.hline(),
     [#hex-range("0000", "3FFF"), MODE = #bin("1")], [BANK2], bin("0000"), [A\<13:0\>],
-    hlinex(),
+    table.hline(),
     hex-range("4000", "7FFF"), [BANK2], [BANK1\<3:0\>], [A\<13:0\>],
-    hlinex(),
+    table.hline(),
   ),
   kind: table,
   caption: "Mapping of physical ROM address bits in MBC1 multicarts"
@@ -292,11 +289,10 @@ Let's assume we have previously requested "game number" 3 (= #bin("11")) and ROM
   let addr(content) = box(inset: (y: 2pt), fill: rgb("#00ff004c"), content)
   let prefix = box(inset: (y: 2pt))[0b]
   let pass(content) = box(inset: (y: 2pt), fill: rgb("#00000019"), content)
-  tablex(
+  table(
     columns: 3,
     align: (left + horizon, right + horizon, left + horizon),
-    auto-vlines: false,
-    auto-hlines: false,
+    stroke: none,
     [*Value of the BANK 1 register*],
     monotext[#prefix#pass("1")#bank1("1101")], [],
     [*Value of the BANK 2 register*],

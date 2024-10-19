@@ -29,14 +29,14 @@ Let's assume the CPU is executing a program that starts from the address #hex("1
 )
 
 #monotext[
-  #tablex(
+  #table(
     columns: 2,
     align: left + horizon,
     stroke: none,
-    hex("1000"), cellx(fill: colors.inc)[INC A],
-    hex("1001"), cellx(fill: colors.ldh)[LDH (n), A],
-    hex("1003"), cellx(fill: colors.rst)[RST #hex("08")],
-    hex("0008"), cellx(fill: colors.nop)[NOP]
+    hex("1000"), table.cell(fill: colors.inc)[INC A],
+    hex("1001"), table.cell(fill: colors.ldh)[LDH (n), A],
+    hex("1003"), table.cell(fill: colors.rst)[RST #hex("08")],
+    hex("0008"), table.cell(fill: colors.nop)[NOP]
   )
 ]
 

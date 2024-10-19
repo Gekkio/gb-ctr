@@ -17,7 +17,7 @@ Writing to the DMA register updates the upper bits of the DMA source address and
 )[
   #reg-table(
     [R/W-x], [R/W-x], [R/W-x], [R/W-x], [R/W-x], [R/W-x], [R/W-x], [R/W-x],
-    colspanx(8)[DMA\<7:0\>],
+    table.cell(colspan: 8)[DMA\<7:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
   #set align(left)
