@@ -2,7 +2,7 @@
 <svg width="750" height="860" version="1.1" viewBox="0 0 750 860" xmlns="http://www.w3.org/2000/svg">
  <g transform="translate(-145.64 -115.85)">
   <g transform="translate(-2.7636 -3.5433)">
-   <circle cx="493.19" cy="463.41" r="320.06" fill="none" stroke="#000" stroke-width="40"/>
+   <circle cx="493.19" cy="463.41" r="320.06" fill="#f9f9f9" fill-opacity=".2" stroke="#000" stroke-width="40"/>
    <rect transform="rotate(50)" x="991.45" y="-99.754" width="91.704" height="104.44" fill="none" stroke="#000" stroke-width="20"/>
    <g stroke-linejoin="round">
     <path transform="rotate(50 744.04 1098.1)" d="m523.65 840.16h124.99a57.231 57.231 45 0 1 57.231 57.231v34.557a57.231 57.231 135 0 1-57.231 57.231h-124.99a57.231 57.231 45 0 1-57.231-57.231v-34.557a57.231 57.231 135 0 1 57.231-57.231z" fill-rule="evenodd" stroke-width="20"/>
