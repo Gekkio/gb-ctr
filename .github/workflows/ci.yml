@@ -52,10 +52,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Update Ubuntu package lists
-        run: sudo apt update
       - name: Install Ubuntu packages
-        run: sudo apt install awscli
+        run: sudo snap install aws-cli --classic
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
