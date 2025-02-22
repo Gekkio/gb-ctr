@@ -67,6 +67,7 @@
 
 #pagebreak()
 #show outline: set heading(outlined: true)
+#set outline.entry(fill: repeat(" . "))
 #show outline.entry: it => {
   if it.level == 1 {
     block(above: 20pt, below: 0pt, strong(it))
@@ -76,7 +77,7 @@
     it
   }
 }
-#outline(fill: repeat(" . "), indent: n => calc.max(0, n - 1) * 1em)
+#outline(indent: n => calc.max(0, n - 1) * 1em)
 
 #set heading(numbering: (..nums) => {
   let level = nums.pos().len()
