@@ -27,13 +27,7 @@ jobs:
           sudo apt install
           fonts-anonymous-pro
           fonts-noto-core
-      - name: Install tools
-        run: |
-          mkdir -p "$HOME/.local/bin"
-          cd "$HOME/.local/bin"
-          curl -L https://github.com/typst/typst/releases/download/v0.13.0/typst-x86_64-unknown-linux-musl.tar.xz | tar -xJ --strip-components=1 typst-x86_64-unknown-linux-musl/typst
-          curl -L https://github.com/casey/just/releases/download/1.39.0/just-1.39.0-x86_64-unknown-linux-musl.tar.gz | tar -xz just
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - uses: jdx/mise-action@v2
       - name: Install Font Awesome
         run: |
           mkdir -p "$HOME/.fonts"
