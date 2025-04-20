@@ -11,7 +11,7 @@ The system oscillator is the primary clock source in a Game Boy system, and it g
 
 - The inserted game cartridge may use use other clock(s) internally. A typical example in some official games is the Real Time Clock (RTC), which is based on a 32.768 kHz oscillator and a clock-domain crossing circuit so that RTC data can be read using the cartridge bus while the RTC circuit is ticking independently using its own clock.
 
-The Game Boy SoC uses two pins for the system oscillator: XI and XO. These pins along with some external components can be used from a Pierce oscillator circuit. Alternatively, the XI pin can be driven directly with a clock signal originating from somewhere else, and the XO pin can be left unconnected.
+The Game Boy SoC uses two pins for the system oscillator: XI and XO. These pins along with some external components can be used to form a Pierce oscillator circuit. Alternatively, the XI pin can be driven directly with a clock signal originating from somewhere else, and the XO pin can be left unconnected.
 
 ==== System clock frequency
 
