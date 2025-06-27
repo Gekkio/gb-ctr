@@ -587,12 +587,12 @@ if IR == 0xF2:
   simple-pseudocode: ```python
 opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xE2:
-  write_memory(addr=unsigned_16(lsb=C, data=msb=0xFF), data=A)
+  write_memory(addr=unsigned_16(lsb=C, data=0xFF), data=A)
   ```,
   pseudocode: ```python
 # M2
 if IR == 0xE2:
-  write_memory(addr=unsigned_16(lsb=C, data=msb=0xFF), data=A)
+  write_memory(addr=unsigned_16(lsb=C, data=0xFF), data=A)
   # M3/M1
   IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
@@ -768,7 +768,7 @@ if IR == 0x2A:
   [
     ==== LD (HL+), A: Load from accumulator (indirect HL, increment) <op:LD_hli_a>
 
-    Load to the absolute address specified by the 16-bit register HL, data from the 8-bit A register. The value of HL is decremented after the memory write.
+    Load to the absolute address specified by the 16-bit register HL, data from the 8-bit A register. The value of HL is incremented after the memory write.
   ],
   mnemonic: "LD (HL+), A",
   opcode: [#bin("00100010")/#hex("22")],
@@ -1615,7 +1615,7 @@ if IR == 0xB8: # example: CP B
   ],
   mnemonic: "CP (HL)",
   flags: [Z = #flag-update, N = 1, H = #flag-update, C = #flag-update],
-  opcode: [#bin("10011110")/#hex("9E")],
+  opcode: [#bin("10111110")/#hex("BE")],
   operand_bytes: (),
   timing: (
     duration: 2,
@@ -1721,7 +1721,7 @@ if opcode == 0x04: # example: INC B
   flags.H = 1 if carry_per_bit[3] else 0
   ```,
   pseudocode: ```python
-if opcode == 0x04: # example: INC B
+if IR == 0x04: # example: INC B
   # M2/M1
   result, carry_per_bit = B + 1
   B = result
@@ -1780,7 +1780,7 @@ if IR == 0x34:
   [
     ==== DEC r: Decrement (register) <op:DEC_r>
 
-    Increments data in the 8-bit register `r`.
+    Decrements data in the 8-bit register `r`.
   ],
   mnemonic: "DEC r",
   flags: [Z = #flag-update, N = 1, H = #flag-update],
@@ -2155,8 +2155,7 @@ if opcode == 0xA8: # example: XOR B
   flags.C = 0
   ```,
   pseudocode: ```python
-opcode = read_memory(addr=PC); PC = PC + 1
-if opcode == 0xA8: # example: XOR B
+if IR == 0xA8: # example: XOR B
   # M2/M1
   result = A ^ B
   A = result
