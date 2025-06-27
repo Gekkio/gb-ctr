@@ -19,7 +19,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          lfs: true
       - name: Update Ubuntu package lists
         run: sudo apt update
       - name: Install Ubuntu packages
