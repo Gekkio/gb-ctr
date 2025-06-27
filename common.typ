@@ -1,4 +1,4 @@
-#import "@preview/cetz:0.3.4"
+#import "@preview/cetz:0.4.0"
 
 #let monotext(..args) = text(font: "Anonymous Pro", fallback: false, ..args)
 
