@@ -3815,7 +3815,7 @@ if IR == 0xCB:
 opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xCB: # CB prefix
   opcode = read_memory(addr=PC); PC = PC + 1
-  if opcode == 0x40: # example: BIT 0, (HL)
+  if opcode == 0x46: # example: BIT 0, (HL)
     data = read_memory(addr=HL)
     flags.Z = 1 if data[0] == 0 else 0
     flags.N = 0
@@ -3827,7 +3827,7 @@ if IR == 0xCB:
   cb_mode = 1
   IR = fetch_cycle(addr=PC); PC = PC + 1
   # M3
-  if cb_mode and IR == 0x40: # example: BIT 0, (HL)
+  if cb_mode and IR == 0x46: # example: BIT 0, (HL)
     Z = read_memory(addr=HL)
     # M4/M1
     flags.Z = 1 if Z[0] == 0 else 0
@@ -3860,7 +3860,7 @@ if IR == 0xCB:
 opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xCB: # CB prefix
   opcode = read_memory(addr=PC); PC = PC + 1
-  if opcode == 0x40: # example: RES 0, B
+  if opcode == 0x80: # example: RES 0, B
     B = from_bits(7..1=B[7..1], 0=0)
   ```,
   pseudocode: ```python
@@ -3869,7 +3869,7 @@ if IR == 0xCB:
   cb_mode = 1
   IR = fetch_cycle(addr=PC); PC = PC + 1
   # M3/M1
-  if cb_mode and IR == 0x40: # example: RES 0, B
+  if cb_mode and IR == 0x80: # example: RES 0, B
     B = from_bits(7..1=B[7..1], 0=0)
     IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
