@@ -1721,8 +1721,8 @@ if opcode == 0x04: # example: INC B
   flags.H = 1 if carry_per_bit[3] else 0
   ```,
   pseudocode: ```python
+# M2/M1
 if IR == 0x04: # example: INC B
-  # M2/M1
   result, carry_per_bit = B + 1
   B = result
   flags.Z = 1 if result == 0 else 0
@@ -2155,8 +2155,8 @@ if opcode == 0xA8: # example: XOR B
   flags.C = 0
   ```,
   pseudocode: ```python
+# M2/M1
 if IR == 0xA8: # example: XOR B
-  # M2/M1
   result = A ^ B
   A = result
   flags.Z = 1 if result == 0 else 0
@@ -2554,11 +2554,61 @@ if IR == 0xE8:
 
 === Rotate, shift, and bit operation instructions
 
+#let rotate-shift-visualization(register-label: content, carry: int, register: array) = grid(columns: 2, inset: (x: 0.2em, y: 0em), align: right + horizon,
+  [],
+  monotext(9pt)[
+    #grid(
+      columns: (15pt, 10pt, ..(range(8).map(_ => 15pt))),
+      inset: 2pt,
+      align: center + horizon,
+      stroke: 1pt + black,
+      grid.header(
+        grid.cell(stroke: none)[*Carry*], grid.cell(stroke: none)[], grid.cell(stroke: none, colspan: 8)[*#register-label*],
+      ),
+    )
+  ],
+  grid.cell(colspan: 2, v(2pt)),
+  text(9pt)[Before],
+  monotext(9pt)[
+    #grid(
+      columns: (15pt, 10pt, ..(range(8).map(_ => 15pt))),
+      inset: 2pt,
+      align: center + horizon,
+      stroke: 1pt + black,
+      grid.cell(fill: aqua)[C],
+      grid.cell(stroke: none)[],
+      ..(range(8).rev().map(i => grid.cell(fill: orange.lighten((7 - i) * 12.5%))[#i])),
+    )
+  ],
+  grid.cell(colspan: 2, v(1em)),
+  text(9pt)[After],
+  monotext(9pt)[
+    #grid(
+      columns: (15pt, 10pt, ..(range(8).map(_ => 15pt))),
+      inset: 2pt,
+      align: center + horizon,
+      stroke: 1pt + black,
+      grid.cell(fill: orange.lighten((7 - carry) * 12.5%))[#carry],
+      grid.cell(stroke: none)[],
+      ..(register.map(i => if i == "C" {
+        grid.cell(fill: aqua)[C]
+      } else {
+        grid.cell(fill: orange.lighten((7 - i) * 12.5%))[#i]
+      })),
+    )
+  ],
+)
+
 #instruction(
   [
     ==== RLCA: Rotate left circular (accumulator) <op:RLCA>
 
-    TODO
+    Rotates the 8-bit A register value left in a circular manner (carry flag is updated but not used).
+
+    Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). Bit 7 is copied both to bit 0 and the carry flag. Note that unlike the related @op:RLC_r[RLC r]
+    instruction, RLCA always sets the zero flag to 0 without looking at the resulting value of the calculation.
+
+    #rotate-shift-visualization(register-label: "A register", carry: 7, register: (6, 5, 4, 3, 2, 1, 0, 7))
   ],
   mnemonic: "RLCA",
   flags: [Z = 0, N = 0, H = 0, C = #flag-update],
@@ -2573,8 +2623,27 @@ if IR == 0xE8:
     alu_op: ([A ← rlc A],),
     misc_op: ("U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0x07:
+  b7 = A[7]
+  A = from_bits(7..1=A[6..0], 0=b7)
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 1 if b7 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2/M1
+if IR == 0x07:
+  b7 = A[7]
+  result = from_bits(7..1=A[6..0], 0=b7)
+  A = result
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 1 if b7 else 0
+  IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2582,7 +2651,12 @@ TODO
   [
     ==== RRCA: Rotate right circular (accumulator) <op:RRCA>
 
-    TODO
+    Rotates the 8-bit A register value right in a circular manner (carry flag is updated but not used).
+
+    Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). Bit 0 is copied both to bit 7 and the carry flag. Note that unlike the related @op:RRC_r[RRC r]
+    instruction, RRCA always sets the zero flag to 0 without looking at the resulting value of the calculation.
+
+    #rotate-shift-visualization(register-label: "A register", carry: 0, register: (0, 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RRCA",
   flags: [Z = 0, N = 0, H = 0, C = #flag-update],
@@ -2597,8 +2671,26 @@ TODO
     alu_op: ([A ← rrc A],),
     misc_op: ("U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0x0F:
+  b0 = A[0]
+  A = from_bits(7=b0, 6..0=A[7..1])
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 1 if b0 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2/M1
+if IR == 0x0F:
+  b0 = A[0]
+  result = from_bits(7=b0, 6..0=A[7..1])
+  A = result
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 1 if b0 else 0
   ```
 )
 
@@ -2606,7 +2698,12 @@ TODO
   [
     ==== RLA: Rotate left (accumulator) <op:RLA>
 
-    TODO
+    Rotates the 8-bit A register value left through the carry flag.
+
+    Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). The carry flag is copied to bit 0, and bit 7 is copied to the carry flag. Note that unlike the related @op:RL_r[RL r]
+    instruction, RLA always sets the zero flag to 0 without looking at the resulting value of the calculation.
+
+    #rotate-shift-visualization(register-label: "A register", carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "C"))
   ],
   mnemonic: "RLA",
   flags: [Z = 0, N = 0, H = 0, C = #flag-update],
@@ -2621,8 +2718,26 @@ TODO
     alu_op: ([A ← rl A],),
     misc_op: ("U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0x17:
+  b7 = A[7]
+  A = from_bits(7..1=A[6..0], 0=flags.C)
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 1 if b7 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2/M1
+if IR == 0x17:
+  b7 = A[7]
+  result = from_bits(7..1=A[6..0], 0=flags.C)
+  A = result
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 1 if b7 else 0
   ```
 )
 
@@ -2630,7 +2745,12 @@ TODO
   [
     ==== RRA: Rotate right (accumulator) <op:RRA>
 
-    TODO
+    Rotates the 8-bit A register value right through the carry flag.
+
+    Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). The carry flag is copied to bit 7, and bit 0 is copied to the carry flag. Note that unlike the related @op:RR_r[RR r]
+    instruction, RRA always sets the zero flag to 0 without looking at the resulting value of the calculation.
+
+    #rotate-shift-visualization(register-label: "A register", carry: 0, register: ("C", 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RRA",
   flags: [Z = 0, N = 0, H = 0, C = #flag-update],
@@ -2645,8 +2765,26 @@ TODO
     alu_op: ([A ← rr A],),
     misc_op: ("U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0x1F:
+  b0 = A[0]
+  A = from_bits(7=flags.C, 6..0=A[7..1])
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 1 if b0 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2/M1
+if IR == 0x1F:
+  b0 = A[0]
+  result = from_bits(7=flags.C, 6..0=A[7..1])
+  A = result
+  flags.Z = 0
+  flags.N = 0
+  flags.H = 0
+  flags.C = 1 if b0 else 0
   ```
 )
 
@@ -2654,7 +2792,11 @@ TODO
   [
     ==== RLC r: Rotate left circular (register) <op:RLC_r>
 
-    TODO
+    Rotates the 8-bit register `r` value left in a circular manner (carry flag is updated but not used).
+
+    Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). Bit 7 is copied both to bit 0 and the carry flag.
+
+    #rotate-shift-visualization(register-label: [Register `r`], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, 7))
   ],
   mnemonic: "RLC r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2670,8 +2812,33 @@ TODO
     alu_op: ("U", [`r` ← rlc `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x00: # example: RLC B
+    b7 = B[7]
+    B = from_bits(7..1=B[6..0], 0=b7)
+    flags.Z = 1 if B == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x00: # example: RLC B
+    b7 = B[7]
+    result = from_bits(7..1=B[6..0], 0=b7)
+    B = result
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2679,7 +2846,11 @@ TODO
   [
     ==== RLC (HL): Rotate left circular (indirect HL) <op:RLC_hl>
 
-    TODO
+    Rotates, the 8-bit data at the absolute address specified by the 16-bit register HL, left in a circular manner (carry flag is updated but not used).
+
+    Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). Bit 7 is copied both to bit 0 and the carry flag.
+
+    #rotate-shift-visualization(register-label: [Data at address HL], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, 7))
   ],
   mnemonic: "RLC (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2695,8 +2866,38 @@ TODO
     alu_op: ("U", "U", [mem ← rlc Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x06:
+    data = read_memory(addr=HL)
+    b7 = data[7]
+    result = from_bits(7..1=data[6..0], 0=b7)
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+    write_memory(addr=HL, data=result)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x06:
+    Z = read_memory(addr=HL)
+    # M4
+    b7 = Z[7]
+    result = from_bits(7..1=Z[6..0], 0=b7)
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2704,7 +2905,11 @@ TODO
   [
     ==== RRC r: Rotate right circular (register) <op:RRC_r>
 
-    TODO
+    Rotates the 8-bit register `r` value right in a circular manner (carry flag is updated but not used).
+
+    Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). Bit 0 is copied both to bit 7 and the carry flag.
+
+    #rotate-shift-visualization(register-label: [Register `r`], carry: 0, register: (0, 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RRC r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2720,8 +2925,33 @@ TODO
     alu_op: ("U", [`r` ← rrc `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x08: # example: RRC B
+    b0 = B[0]
+    B = from_bits(7..1=B[7..1], 0=b0)
+    flags.Z = 1 if B == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x08: # example: RRC B
+    b0 = B[0]
+    result = from_bits(7..1=B[7..1], 0=b0)
+    B = result
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2729,7 +2959,11 @@ TODO
   [
     ==== RRC (HL): Rotate right circular (indirect HL) <op:RRC_hl>
 
-    TODO
+    Rotates, the 8-bit data at the absolute address specified by the 16-bit register HL, right in a circular manner (carry flag is updated but not used).
+
+    Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). Bit 0 is copied both to bit 7 and the carry flag.
+
+    #rotate-shift-visualization(register-label: [Data at address HL], carry: 0, register: (0, 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RRC (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2745,8 +2979,38 @@ TODO
     alu_op: ("U", "U", [mem ← rrc Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x0E:
+    data = read_memory(addr=HL)
+    b0 = data[0]
+    result = from_bits(7=b0, 6..0=data[7..1])
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    write_memory(addr=HL, data=result)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x0E:
+    Z = read_memory(addr=HL)
+    # M4
+    b0 = Z[0]
+    result = from_bits(7=b0, 6..0=Z[7..1])
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2754,7 +3018,11 @@ TODO
   [
     ==== RL r: Rotate left (register) <op:RL_r>
 
-    TODO
+    Rotates the 8-bit register `r` value left through the carry flag.
+
+    Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). The carry flag is copied to bit 0, and bit 7 is copied to the carry flag.
+
+    #rotate-shift-visualization(register-label: [Register `r`], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "C"))
   ],
   mnemonic: "RL r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2770,8 +3038,33 @@ TODO
     alu_op: ("U", [`r` ← rl `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x10: # example: RL B
+    b7 = B[7]
+    B = from_bits(7..1=B[6..0], 0=flags.C)
+    flags.Z = 1 if B == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x10: # example: RL B
+    b7 = B[7]
+    result = from_bits(7..1=B[6..0], 0=flags.C)
+    B = result
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2779,7 +3072,11 @@ TODO
   [
     ==== RL (HL): Rotate left (indirect HL) <op:RL_hl>
 
-    TODO
+    Rotates, the 8-bit data at the absolute address specified by the 16-bit register HL, left through the carry flag.
+
+    Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). The carry flag is copied to bit 0, and bit 7 is copied to the carry flag.
+
+    #rotate-shift-visualization(register-label: [Data at address HL], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "C"))
   ],
   mnemonic: "RL (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2795,8 +3092,38 @@ TODO
     alu_op: ("U", "U", [mem ← rl Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x16:
+    data = read_memory(addr=HL)
+    b7 = data[7]
+    result = from_bits(7..1=data[6..0], 0=flags.C)
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+    write_memory(addr=HL, data=result)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x16:
+    Z = read_memory(addr=HL)
+    # M4
+    b7 = Z[7]
+    result = from_bits(7..1=Z[6..0], 0=flags.C)
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2804,7 +3131,11 @@ TODO
   [
     ==== RR r: Rotate right (register) <op:RR_r>
 
-    TODO
+    Rotates the 8-bit register `r` value right through the carry flag.
+
+    Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). The carry flag is copied to bit 7, and bit 0 is copied to the carry flag.
+
+    #rotate-shift-visualization(register-label: [Register `r`], carry: 0, register: ("C", 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RR r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2820,8 +3151,33 @@ TODO
     alu_op: ("U", [`r` ← rr `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x18: # example: RR B
+    b0 = B[0]
+    B = from_bits(7=flags.C, 6..0=B[7..1])
+    flags.Z = 1 if B == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x18: # example: RR B
+    b0 = B[0]
+    result = from_bits(7=flags.C, 6..0=B[7..1])
+    B = result
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2829,7 +3185,11 @@ TODO
   [
     ==== RR (HL): Rotate right (indirect HL) <op:RR_hl>
 
-    TODO
+    Rotates, the 8-bit data at the absolute address specified by the 16-bit register HL, right through the carry flag.
+
+    Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). The carry flag is copied to bit 7, and bit 0 is copied to the carry flag.
+
+    #rotate-shift-visualization(register-label: [Data at address HL], carry: 0, register: ("C", 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RR (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2845,8 +3205,38 @@ TODO
     alu_op: ("U", "U", [mem ← rr Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x1E:
+    data = read_memory(addr=HL)
+    b0 = data[0]
+    result = from_bits(7=flags.C, 6..0=data[7..1])
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    write_memory(addr=HL, data=result)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x1E:
+    Z = read_memory(addr=HL)
+    # M4
+    b0 = Z[0]
+    result = from_bits(7=flags.C, 6..0=Z[7..1])
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
