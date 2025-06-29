@@ -587,12 +587,12 @@ if IR == 0xF2:
   simple-pseudocode: ```python
 opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xE2:
-  write_memory(addr=unsigned_16(lsb=C, data=0xFF), data=A)
+  write_memory(addr=unsigned_16(lsb=C, msb=0xFF), data=A)
   ```,
   pseudocode: ```python
 # M2
 if IR == 0xE2:
-  write_memory(addr=unsigned_16(lsb=C, data=0xFF), data=A)
+  write_memory(addr=unsigned_16(lsb=C, msb=0xFF), data=A)
   # M3/M1
   IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
@@ -2554,50 +2554,64 @@ if IR == 0xE8:
 
 === Rotate, shift, and bit operation instructions
 
-#let rotate-shift-visualization(register-label: content, carry: int, register: array) = grid(columns: 2, inset: (x: 0.2em, y: 0em), align: right + horizon,
-  [],
-  monotext(9pt)[
-    #grid(
-      columns: (15pt, 10pt, ..(range(8).map(_ => 15pt))),
-      inset: 2pt,
-      align: center + horizon,
-      stroke: 1pt + black,
-      grid.header(
-        grid.cell(stroke: none)[*Carry*], grid.cell(stroke: none)[], grid.cell(stroke: none, colspan: 8)[*#register-label*],
-      ),
-    )
-  ],
-  grid.cell(colspan: 2, v(2pt)),
-  text(9pt)[Before],
-  monotext(9pt)[
-    #grid(
-      columns: (15pt, 10pt, ..(range(8).map(_ => 15pt))),
-      inset: 2pt,
-      align: center + horizon,
-      stroke: 1pt + black,
-      grid.cell(fill: aqua)[C],
-      grid.cell(stroke: none)[],
-      ..(range(8).rev().map(i => grid.cell(fill: orange.lighten((7 - i) * 12.5%))[#i])),
-    )
-  ],
-  grid.cell(colspan: 2, v(1em)),
-  text(9pt)[After],
-  monotext(9pt)[
-    #grid(
-      columns: (15pt, 10pt, ..(range(8).map(_ => 15pt))),
-      inset: 2pt,
-      align: center + horizon,
-      stroke: 1pt + black,
-      grid.cell(fill: orange.lighten((7 - carry) * 12.5%))[#carry],
-      grid.cell(stroke: none)[],
-      ..(register.map(i => if i == "C" {
-        grid.cell(fill: aqua)[C]
-      } else {
-        grid.cell(fill: orange.lighten((7 - i) * 12.5%))[#i]
-      })),
-    )
-  ],
-)
+#let rotate-shift-visualization(dir-right: bool, register-label: content, carry: int, register: array) = [
+  #let columns = (15pt, 10pt, ..(range(8).map(_ => 15pt)))
+  #let header-cells = (
+    grid.cell(stroke: none)[*Carry*],
+    grid.cell(stroke: none)[],
+    grid.cell(stroke: none, colspan: 8)[*#register-label*],
+  )
+  #let bit-cell(i) = if i == "C" {
+    grid.cell(fill: aqua)[#i]
+  } else if i == "0" or i == "1" {
+    grid.cell(fill: lime)[#i]
+  } else {
+    grid.cell(fill: orange.lighten((7 - i) * 12.5%))[b#i]
+  }
+  #let separator-cell = grid.cell(stroke: none)[]
+  #let bits-row(carry: content, bits: array) = if dir-right {
+    (..(bits.map(bit-cell)), separator-cell, bit-cell(carry),)
+  } else {
+    (bit-cell(carry), separator-cell, ..(bits.map(bit-cell)),)
+  }
+  #grid(
+    columns: 2,
+    inset: (x: 0.2em, y: 0em),
+    align: right + horizon,
+    [],
+    monotext(9pt)[
+      #grid(
+        columns: if dir-right { columns.rev() } else { columns },
+        inset: 2pt,
+        align: center + horizon,
+        stroke: 1pt + black,
+        grid.header(..(if dir-right { header-cells.rev() } else { header-cells })),
+      )
+    ],
+    grid.cell(colspan: 2, v(2pt)),
+    text(9pt)[Before],
+    monotext(9pt)[
+      #grid(
+        columns: if dir-right { columns.rev() } else { columns },
+        inset: 2pt,
+        align: center + horizon,
+        stroke: 1pt + black,
+        ..bits-row(carry: "C", bits: range(8).rev())
+      )
+    ],
+    grid.cell(colspan: 2, v(1em)),
+    text(9pt)[After],
+    monotext(9pt)[
+      #grid(
+        columns: if dir-right { columns.rev() } else { columns },
+        inset: 2pt,
+        align: center + horizon,
+        stroke: 1pt + black,
+        ..bits-row(carry: carry, bits: register),
+      )
+    ],
+  )
+]
 
 #instruction(
   [
@@ -2608,7 +2622,7 @@ if IR == 0xE8:
     Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). Bit 7 is copied both to bit 0 and the carry flag. Note that unlike the related @op:RLC_r[RLC r]
     instruction, RLCA always sets the zero flag to 0 without looking at the resulting value of the calculation.
 
-    #rotate-shift-visualization(register-label: "A register", carry: 7, register: (6, 5, 4, 3, 2, 1, 0, 7))
+    #rotate-shift-visualization(dir-right: false, register-label: "A register", carry: 7, register: (6, 5, 4, 3, 2, 1, 0, 7))
   ],
   mnemonic: "RLCA",
   flags: [Z = 0, N = 0, H = 0, C = #flag-update],
@@ -2656,7 +2670,7 @@ if IR == 0x07:
     Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). Bit 0 is copied both to bit 7 and the carry flag. Note that unlike the related @op:RRC_r[RRC r]
     instruction, RRCA always sets the zero flag to 0 without looking at the resulting value of the calculation.
 
-    #rotate-shift-visualization(register-label: "A register", carry: 0, register: (0, 7, 6, 5, 4, 3, 2, 1))
+    #rotate-shift-visualization(dir-right: true, register-label: "A register", carry: 0, register: (0, 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RRCA",
   flags: [Z = 0, N = 0, H = 0, C = #flag-update],
@@ -2703,7 +2717,7 @@ if IR == 0x0F:
     Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). The carry flag is copied to bit 0, and bit 7 is copied to the carry flag. Note that unlike the related @op:RL_r[RL r]
     instruction, RLA always sets the zero flag to 0 without looking at the resulting value of the calculation.
 
-    #rotate-shift-visualization(register-label: "A register", carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "C"))
+    #rotate-shift-visualization(dir-right: false, register-label: "A register", carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "C"))
   ],
   mnemonic: "RLA",
   flags: [Z = 0, N = 0, H = 0, C = #flag-update],
@@ -2750,7 +2764,7 @@ if IR == 0x17:
     Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). The carry flag is copied to bit 7, and bit 0 is copied to the carry flag. Note that unlike the related @op:RR_r[RR r]
     instruction, RRA always sets the zero flag to 0 without looking at the resulting value of the calculation.
 
-    #rotate-shift-visualization(register-label: "A register", carry: 0, register: ("C", 7, 6, 5, 4, 3, 2, 1))
+    #rotate-shift-visualization(dir-right: true, register-label: "A register", carry: 0, register: ("C", 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RRA",
   flags: [Z = 0, N = 0, H = 0, C = #flag-update],
@@ -2796,7 +2810,7 @@ if IR == 0x1F:
 
     Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). Bit 7 is copied both to bit 0 and the carry flag.
 
-    #rotate-shift-visualization(register-label: [Register `r`], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, 7))
+    #rotate-shift-visualization(dir-right: false, register-label: [Register `r`], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, 7))
   ],
   mnemonic: "RLC r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2850,7 +2864,7 @@ if IR == 0xCB:
 
     Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). Bit 7 is copied both to bit 0 and the carry flag.
 
-    #rotate-shift-visualization(register-label: [Data at address HL], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, 7))
+    #rotate-shift-visualization(dir-right: false, register-label: [Data at address HL], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, 7))
   ],
   mnemonic: "RLC (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2909,7 +2923,7 @@ if IR == 0xCB:
 
     Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). Bit 0 is copied both to bit 7 and the carry flag.
 
-    #rotate-shift-visualization(register-label: [Register `r`], carry: 0, register: (0, 7, 6, 5, 4, 3, 2, 1))
+    #rotate-shift-visualization(dir-right: true, register-label: [Register `r`], carry: 0, register: (0, 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RRC r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -2963,7 +2977,7 @@ if IR == 0xCB:
 
     Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). Bit 0 is copied both to bit 7 and the carry flag.
 
-    #rotate-shift-visualization(register-label: [Data at address HL], carry: 0, register: (0, 7, 6, 5, 4, 3, 2, 1))
+    #rotate-shift-visualization(dir-right: true, register-label: [Data at address HL], carry: 0, register: (0, 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RRC (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3022,7 +3036,7 @@ if IR == 0xCB:
 
     Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). The carry flag is copied to bit 0, and bit 7 is copied to the carry flag.
 
-    #rotate-shift-visualization(register-label: [Register `r`], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "C"))
+    #rotate-shift-visualization(dir-right: false, register-label: [Register `r`], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "C"))
   ],
   mnemonic: "RL r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3076,7 +3090,7 @@ if IR == 0xCB:
 
     Every bit is shifted to the left (e.g. bit 1 value is copied from bit 0). The carry flag is copied to bit 0, and bit 7 is copied to the carry flag.
 
-    #rotate-shift-visualization(register-label: [Data at address HL], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "C"))
+    #rotate-shift-visualization(dir-right: false, register-label: [Data at address HL], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "C"))
   ],
   mnemonic: "RL (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3135,7 +3149,7 @@ if IR == 0xCB:
 
     Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). The carry flag is copied to bit 7, and bit 0 is copied to the carry flag.
 
-    #rotate-shift-visualization(register-label: [Register `r`], carry: 0, register: ("C", 7, 6, 5, 4, 3, 2, 1))
+    #rotate-shift-visualization(dir-right: true, register-label: [Register `r`], carry: 0, register: ("C", 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RR r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3189,7 +3203,7 @@ if IR == 0xCB:
 
     Every bit is shifted to the right (e.g. bit 1 value is copied to bit 0). The carry flag is copied to bit 7, and bit 0 is copied to the carry flag.
 
-    #rotate-shift-visualization(register-label: [Data at address HL], carry: 0, register: ("C", 7, 6, 5, 4, 3, 2, 1))
+    #rotate-shift-visualization(dir-right: true, register-label: [Data at address HL], carry: 0, register: ("C", 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "RR (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3244,7 +3258,11 @@ if IR == 0xCB:
   [
     ==== SLA r: Shift left arithmetic (register) <op:SLA_r>
 
-    TODO
+    Shifts the 8-bit register `r` value left by one bit using an arithmetic shift.
+
+    Bit 7 is shifted to the carry flag, and bit 0 is set to a fixed value of 0.
+
+    #rotate-shift-visualization(dir-right: false, register-label: [Register `r`], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "0"))
   ],
   mnemonic: "SLA r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3260,8 +3278,33 @@ if IR == 0xCB:
     alu_op: ("U", [`r` ← sla `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x20: # example: SLA B
+    b7 = B[7]
+    B = from_bits(7..1=B[6..0], 0=0)
+    flags.Z = 1 if B == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x20: # example: SLA B
+    b7 = B[7]
+    result = from_bits(7..1=B[6..0], 0=0)
+    B = result
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3269,7 +3312,11 @@ TODO
   [
     ==== SLA (HL): Shift left arithmetic (indirect HL) <op:SLA_hl>
 
-    TODO
+    Shifts, the 8-bit value at the address specified by the HL register, left by one bit using an arithmetic shift.
+
+    Bit 7 is shifted to the carry flag, and bit 0 is set to a fixed value of 0.
+
+    #rotate-shift-visualization(dir-right: false, register-label: [Data at address HL], carry: 7, register: (6, 5, 4, 3, 2, 1, 0, "0"))
   ],
   mnemonic: "SLA (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3285,8 +3332,38 @@ TODO
     alu_op: ("U", "U", [mem ← sla Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x26:
+    data = read_memory(addr=HL)
+    b7 = data[7]
+    result = from_bits(7..1=data[6..0], 0=0)
+    data = result
+    flags.Z = 1 if B == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x26:
+    Z = read_memory(addr=HL)
+    # M4
+    b7 = Z[7]
+    result = from_bits(7..1=Z[6..0], 0=0)
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b7 else 0
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3294,7 +3371,11 @@ TODO
   [
     ==== SRA r: Shift right arithmetic (register) <op:SRA_r>
 
-    TODO
+    Shifts the 8-bit register `r` value right by one bit using an arithmetic shift.
+
+    Bit 7 retains its value, and bit 0 is shifted to the carry flag.
+
+    #rotate-shift-visualization(dir-right: true, register-label: [Register `r`], carry: 0, register: (7, 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "SRA r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3310,8 +3391,33 @@ TODO
     alu_op: ("U", [`r` ← sra `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x28: # example: SRA B
+    b0 = B[0]
+    B = from_bits(7=B[7], 6..0=B[7..1])
+    flags.Z = 1 if B == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x28: # example: SRA B
+    b0 = B[0]
+    result = from_bits(7=B[7], 6..0=B[7..1])
+    B = result
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3319,7 +3425,11 @@ TODO
   [
     ==== SRA (HL): Shift right arithmetic (indirect HL) <op:SRA_hl>
 
-    TODO
+    Shifts, the 8-bit value at the address specified by the HL register, right by one bit using an arithmetic shift.
+
+    Bit 7 is set to a fixed value of 0, and bit 0 is shifted to the carry flag.
+
+    #rotate-shift-visualization(dir-right: true, register-label: [Data at address HL], carry: 0, register: ("0", 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "SRA (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3335,16 +3445,94 @@ TODO
     alu_op: ("U", "U", [mem ← sra Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x2E:
+    data = read_memory(addr=HL)
+    b0 = data[0]
+    result = from_bits(7=0, 6..0=data[7..1])
+    data = result
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x2E:
+    Z = read_memory(addr=HL)
+    # M4
+    b0 = Z[0]
+    result = from_bits(7=0, 6..0=Z[7..1])
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
+
+#let swap-visualization(register-label: content) = [
+  #let columns = range(8).map(_ => 15pt)
+  #let bit-cell(i) = {
+    grid.cell(fill: orange.lighten((7 - i) * 12.5%))[b#i]
+  }
+  #grid(
+    columns: 2,
+    inset: (x: 0.2em, y: 0em),
+    align: right + horizon,
+    [],
+    monotext(9pt)[
+      #grid(
+        columns: columns,
+        inset: 2pt,
+        align: center + horizon,
+        stroke: 1pt + black,
+        grid.cell(stroke: none, colspan: 8)[*#register-label*],
+      )
+    ],
+    grid.cell(colspan: 2, v(2pt)),
+    text(9pt)[Before],
+    monotext(9pt)[
+      #grid(
+        columns: columns,
+        inset: 2pt,
+        align: center + horizon,
+        stroke: 1pt + black,
+        ..(range(4, 8).rev().map(bit-cell)),
+        ..(range(0, 4).rev().map(bit-cell)),
+      )
+    ],
+    grid.cell(colspan: 2, v(1em)),
+    text(9pt)[After],
+    monotext(9pt)[
+      #grid(
+        columns: columns,
+        inset: 2pt,
+        align: center + horizon,
+        stroke: 1pt + black,
+        ..(range(0, 4).rev().map(bit-cell)),
+        ..(range(4, 8).rev().map(bit-cell)),
+      )
+    ],
+  )
+]
 
 #instruction(
   [
     ==== SWAP r: Swap nibbles (register) <op:SWAP_r>
 
-    TODO
+    Swaps the high and low 4-bit nibbles of the 8-bit register `r`.
+
+    #swap-visualization(register-label: [Register `r`])
   ],
   mnemonic: "SWAP r",
   flags: [Z = #flag-update, N = 0, H = 0, C = 0],
@@ -3360,8 +3548,31 @@ TODO
     alu_op: ("U", [`r` ← swap `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x30: # example: SWAP B
+    B = from_bits(7..4=B[3..0], 3..0=B[7..4])
+    flags.Z = 1 if B == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x30: # example: SWAP B
+    result = from_bits(7..4=B[3..0], 3..0=B[7..4])
+    B = result
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 0
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3369,7 +3580,9 @@ TODO
   [
     ==== SWAP (HL): Swap nibbles (indirect HL) <op:SWAP_hl>
 
-    TODO
+    Swaps the high and low 4-bit nibbles of the 8-bit data at the absolute address specified by the 16-bit register HL.
+
+    #swap-visualization(register-label: [Data at address HL])
   ],
   mnemonic: "SWAP (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = 0],
@@ -3385,8 +3598,36 @@ TODO
     alu_op: ("U", "U", [mem ← swap Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x36:
+    data = read_memory(addr=HL)
+    result = from_bits(7..4=data[3..0], 3..0=data[7..4])
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 0
+    write_memory(addr=HL, data=result)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x36:
+    Z = read_memory(addr=HL)
+    # M4
+    result = from_bits(7..4=Z[3..0], 3..0=Z[7..4])
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 0
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3394,7 +3635,11 @@ TODO
   [
     ==== SRL r: Shift right logical (register) <op:SRL_r>
 
-    TODO
+    Shifts the 8-bit register `r` value right by one bit using a logical shift.
+
+    Bit 7 is set to a fixed value of 0, and bit 0 is shifted to the carry flag.
+
+    #rotate-shift-visualization(dir-right: true, register-label: [Register `r`], carry: 0, register: ("0", 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "SRL r",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3410,8 +3655,33 @@ TODO
     alu_op: ("U", [`r` ← srl `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x28: # example: SRL B
+    b0 = B[0]
+    B = from_bits(7=0, 6..0=B[7..1])
+    flags.Z = 1 if B == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x28: # example: SRL B
+    b0 = B[0]
+    result = from_bits(7=0, 6..0=B[7..1])
+    B = result
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3419,7 +3689,11 @@ TODO
   [
     ==== SRL (HL): Shift right logical (indirect HL) <op:SRL_hl>
 
-    TODO
+    Shifts, the 8-bit value at the address specified by the HL register, right by one bit using a logical shift.
+
+    Bit 7 is set to a fixed value of 0, and bit 0 is shifted to the carry flag.
+
+    #rotate-shift-visualization(dir-right: true, register-label: [Data at address HL], carry: 0, register: ("0", 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "SRL (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
@@ -3435,8 +3709,38 @@ TODO
     alu_op: ("U", "U", [mem ← srl Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x3E:
+    data = read_memory(addr=HL)
+    b0 = data[0]
+    result = from_bits(7=0, 6..0=data[7..1])
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    write_memory(addr=HL, data=result)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x3E:
+    Z = read_memory(addr=HL)
+    # M4
+    b0 = Z[0]
+    result = from_bits(7=0, 6..0=Z[7..1])
+    flags.Z = 1 if result == 0 else 0
+    flags.N = 0
+    flags.H = 0
+    flags.C = 1 if b0 else 0
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3444,7 +3748,9 @@ TODO
   [
     ==== BIT b, r: Test bit (register) <op:BIT_b_r>
 
-    TODO
+    Tests the bit `b` of the 8-bit register `r`.
+
+    The zero flag is set to 1 if the chosen bit is 0, and 0 otherwise.
   ],
   mnemonic: "BIT b, r",
   flags: [Z = #flag-update, N = 0, H = 1],
@@ -3460,8 +3766,26 @@ TODO
     alu_op: ("U", [bit `b`, `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x40: # example: BIT 0, B
+    flags.Z = 1 if B[0] == 0 else 0
+    flags.N = 0
+    flags.H = 1
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x40: # example: BIT 0, B
+    flags.Z = 1 if B[0] == 0 else 0
+    flags.N = 0
+    flags.H = 1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3469,7 +3793,9 @@ TODO
   [
     ==== BIT b, (HL): Test bit (indirect HL) <op:BIT_b_hl>
 
-    TODO
+    Tests the bit `b` of the 8-bit data at the absolute address specified by the 16-bit register HL.
+
+    The zero flag is set to 1 if the chosen bit is 0, and 0 otherwise.
   ],
   mnemonic: "BIT b, (HL)",
   flags: [Z = #flag-update, N = 0, H = 1],
@@ -3485,8 +3811,29 @@ TODO
     alu_op: ("U", "U", [bit `b`, Z],),
     misc_op: ("U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x40: # example: BIT 0, (HL)
+    data = read_memory(addr=HL)
+    flags.Z = 1 if data[0] == 0 else 0
+    flags.N = 0
+    flags.H = 1
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x40: # example: BIT 0, (HL)
+    Z = read_memory(addr=HL)
+    # M4/M1
+    flags.Z = 1 if Z[0] == 0 else 0
+    flags.N = 0
+    flags.H = 1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3494,7 +3841,7 @@ TODO
   [
     ==== RES b, r: Reset bit (register) <op:RES_b_r>
 
-    TODO
+    Resets the bit `b` of the 8-bit register `r` to 0.
   ],
   mnemonic: "RES b, r",
   opcode: [#bin("10xxxxxx")/various],
@@ -3509,8 +3856,22 @@ TODO
     alu_op: ("U", [`r` ← res `b`, `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x40: # example: RES 0, B
+    B = from_bits(7..1=B[7..1], 0=0)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0x40: # example: RES 0, B
+    B = from_bits(7..1=B[7..1], 0=0)
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3518,7 +3879,7 @@ TODO
   [
     ==== RES b, (HL): Reset bit (indirect HL) <op:RES_b_hl>
 
-    TODO
+    Resets the bit `b` of the 8-bit data at the absolute address specified by the 16-bit register HL, to 0.
   ],
   mnemonic: "RES b, (HL)",
   opcode: [#bin("10xxx110")/various],
@@ -3533,8 +3894,28 @@ TODO
     alu_op: ("U", "U", [mem ← res `b`, Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0x86: # example: RES 0, (HL)
+    data = read_memory(addr=HL)
+    result = from_bits(7..1=data[7..1], 0=0)
+    write_memory(addr=HL, data=result)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0x86: # example: RES 0, (HL)
+    Z = read_memory(addr=HL)
+    # M4
+    result = from_bits(7..1=Z[7..1], 0=0)
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3542,7 +3923,7 @@ TODO
   [
     ==== SET b, r: Set bit (register) <op:SET_b_r>
 
-    TODO
+    Sets the bit `b` of the 8-bit register `r` to 1.
   ],
   mnemonic: "SET b, r",
   opcode: [#bin("11xxxxxx")/various],
@@ -3557,8 +3938,22 @@ TODO
     alu_op: ("U", [`r` ← set `b`, `r`],),
     misc_op: ("U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0xC0: # example: SET 0, B
+    B = from_bits(7..1=B[7..1], 0=1)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3/M1
+  if cb_mode and IR == 0xC0: # example: SET 0, B
+    B = from_bits(7..1=B[7..1], 0=1)
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -3566,7 +3961,7 @@ TODO
   [
     ==== SET b, (HL): Set bit (indirect HL) <op:SET_b_hl>
 
-    TODO
+    Sets the bit `b` of the 8-bit data at the absolute address specified by the 16-bit register HL, to 1.
   ],
   mnemonic: "SET b, (HL)",
   opcode: [#bin("11xxx110")/various],
@@ -3581,8 +3976,28 @@ TODO
     alu_op: ("U", "U", [mem ← set `b`, Z], "U",),
     misc_op: ("U", "U", "U", "U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0xCB: # CB prefix
+  opcode = read_memory(addr=PC); PC = PC + 1
+  if opcode == 0xC6: # example: SET 0, (HL)
+    data = read_memory(addr=HL)
+    result = from_bits(7..1=data[7..1], 0=1)
+    write_memory(addr=HL, data=result)
+  ```,
   pseudocode: ```python
-TODO
+# M2
+if IR == 0xCB:
+  cb_mode = 1
+  IR = fetch_cycle(addr=PC); PC = PC + 1
+  # M3
+  if cb_mode and IR == 0xC6: # example: SET 0, (HL)
+    Z = read_memory(addr=HL)
+    # M4
+    result = from_bits(7..1=Z[7..1], 0=1)
+    write_memory(addr=HL, data=result)
+    # M5/M1
+    IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
