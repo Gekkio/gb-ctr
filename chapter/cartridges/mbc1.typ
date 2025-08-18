@@ -67,7 +67,7 @@ The 5-bit BANK1 register is used as the lower 5 bits of the ROM bank number when
 MBC1 doesn't allow the BANK1 register to contain zero (bit pattern #bin("00000")), so the initial value at reset is #bin("00001") and attempting to write #bin("00000") will write #bin("00001") instead. This makes it impossible to read banks #hex("00"), #hex("20"), #hex("40") and #hex("60") from the #hex-range("4000", "7FFF") memory area, because those bank numbers have #bin("00000") in the lower bits. Due to the zero value adjustment, requesting any of these banks actually requests the next bank (e.g.  #hex("21") instead of #hex("20")).
 
 #reg-figure(
-  caption: [#hex-range("2000", "3FFF") - BANK1 - MBC1 bank register 2]
+  caption: [#hex-range("4000", "5FFF") - BANK1 - MBC1 bank register 2]
 )[
   #reg-table(
     [U], [U], [U], [U], [U], [U], [W-0], [W-0],
