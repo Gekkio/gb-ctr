@@ -29,10 +29,12 @@ jobs:
       - uses: jdx/mise-action@v2
       - name: Install Font Awesome
         run: |
-          mkdir -p "$HOME/.fonts"
-          curl -L https://github.com/FortAwesome/Font-Awesome/releases/download/6.7.2/fontawesome-free-6.7.2-desktop.zip -o fontawesome.zip
-          unzip -j fontawesome.zip 'fontawesome-free-6.7.2-desktop/otfs/*' -d "$HOME/.fonts"
+          mkdir -p "$HOME/.local/share/fonts"
+          curl -L https://github.com/FortAwesome/Font-Awesome/releases/download/${FONTAWESOME_VERSION}/fontawesome-free-${FONTAWESOME_VERSION}-desktop.zip -o fontawesome.zip
+          unzip -j fontawesome.zip 'fontawesome-free-${FONTAWESOME_VERSION}-desktop/otfs/*' -d "$HOME/.local/share/fonts"
           fc-cache
+        env:
+          FONTAWESOME_VERSION: 7.0.0
       - run: just build
       - name: Upload built PDF
         uses: actions/upload-artifact@v4

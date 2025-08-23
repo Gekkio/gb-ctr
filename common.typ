@@ -1,10 +1,10 @@
-#import "@preview/cetz:0.4.0"
+#import "@preview/cetz:0.4.1"
 
 #let monotext(..args) = text(font: "Anonymous Pro", fallback: false, ..args)
 
-#let awesome-brands(..args) = text(font: "Font Awesome 6 Brands", fallback: false, ..args)
+#let awesome-brands(..args) = text(font: "Font Awesome 7 Brands", fallback: false, ..args)
 
-#let awesome(..args) = text(font: "Font Awesome 6 Free Solid", fallback: false, ..args)
+#let awesome(..args) = text(font: "Font Awesome 7 Free Solid", fallback: false, ..args)
 
 #let color-box(icon: none, title: none, fgcolor: black, bgcolor: white, title-color: white, content) = [
   #let radius = 5pt
