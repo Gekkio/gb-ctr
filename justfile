@@ -1,6 +1,6 @@
 draft := if env("GITHUB_REF", "") == "refs/heads/main" { "false" } else { "true" }
 revision := if draft == "true" {
-  `git symbolic-ref --short HEAD` + "-" + `git rev-list --count HEAD` + "[" + `git rev-parse --short HEAD` + "]"
+  `git symbolic-ref --short HEAD 2> /dev/null || echo unknown` + "-" + `git rev-list --count HEAD` + "[" + `git rev-parse --short HEAD` + "]"
 } else {
   `git rev-list --count main`
 }
