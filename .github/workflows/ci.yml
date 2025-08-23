@@ -6,19 +6,18 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   build:
     name: Build PDF
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Update Ubuntu package lists
         run: sudo apt update
       - name: Install Ubuntu packages
@@ -26,12 +25,12 @@ jobs:
           sudo apt install
           fonts-anonymous-pro
           fonts-noto-core
-      - uses: jdx/mise-action@v2
+      - uses: jdx/mise-action@v3
       - name: Install Font Awesome
         run: |
           mkdir -p "$HOME/.local/share/fonts"
-          curl -L https://github.com/FortAwesome/Font-Awesome/releases/download/${FONTAWESOME_VERSION}/fontawesome-free-${FONTAWESOME_VERSION}-desktop.zip -o fontawesome.zip
-          unzip -j fontawesome.zip 'fontawesome-free-${FONTAWESOME_VERSION}-desktop/otfs/*' -d "$HOME/.local/share/fonts"
+          curl -L "https://github.com/FortAwesome/Font-Awesome/releases/download/${FONTAWESOME_VERSION}/fontawesome-free-${FONTAWESOME_VERSION}-desktop.zip" -o fontawesome.zip
+          unzip -j fontawesome.zip "fontawesome-free-${FONTAWESOME_VERSION}-desktop/otfs/"'*' -d "$HOME/.local/share/fonts"
           fc-cache
         env:
           FONTAWESOME_VERSION: 7.0.0
@@ -46,6 +45,8 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    permissions:
+      id-token: write
     steps:
       - name: Install Ubuntu packages
         run: sudo snap install aws-cli --classic
