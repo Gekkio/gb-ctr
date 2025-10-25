@@ -2,7 +2,7 @@ name: ci
 on:
   - push
 
-concurrency: 
+concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
 
@@ -14,7 +14,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -33,10 +33,10 @@ jobs:
           unzip -j fontawesome.zip "fontawesome-free-${FONTAWESOME_VERSION}-desktop/otfs/"'*' -d "$HOME/.local/share/fonts"
           fc-cache
         env:
-          FONTAWESOME_VERSION: 7.0.0
+          FONTAWESOME_VERSION: 7.2.0
       - run: just build
       - name: Upload built PDF
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v8
         with:
           name: pdf
           path: gbctr.pdf
@@ -51,13 +51,13 @@ jobs:
       - name: Install Ubuntu packages
         run: sudo snap install aws-cli --classic
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::570943329925:role/github-gb-ctr
           role-session-name: Github-Actions
       - name: Download built PDF
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: pdf
       - name: Upload to S3
