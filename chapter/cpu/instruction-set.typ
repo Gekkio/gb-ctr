@@ -3427,9 +3427,9 @@ if IR == 0xCB:
 
     Shifts, the 8-bit value at the address specified by the HL register, right by one bit using an arithmetic shift.
 
-    Bit 7 is set to a fixed value of 0, and bit 0 is shifted to the carry flag.
+    Bit 7 retains its value, and bit 0 is shifted to the carry flag.
 
-    #rotate-shift-visualization(dir-right: true, register-label: [Data at address HL], carry: 0, register: ("0", 7, 6, 5, 4, 3, 2, 1))
+    #rotate-shift-visualization(dir-right: true, register-label: [Data at address HL], carry: 0, register: (7, 7, 6, 5, 4, 3, 2, 1))
   ],
   mnemonic: "SRA (HL)",
   flags: [Z = #flag-update, N = 0, H = 0, C = #flag-update],
