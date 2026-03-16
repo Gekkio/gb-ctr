@@ -3659,7 +3659,7 @@ if IR == 0xCB:
 opcode = read_memory(addr=PC); PC = PC + 1
 if opcode == 0xCB: # CB prefix
   opcode = read_memory(addr=PC); PC = PC + 1
-  if opcode == 0x28: # example: SRL B
+  if opcode == 0x38: # example: SRL B
     b0 = B[0]
     B = from_bits(7=0, 6..0=B[7..1])
     flags.Z = 1 if B == 0 else 0
@@ -3673,7 +3673,7 @@ if IR == 0xCB:
   cb_mode = 1
   IR = fetch_cycle(addr=PC); PC = PC + 1
   # M3/M1
-  if cb_mode and IR == 0x28: # example: SRL B
+  if cb_mode and IR == 0x38: # example: SRL B
     b0 = B[0]
     result = from_bits(7=0, 6..0=B[7..1])
     B = result
