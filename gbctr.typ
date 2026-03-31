@@ -1,6 +1,6 @@
 #import "common.typ": awesome-brands, monotext
 
-#let title = [Game Boy: Complete Technical Reference]
+#let title = [GB: Complete Technical Reference]
 #let date = datetime.today()
 #let config = json("config.json")
 
@@ -22,7 +22,8 @@
         #awesome-brands[\u{f4ef}]
       ]
     ]\
-    This work is licensed under a #link("http://creativecommons.org/licenses/by-sa/4.0/")[Creative Commons Attribution-ShareAlike 4.0 International License].
+    This work is licensed under a #link("http://creativecommons.org/licenses/by-sa/4.0/")[Creative Commons Attribution-ShareAlike 4.0 International License].\
+    Game Boy is a trademark of Nintendo Co., Ltd. This document is not affiliated with or endorsed by Nintendo Co., Ltd. and is provided for educational purposes only.
   ])
 
   #image("images/gbctr.svg", width: 5cm)
