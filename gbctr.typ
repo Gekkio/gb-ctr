@@ -123,7 +123,7 @@
     #counter(figure.where(kind: "register")).update(0)
   ]
 
-  = Game Boy console architecture
+  = Console architecture
 
   #include "chapter/console/intro.typ"
   #include "chapter/console/clocks.typ"
@@ -135,7 +135,7 @@
   #include "chapter/cpu/timing.typ"
   #include "chapter/cpu/instruction-set.typ"
 
-  = Game Boy SoC peripherals and features
+  = SoC peripherals and features
 
   #include "chapter/peripherals/boot-rom.typ"
   #include "chapter/peripherals/dma.typ"
@@ -143,8 +143,9 @@
   #include "chapter/peripherals/p1.typ"
   #include "chapter/peripherals/serial.typ"
 
-  = Game Boy game cartridges
+  = Game cartridges
 
+  #include "chapter/cartridges/intro.typ"
   #include "chapter/cartridges/mbc1.typ"
   #include "chapter/cartridges/mbc2.typ"
   #include "chapter/cartridges/mbc3.typ"

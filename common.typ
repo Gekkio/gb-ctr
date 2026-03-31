@@ -52,3 +52,42 @@
     numbering: (..nums) => counter(heading).display((..hnums) => numbering("1", hnums.pos().at(1))) + "." + numbering("1", ..nums)
   )
 ]
+
+#let to-hex4(n) = {
+  let digits = "0123456789ABCDEF"
+  let result = ""
+  let rem = n
+  if rem == 0 { return "0000" }
+  while rem > 0 {
+    result = digits.at(calc.rem(rem, 16)) + result
+    rem = calc.quo(rem, 16)
+  }
+  while result.len() < 4 { result = "0" + result }
+  result
+}
+
+#let addr-space-figure(ticks: (), regions: (), caption: none) = figure(
+  {
+    set text(6pt)
+    cetz.canvas(length: 1cm, {
+      import cetz.draw: *
+      let W = 16.0
+      let H = 2.0
+      let total = 0x10000
+      for region in regions.sorted(key: r => if r.highlight { 1 } else { 0 }) {
+        let x0 = region.start / total * W
+        let x1 = region.end / total * W
+        rect((x0, 0), (x1, H), fill: region.color, stroke: black + if region.highlight { 1pt } else { 0.5pt })
+        if x1 - x0 >= 1.0 {
+          content((x0 + (x1 - x0) / 2, H / 2), align(center + horizon, region.label))
+        }
+      }
+      for addr in ticks {
+        let x = addr / total * W
+        line((x, 0), (x, -0.15), stroke: 0.4pt + black)
+        content((x, -0.2), anchor: "north", hex(to-hex4(addr)))
+      }
+    })
+  },
+  caption: caption,
+)

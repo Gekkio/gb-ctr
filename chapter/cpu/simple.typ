@@ -1,6 +1,6 @@
 #import "../../common.typ": *
 
-== Simple model
+== Simple CPU core model
 
 #figure(
   image(width: 70%, "../../images/SM83-simple.svg"),

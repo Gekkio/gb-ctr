@@ -1,6 +1,6 @@
 #import "../../common.typ": *
 
-== Introduction
+== Introduction to the Sharp SM83 CPU core
 
 The CPU core in the Game Boy SoC is a custom Sharp design that hasn't publicly been given a name by either Sharp or Nintendo. However, using old Sharp datasheets and databooks as evidence, the core has been identified to be a Sharp *SM83* CPU core, or at least something that is 100% compatible with it. SM83 is a custom CPU core used in some custom Application Specific Integrated Chips (ASICs) manufactured by Sharp in the 1980s and 1990s.
 

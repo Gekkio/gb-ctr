@@ -1,6 +1,6 @@
 #import "../../common.typ": *
 
-== Introduction
+== Introduction to console architecture
 
 The original Game Boy and its successors were the most popular and financially successful handheld consoles in the 1990s and early 2000s with several millions units sold and a large catalogue of officially published games. Unlike many older consoles, Game Boys use only a single integrated System-on-a-Chip (SoC) for almost everything, and this SoC includes the processor (CPU) core, some memories, and various peripherals.
 
