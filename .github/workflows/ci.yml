@@ -36,7 +36,7 @@ jobs:
           FONTAWESOME_VERSION: 7.2.0
       - run: just build
       - name: Upload built PDF
-        uses: actions/upload-artifact@v8
+        uses: actions/upload-artifact@v7
         with:
           name: pdf
           path: gbctr.pdf
