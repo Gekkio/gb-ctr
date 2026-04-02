@@ -50,16 +50,14 @@ jobs:
     steps:
       - name: Install Ubuntu packages
         run: sudo snap install aws-cli --classic
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::570943329925:role/github-gb-ctr
-          role-session-name: Github-Actions
       - name: Download built PDF
         uses: actions/download-artifact@v8
         with:
           name: pdf
       - name: Upload to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
         run: |
-          aws s3 cp gbctr.pdf s3://gbdocs.gekkio.fi/gbctr.pdf
+          aws s3 cp gbctr.pdf s3://${{ secrets.S3_BUCKET }}/gbctr.pdf --endpoint-url ${{ secrets.S3_ENDPOINT }}
