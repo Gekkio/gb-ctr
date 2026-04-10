@@ -1,4 +1,5 @@
 #import "../../common.typ": *
+#import "../../timing.typ"
 
 == DMA (Direct Memory Access)
 
@@ -57,7 +58,64 @@ The OAM DMA controller uses a simplified address decoding scheme, which leads to
 
 ==== OAM DMA transfer timing
 
-TODO
+#figure({
+  import timing: diagram, clock as c, data as d, either as e, high as h, low as l, unknown as u, undefined as x, high_impedance as z, skip as s
+  diagram(
+    w_scale: 0.9,
+    (label: "CLK 4 MiHz", wave: (
+      l(1),
+      ..range(40).map(_ => c(1)),
+      s(),
+      ..range(8).map(_ => c(1)),
+      c(1),
+    )),
+    (label: "PHI 1 MiHz", wave: (
+      l(1),
+      ..range(5).map(_ => (c(4), c(4))).flatten(),
+      s(),
+      ..range(1).map(_ => (c(4), c(4))).flatten(),
+      c(1),
+    )),
+    (label: "CPU activity", wave: (
+      u(1),
+      d(8, "W: DMA register"),
+      u(32),
+      s(),
+      u(8),
+      x(1),
+    )),
+    (label: "DMA activity", wave: (
+      u(9),
+      d(8, "Counter reset"),
+      d(8, [Copy byte 0]),
+      d(8, [Copy byte 1]),
+      d(8, [Copy byte 2]),
+      s(),
+      d(8, [Copy byte 159]),
+      x(1),
+    )),
+    (label: "Source", wave: (
+      u(17),
+      d(8, hex("XX00")),
+      d(8, hex("XX01")),
+      d(8, hex("XX02")),
+      s(),
+      d(8, hex("XX9F")),
+      x(1),
+    )),
+    (label: "Destination", wave: (
+      u(17),
+      d(8, [#hex("FE00") OAM 0 LSB]),
+      d(8, [#hex("FE01") OAM 0 MSB]),
+      d(8, [#hex("FE02") OAM 1 LSB]),
+      s(),
+      d(8, [#hex("FE9F") OAM 39 MSB]),
+      x(1),
+    )),
+  )},
+  caption: "OAM DMA transfer timing"
+)
+
 
 ==== OAM DMA bus conflicts
 
