@@ -2333,7 +2333,7 @@ if IR == 0x37:
   [
     ==== DAA: Decimal adjust accumulator <op:DAA>
 
-    TODO
+    Adjusts the value of the 8-bit A register to turn it into a binary coded decimal, according to the previous arithmetic operation.
   ],
   mnemonic: "DAA",
   flags: [Z = #flag-update, H = 0, C = #flag-update],
@@ -2348,8 +2348,44 @@ if IR == 0x37:
     alu_op: ([A ← A + adj],),
     misc_op: ("U",),
   ),
+  simple-pseudocode: ```python
+opcode = read_memory(addr=PC); PC = PC + 1
+if opcode == 0x27:
+  adj = 0; has_carry = 0
+    
+  if (flags.N == 0 and lsn(A) > 0x9) or flags.H == 1:
+    adj |= 0x06
+
+  if (flags.N == 0 and A > 0x99) or flags.C == 1:
+    adj |= 0x60
+    has_carry = 1
+
+  result = A - adj if flags.N == 1 else A + adj
+  A = result
+  
+  flags.Z = 1 if result == 0 else 0
+  flags.H = 0
+  flags.C = has_carry
+  ```,
   pseudocode: ```python
-TODO
+# M2/M1
+if IR == 0x27:
+  adj = 0; has_carry = 0
+    
+  if (flags.N == 0 and lsn(A) > 0x9) or flags.H == 1:
+    adj |= 0x06
+
+  if (flags.N == 0 and A > 0x99) or flags.C == 1:
+    adj |= 0x60
+    has_carry = 1
+
+  result = A - adj if flags.N == 1 else A + adj
+  A = result
+
+  flags.Z = 1 if result == 0 else 0
+  flags.H = 0
+  flags.C = has_carry
+  IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
