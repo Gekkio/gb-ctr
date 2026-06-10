@@ -1021,13 +1021,13 @@ if opcode == 0xF8:
 if IR == 0xF8:
   Z = read_memory(addr=PC); PC = PC + 1
   # M3
+  Z_sign = bit(7, Z)
   result, carry_per_bit = lsb(SP) + Z
   L = result
   flags.Z = 0
   flags.N = 0
   flags.H = 1 if carry_per_bit[3] else 0
   flags.C = 1 if carry_per_bit[7] else 0
-  Z_sign = bit(7, Z)
   # M4/M1
   adj = 0xFF if Z_sign else 0x00
   result = msb(SP) + adj + flags.C
@@ -2536,13 +2536,13 @@ if opcode == 0xE8:
 if IR == 0xE8:
   Z = read_memory(addr=PC); PC = PC + 1
   # M3
+  Z_sign = bit(7, Z)
   result, carry_per_bit = lsb(SP) + Z
   Z = result
   flags.Z = 0
   flags.N = 0
   flags.H = 1 if carry_per_bit[3] else 0
   flags.C = 1 if carry_per_bit[7] else 0
-  Z_sign = bit(7, Z)
   # M4
   adj = 0xFF if Z_sign else 0x00
   result = msb(SP) + adj + flags.C
