@@ -8,6 +8,7 @@
 #let unknown = (len, ..args) => (type: "U", len: len, ..args.named())
 #let undefined = (len, ..args) => (type: "X", len: len, ..args.named())
 #let high_impedance = (len, ..args) => (type: "Z", len: len, ..args.named())
+#let skip = (..args) => (type: "S", len: 3, ..args.named())
 
 #let diagram = (..args, w_scale: 1.0, y_scale: 1.0, grid: false, fg: () => none) => {
   cetz.canvas(length: 0.7em, {
@@ -19,10 +20,10 @@
     draw.set-style(stroke: (thickness: 0.07em))
 
     let resolve_level = (prev_state, event) => if event.type == "C" {
-      if prev_state.level == "L" { "H" } else { "L" }
+      if prev_state.type == "S" or prev_state.level == "L" { "H" } else { "L" }
     } else if ("L", "H", "E").contains(event.type) {
       event.type
-    } else if ("Z", "X", "D", "U").contains(event.type) {
+    } else if ("Z", "X", "D", "U", "S").contains(event.type) {
       "M"
     }
 
@@ -54,7 +55,9 @@
           draw.line((x_start, y_invert), (x_start + x_slope, y), (x_end, y), ..fg_opts)
         }
       } else if event.type == "C" {
-        if prev_state.level == "L" or prev_state.level == "H" {
+        if prev_state.type == "S" {
+          draw.line((x_start, y_level.L), (x_start, y_level.H), (x_end, y_level.H), ..fg_opts)
+        } else if prev_state.level == "L" or prev_state.level == "H" {
           let prev_y = y_level.at(prev_state.level)
           let y = y_level.at(invert_level(prev_state.level))
           draw.line((x_start, prev_y), (x_start, y), (x_end, y), ..fg_opts)
@@ -90,8 +93,16 @@
           draw.line((x_start, y_level.L), (x_start + x_slope, y_level.M))
           draw.line((x_start + x_slope, y_level.M), (x_end, y_level.M), ..fg_opts)
         }
+      } else if event.type == "S" {
+        let mid = event.len * w_scale / 2.0
+        let gap = 0.5 * w_scale
+        let radius = if "radius" in event { event.radius } else { 0.09 }
+        let paint = (if "fill" in event { event.fill } else { luma(120) }).lighten(opacity)
+        for dx in (-gap, 0.0, gap) {
+          draw.circle((mid + dx, y_level.M), radius: radius, fill: paint, stroke: none)
+        }
       } else if event.type == "D" or event.type == "U" {
-        let x_start = if ("X", "Z", "").contains(prev_state.type) { 0.0 } else { x_slope }
+        let x_start = if ("X", "Z", "S", "").contains(prev_state.type) { 0.0 } else { x_slope }
         let x_end = event.len * w_scale + x_slope
         let fill = if event.type == "U" { gray } else if "fill" in event { event.fill.lighten(opacity) } else { none }
         let left-open = prev_state.level == ""
