@@ -12,7 +12,7 @@ The boot ROM is enabled by default, so when the system exits the reset state and
 ]
 
 #reg-figure(
-  caption: [#hex("FF50") - BOOT - Boot ROM lock register]
+  caption: [#hex("FF50") - BANK - Boot ROM lock register]
 )[
   #reg-table(
     [U], [U], [U], [U], [U], [U], [U], [R/W-0],
@@ -36,7 +36,7 @@ The boot ROM is enabled by default, so when the system exits the reset state and
   )
 ]
 
-The 1-bit BOOT register controls mapping of the boot ROM. Once #bin("1") has been written to it to unmap the boot ROM, it can only be mapped again by resetting the system.
+The 1-bit BANK register controls mapping of the boot ROM. Once #bin("1") has been written to it to unmap the boot ROM, it can only be mapped again by resetting the system.
 
 === Boot ROM types
 

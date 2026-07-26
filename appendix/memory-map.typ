@@ -129,7 +129,7 @@
     gbc-bit[#hex("FF4D") KEY1], gbc-bit[KEY1_FAST], ..unmapped-bits(6), gbc-bit[KEY1_EN],
     hex("FF4E"), unmapped-byte,
     gbc-bit[#hex("FF4F") VBK], ..unmapped-bits(6), gbc-bits(2)[VBK\<1:0\>],
-    [#hex("FF50") BOOT], ..unmapped-bits(7), [BOOT_OFF],
+    [#hex("FF50") BANK], ..unmapped-bits(7), [BOOT_OFF],
     gbc-bit[#hex("FF51") HDMA1], ..todo(8),
     gbc-bit[#hex("FF52") HDMA2], ..todo(8),
     gbc-bit[#hex("FF53") HDMA3], ..todo(8),
