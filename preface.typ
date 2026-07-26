@@ -73,8 +73,8 @@ Examples:
     gutter: 1em,
     [*R*], [Bit can be read.],
     [*W*], [Bit can be written. If the bit cannot be read, reading returns a constant value defined in the bit list of the register in question.],
-    [*U*], [Unimplemented bit. Writing has no effect, and reading returns a constant value defined in the bit list of the register in question.],
-    [*-n*], [Value after system reset: #bit("0"), #bit("1"), or x.],
+    [*U*], [Unimplemented bit. Writing has no effect, and the bit is not driven during reads. If reads still return a predictable value, it is given by the *-n* suffix and described in the bit list of the register in question. Without a suffix, no read value is documented.],
+    [*-n*], [For readable and writable bits, the value after system reset: #bit("0"), #bit("1"), or x. For unimplemented bits, the value returned by reads.],
     [*#bit("1")*], [Bit is set.],
     [*#bit("0")*], [Bit is cleared.],
     [*x*], [Bit is unknown (e.g. depends on external things such as user input)]
@@ -95,7 +95,7 @@ Examples:
   *In this example:*
 
   - After system reset, VALUE is #bin("01"), BIGVAL is either #bin("010") or #bin("011"), FLAG is #bin("1").
-  - Bits 5 and 0 are unimplemented. Bit 5 always returns #bit("1"), and bit 0 always returns #bit("0").
+  - Bits 5 and 0 are unimplemented. Bit 5 reads as #bit("1"), and bit 0 reads as #bit("0").
   - Both bits of VALUE can be read and written. When this register is written, bit 7 of the written value goes to bit 1 of VALUE.
   - FLAG can only be written to, so reads return a value that is defined elsewhere.
   - BIGVAL cannot be written to. Only bits 5-7 of BIGVAL are defined here, so look elsewhere for the low bits 0-4.
