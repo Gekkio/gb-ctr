@@ -87,11 +87,11 @@ The OAM DMA controller uses a simplified address decoding scheme, which leads to
     (label: "DMA activity", wave: (
       u(9),
       d(8, "Counter reset"),
-      d(8, [Copy byte 0]),
       d(8, [Copy byte 1]),
       d(8, [Copy byte 2]),
+      d(8, [Copy byte 3]),
       s(),
-      d(8, [Copy byte 159]),
+      d(8, [Copy byte 160]),
       x(1),
     )),
     (label: "Source", wave: (
