@@ -34,7 +34,7 @@ jobs:
           fc-cache
         env:
           FONTAWESOME_VERSION: 7.2.0
-      - run: just build
+      - run: mise run build
       - name: Upload built PDF
         uses: actions/upload-artifact@v7
         with:

@@ -1,3 +1,22 @@
 [tools]
-just = "1.52.0"
 typst = "0.15.0"
+
+[tasks.write-config]
+run = '''
+if [ "${GITHUB_REF:-}" = "refs/heads/main" ]; then
+  draft=false
+  revision=$(git rev-list --count main)
+else
+  draft=true
+  revision="$(git symbolic-ref --short HEAD 2> /dev/null || echo unknown)-$(git rev-list --count HEAD)[$(git rev-parse --short HEAD)]"
+fi
+echo "{\"draft\": $draft, \"revision\": \"$revision\"}" > config.json
+'''
+
+[tasks.build]
+depends = ["write-config"]
+run = "typst compile gbctr.typ"
+
+[tasks.watch]
+depends = ["write-config"]
+run = "typst watch --open xdg-open gbctr.typ"
