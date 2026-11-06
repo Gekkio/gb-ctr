@@ -1,9 +1,10 @@
 #import "../../common.typ": *
+#import "sm83-simple.typ": sm83-simple-figure
 
 == Simple CPU core model
 
 #figure(
-  image(width: 70%, "../../images/SM83-simple.svg"),
+  sm83-simple-figure,
   caption: "Simple model of the SM83 CPU core"
 ) <sm83-simple>
 
