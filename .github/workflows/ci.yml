@@ -2,6 +2,8 @@ name: ci
 on:
   - push
 
+permissions: {}
+
 concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
@@ -16,15 +18,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # the revision number is a commit count
           persist-credentials: false
-      - name: Update Ubuntu package lists
-        run: sudo apt update
       - name: Install Ubuntu packages
-        run: >
-          sudo apt install
-          fonts-anonymous-pro
-          fonts-noto-core
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends fonts-anonymous-pro fonts-noto-core
       - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
       - name: Install Font Awesome
         run: |
@@ -42,16 +41,14 @@ jobs:
         with:
           name: pdf
           path: gbctr.pdf
+          if-no-files-found: error
   deploy:
     name: Deploy PDF
     needs: [build]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    permissions:
-      id-token: write
+    permissions: {}
     steps:
-      - name: Install Ubuntu packages
-        run: sudo snap install aws-cli --classic
       - name: Download built PDF
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
@@ -62,5 +59,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
           AWS_ENDPOINT_URL_S3: ${{ secrets.S3_ENDPOINT }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
         run: |
-          aws s3 cp gbctr.pdf s3://${{ secrets.S3_BUCKET }}/gbctr.pdf
+          aws s3 cp gbctr.pdf "s3://${S3_BUCKET}/gbctr.pdf"
