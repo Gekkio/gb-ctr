@@ -6,7 +6,7 @@
   caption: [#hex("FF00") - P1 - Joypad/Super Game Boy communication register]
 )[
   #reg-table(
-    [U], [U], [W-0], [W-0], [R-x], [R-x], [R-x], [R-x],
+    [U], [U], [R/W-0], [R/W-0], [R-x], [R-x], [R-x], [R-x],
     unimpl-bit(), unimpl-bit(), [P15], [P14], [P13], [P12], [P11], [P10],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
