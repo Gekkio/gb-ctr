@@ -1,5 +1,5 @@
 [tools]
-typst = "0.15.0"
+typst = "0.15.1"
 
 [tasks.write-config]
 run = '''

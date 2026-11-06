@@ -14,7 +14,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -25,7 +25,7 @@ jobs:
           sudo apt install
           fonts-anonymous-pro
           fonts-noto-core
-      - uses: jdx/mise-action@v3
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
       - name: Install Font Awesome
         run: |
           mkdir -p "$HOME/.local/share/fonts"
@@ -33,10 +33,10 @@ jobs:
           unzip -j fontawesome.zip "fontawesome-free-${FONTAWESOME_VERSION}-desktop/otfs/"'*' -d "$HOME/.local/share/fonts"
           fc-cache
         env:
-          FONTAWESOME_VERSION: 7.2.0
+          FONTAWESOME_VERSION: 7.3.1
       - run: mise run build
       - name: Upload built PDF
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pdf
           path: gbctr.pdf
@@ -51,7 +51,7 @@ jobs:
       - name: Install Ubuntu packages
         run: sudo snap install aws-cli --classic
       - name: Download built PDF
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: pdf
       - name: Upload to S3
