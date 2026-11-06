@@ -35,6 +35,8 @@ jobs:
         env:
           FONTAWESOME_VERSION: 7.3.1
       - run: mise run build
+        env:
+          GBCTR_DRAFT: ${{ github.ref == 'refs/heads/main' && 'false' || 'true' }}
       - name: Upload built PDF
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

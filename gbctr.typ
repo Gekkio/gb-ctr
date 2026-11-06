@@ -2,7 +2,8 @@
 
 #let title = [GB: Complete Technical Reference]
 #let date = datetime.today()
-#let config = json("config.json")
+#let draft = sys.inputs.at("draft", default: "true") == "true"
+#let revision = sys.inputs.at("revision", default: "unknown")
 
 #set document(title: title, author: ("gekkio"), date: date)
 #set par(justify: true)
@@ -35,8 +36,8 @@
 
   #date.display("[month repr:long] [day padding:none], [year]")
 
-  Revision #config.revision
-  #if config.draft [\ DRAFT!]
+  Revision #revision
+  #if draft [\ DRAFT!]
 ]
 
 #set page(
@@ -45,8 +46,8 @@
     #set text(10pt)
     #block(width: 100%)[
       #set align(center)
-      #if config.draft [
-        #place(left, text(style: "italic", [DRAFT! #config.revision]))
+      #if draft [
+        #place(left, text(style: "italic", [DRAFT! #revision]))
       ]
       #context {
         box(counter(page).display())
