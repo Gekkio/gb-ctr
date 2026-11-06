@@ -73,7 +73,7 @@ Examples:
     gutter: 1em,
     [*R*], [Bit can be read.],
     [*W*], [Bit can be written. If the bit cannot be read, reading returns a constant value defined in the bit list of the register in question.],
-    [*U*], [Unimplemented bit. Writing has no effect, and the bit is not driven during reads. If reads still return a predictable value, it is given by the *-n* suffix and described in the bit list of the register in question. Without a suffix, no read value is documented.],
+    [*U*], [Unimplemented bit. Writing has no effect, and the bit is not driven during reads, so reads return the undriven bus value (@undriven-bus). If this value is predictable in an unmodified system, it is given by the *-n* suffix and described in the bit list of the register in question. Without a suffix, no read value is documented.],
     [*-n*], [For readable and writable bits, the value after system reset: #bit("0"), #bit("1"), or x. For unimplemented bits, the value returned by reads.],
     [*#bit("1")*], [Bit is set.],
     [*#bit("0")*], [Bit is cleared.],

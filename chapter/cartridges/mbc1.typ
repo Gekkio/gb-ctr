@@ -35,7 +35,7 @@ The MBC1 chip includes four registers that affect the behaviour of the chip. Of 
 
 The RAMG register is used to enable access to the cartridge SRAM if one exists on the cartridge circuit board. RAM access is disabled by default but can be enabled by writing to the #hex-range("0000", "1FFF") address range a value with the bit pattern #bin("1010") in the lower nibble. Upper bits don't matter, but any other bit pattern in the lower nibble disables access to RAM.
 
-When RAM access is disabled, all writes to the external RAM area #hex-range("A000", "BFFF") are ignored, and reads return undefined values. Pan Docs recommends disabling RAM when it's not being accessed to protect the contents @pandocs.
+When RAM access is disabled, all writes to the external RAM area #hex-range("A000", "BFFF") are ignored, and reads return the undriven external bus value (@undriven-bus). Pan Docs recommends disabling RAM when it's not being accessed to protect the contents @pandocs.
 
 #speculation[
   We don't know the physical implementation of RAMG, but it's certainly possible that the #bin("1010") bit pattern check is done at write time and the register actually consists of just a single bit.
@@ -201,7 +201,7 @@ Let's assume we have previously requested ROM bank number 68, MBC1 mode is #bin(
 
 === RAM in the #hex-range("A000", "BFFF") area
 
-Some MBC1 carts include SRAM, which is mapped to the #hex-range("A000", "BFFF") area. If no RAM is present, or RAM is not enabled with the RAMG register, all reads return undefined values and writes have no effect.
+Some MBC1 carts include SRAM, which is mapped to the #hex-range("A000", "BFFF") area. If no RAM is present, or RAM is not enabled with the RAMG register, all reads return the undriven external bus value (@undriven-bus) and writes have no effect.
 
 On boards that have RAM, the A0-A12 cartridge bus signals are connected directly to the corresponding RAM pins, and pins A13-A14 are controlled by the MBC1. Most of the time the RAM size is 64 Kbit, which corresponds to a single bank of #hex("2000") bytes. With larger RAM sizes the BANK2 register value can be used for RAM banking to provide the two high address bits.
 

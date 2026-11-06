@@ -27,7 +27,7 @@ The 1-bit BANK register controls memory mapping of the boot ROM. Once #bin("1") 
   #grid(
     columns: (auto, 1fr),
     gutter: 1em,
-    [*bit 7-1*], [*Unimplemented*: Ignored during writes; reads return #bit("1") in a normal system],
+    [*bit 7-1*], [*Unimplemented*: Ignored during writes, reads return #bit("1") (@undriven-bus)],
     [*bit 0*], [
       *BOOT_OFF*: Boot ROM mapping bit\
       #bin("1") = Boot ROM is unmapped and #hex-range("0000", "00FF") works normally.\

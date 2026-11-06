@@ -6,7 +6,7 @@
   caption: [#hex("FF00") - P1 - Joypad/Super Game Boy communication register]
 )[
   #reg-table(
-    [U], [U], [R/W-0], [R/W-0], [R-x], [R-x], [R-x], [R-x],
+    [U-1], [U-1], [R/W-0], [R/W-0], [R-x], [R-x], [R-x], [R-x],
     unimpl-bit(), unimpl-bit(), [P15], [P14], [P13], [P12], [P11], [P10],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
@@ -14,7 +14,7 @@
   #grid(
     columns: (auto, 1fr),
     gutter: 1em,
-    [*bit 7-6*], [*Unimplemented*: Ignored during writes, reads are undefined],
+    [*bit 7-6*], [*Unimplemented*: Ignored during writes, reads return #bit("1") (@undriven-bus)],
     [*bit 5*], [*P15*],
     [*bit 4*], [*P14*],
     [*bit 3*], [*P13*],

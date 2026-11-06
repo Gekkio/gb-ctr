@@ -22,7 +22,7 @@
   caption: [#hex("FF02") - SC - Serial control register]
 )[
   #reg-table(
-    [R/W-0], [U], [U], [U], [U], [U], [U], [R/W-0],
+    [R/W-0], [U-1], [U-1], [U-1], [U-1], [U-1], [U-1], [R/W-0],
     [SIO_EN], unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), unimpl-bit(), [SIO_CLK],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
   )
@@ -31,7 +31,7 @@
     columns: (auto, 1fr),
     gutter: 1em,
     [*bit 7*], [*SIO_EN*],
-    [*bit 6-1*], [*Unimplemented*: Ignored during writes, reads are undefined],
+    [*bit 6-1*], [*Unimplemented*: Ignored during writes, reads return #bit("1") (@undriven-bus)],
     [*bit 0*], [*SIO_CLK*]
   )
 ]

@@ -39,7 +39,7 @@ The MBC2 chip includes two registers that affect the behaviour of the chip. The 
 
 The 4-bit MBC2 RAMG register works in a similar manner as MBC1 RAMG, so the upper bits don't matter and only the bit pattern #bin("1010") enables access to RAM.
 
-When RAM access is disabled, all writes to the external RAM area #hex-range("A000", "BFFF") are ignored, and reads return undefined values. Pan Docs recommends disabling RAM when it's not being accessed to protect the contents @pandocs.
+When RAM access is disabled, all writes to the external RAM area #hex-range("A000", "BFFF") are ignored, and reads return the undriven external bus value (@undriven-bus). Pan Docs recommends disabling RAM when it's not being accessed to protect the contents @pandocs.
 
 #speculation[
   We don't know the physical implementation of RAMG, but it's certainly possible that the #bin("1010") bit pattern check is done at write time and the register actually consists of just a single bit.
@@ -99,9 +99,9 @@ When the #hex-range("4000", "7FFF") address range is accessed, the effective ban
 
 === RAM in the #hex-range("A000", "BFFF") area
 
-All MBC2 carts include SRAM, because it is located directly inside the MBC2 chip. These cartridges never use a separate RAM chip, but battery backup circuitry and a battery are optional. If RAM is not enabled with the RAMG register, all reads return undefined values and writes have no effect.
+All MBC2 carts include SRAM, because it is located directly inside the MBC2 chip. These cartridges never use a separate RAM chip, but battery backup circuitry and a battery are optional. If RAM is not enabled with the RAMG register, all reads return the undriven external bus value (@undriven-bus) and writes have no effect.
 
-MBC2 RAM is only 4-bit RAM, so the upper 4 bits of data do not physically exist in the chip. When writing to it, the upper 4 bits are ignored. When reading from it, the upper 4 data signals are not driven by the chip, so their content is undefined and should not be relied on.
+MBC2 RAM is only 4-bit RAM, so the upper 4 bits of data do not physically exist in the chip. When writing to it, the upper 4 bits are ignored. When reading from it, the upper 4 data signals are not driven by the chip, so they return the undriven external bus value (@undriven-bus), which is usually #bit("1") but should not be relied on.
 
 MBC2 RAM consists of 512 addresses, so only A0-A8 matter when accessing the RAM region. There is no banking, and the #hex-range("A000", "BFFF") area is larger than the RAM, so the addresses wrap around. For example, accessing #hex("A000") is the same as accessing #hex("A200"), so it is possible to write to the former address and later read the written data using the latter address.
 

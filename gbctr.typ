@@ -127,6 +127,7 @@
 
   #include "chapter/console/intro.typ"
   #include "chapter/console/clocks.typ"
+  #include "chapter/console/memory-buses.typ"
 
   = Sharp SM83 CPU core
 

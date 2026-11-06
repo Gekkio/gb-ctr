@@ -22,7 +22,7 @@ The Game Boy CPU has a 16-bit address bus, giving it a 64 KiB address space (= 6
   caption: [Cartridge address space areas],
 )
 
-The SoC makes no assumption about the practical purpose of these areas, and simply permits the cartridge to react to reads and writes from the CPU core when the target address is in these areas. If no cartridge is connected, reads from these areas return undefined values and writes have no effect. The same thing applies if a cartridge _is_ connected but it simply doesn't react to the read or write (for example, when attempting to read RAM on a RAM-less cartridge).
+The SoC makes no assumption about the practical purpose of these areas, and simply permits the cartridge to react to reads and writes from the CPU core when the target address is in these areas. If no cartridge is connected, reads from these areas return the undriven external bus value (@undriven-bus) and writes have no effect. The same thing applies if a cartridge _is_ connected but it simply doesn't react to the read or write (for example, when attempting to read RAM on a RAM-less cartridge).
 
 === Standard cartridge address space conventions
 

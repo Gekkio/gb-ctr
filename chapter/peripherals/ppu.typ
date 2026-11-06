@@ -16,9 +16,21 @@
   caption: [#hex("FF41") - STAT - PPU status register]
 )[
   #reg-table(
-    [U], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R-0], [R-0], [R-0],
+    [U-1], [R/W-0], [R/W-0], [R/W-0], [R/W-0], [R-0], [R-0], [R-0],
     unimpl-bit(), [INTR_LYC], [INTR_M2], [INTR_M1], [INTR_M0], [LYC_STAT], table.cell(colspan: 2)[LCD_MODE\<1:0\>],
     [bit 7], [6], [5], [4], [3], [2], [1], [bit 0]
+  )
+  #set align(left)
+  #grid(
+    columns: (auto, 1fr),
+    gutter: 1em,
+    [*bit 7*], [*Unimplemented*: Ignored during writes, reads return #bit("1") (@undriven-bus)],
+    [*bit 6*], [*INTR_LYC*],
+    [*bit 5*], [*INTR_M2*],
+    [*bit 4*], [*INTR_M1*],
+    [*bit 3*], [*INTR_M0*],
+    [*bit 2*], [*LYC_STAT*],
+    [*bit 1-0*], [*LCD_MODE*],
   )
 ]
 

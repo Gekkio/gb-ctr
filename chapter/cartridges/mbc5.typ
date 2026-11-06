@@ -28,7 +28,7 @@ The majority of games for Game Boy Color use the MBC5 chip. MBC5 supports ROM si
 
 The 8-bit MBC5 RAMG register works in a similar manner as MBC1 RAMG, but it is a full 8-bit register so upper bits matter when writing to it. Only #bin("00001010") enables RAM access, and all other values (including #bin("10001010") for example) disable access to RAM.
 
-When RAM access is disabled, all writes to the external RAM area #hex-range("A000", "BFFF") are ignored, and reads return undefined values. Pan Docs recommends disabling RAM when it's not being accessed to protect the contents @pandocs.
+When RAM access is disabled, all writes to the external RAM area #hex-range("A000", "BFFF") are ignored, and reads return the undriven external bus value (@undriven-bus). Pan Docs recommends disabling RAM when it's not being accessed to protect the contents @pandocs.
 
 #speculation[
   We don't know the physical implementation of RAMG, but it's certainly possible that the #bin("00001010") bit pattern check is done at write time and the register actually consists of just a single bit.
