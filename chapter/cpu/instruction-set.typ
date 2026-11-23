@@ -2707,6 +2707,7 @@ if IR == 0x0F:
   flags.N = 0
   flags.H = 0
   flags.C = 1 if b0 else 0
+  IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2754,6 +2755,7 @@ if IR == 0x17:
   flags.N = 0
   flags.H = 0
   flags.C = 1 if b7 else 0
+  IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
@@ -2801,6 +2803,7 @@ if IR == 0x1F:
   flags.N = 0
   flags.H = 0
   flags.C = 1 if b0 else 0
+  IR, intr = fetch_cycle(addr=PC); PC = PC + 1
   ```
 )
 
